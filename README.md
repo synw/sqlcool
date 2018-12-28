@@ -9,7 +9,6 @@ A database helper class for [Sqflite](https://github.com/tekartik/sqflite).
    ```dart
    import 'package:sqlcool/sqlcool.dart';
 
-
    void main() {
       String q1 = """CREATE TABLE category (
          id INTEGER PRIMARY KEY,
@@ -36,7 +35,6 @@ The database is created in the documents directory. The create table queries wil
 
    ```dart
    import 'package:sqlcool/sqlcool.dart';
-
 
    void main() {
       String dbpath = "data.sqlite";
