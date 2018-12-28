@@ -124,25 +124,25 @@ A stream controller is available for select blocs:
          this.bloc.dispose();
          super.dispose();
       }
-   }
 
-   @override
-   Widget build(BuildContext context) {
-      return Scaffold(
-         body: StreamBuilder<List<Map<String, dynamic>>>(
-         stream: this.bloc.items,
-         builder: (BuildContext context,
-             AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                 if (snapshot.hasData) {
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (BuildContext context, int index) {
+      @override
+      Widget build(BuildContext context) {
+         return Scaffold(
+            body: StreamBuilder<List<Map<String, dynamic>>>(
+            stream: this.bloc.items,
+            builder: (BuildContext context,
+               AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+                  if (snapshot.hasData) {
+                     itemCount: snapshot.data.length,
+                     itemBuilder: (BuildContext context, int index) {
                          Map<String, dynamic> item = snapshot.data[index];
                          // ....
                          // ....
-                    }
+                     }
                  }
              }
-       }));
+          }));
+	   }
    }
    ```
 
