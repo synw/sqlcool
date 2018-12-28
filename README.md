@@ -24,7 +24,9 @@ A database helper class for [Sqflite](https://github.com/tekartik/sqflite).
          )""";
       String dbpath = "data.sqlite";
       List<String> queries = [q1, q2];
-      await db.init(dbpath, queries: queries, verbose: true);
+      db.init(dbpath, queries: queries, verbose: true).catchError((e) {
+		  print("Error initializing the database; $e");
+	  });
    }
    ```
 
@@ -38,7 +40,9 @@ The database is created in the documents directory. The create table queries wil
 
    void main() {
       String dbpath = "data.sqlite";
-      await db.init(dbpath, fromAsset: "assets/data.sqlite", verbose: true);
+      db.init(dbpath, fromAsset: "assets/data.sqlite", verbose: true).catchError((e) {
+		  print("Error initializing the database; $e");
+	  });
    }
    ```
 
@@ -88,6 +92,14 @@ The database is created in the documents directory. The create table queries wil
    String table = "category";
    String where = "id=1";
    await db.delete(table, where);
+   ```
+
+### Raw query
+
+   ```dart
+   import 'package:sqlcool/sqlcool.dart';
+   
+   List<Map> rows = await db.database.rawQuery("SOME QUERY");
    ```
 
 ## Using the bloc pattern for select
