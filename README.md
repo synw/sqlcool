@@ -30,7 +30,7 @@ A database helper class for [Sqflite](https://github.com/tekartik/sqflite).
 
 The database is created in the documents directory. The create table queries will run once on database file creation.
 
-### Initialize a database from an asset Sqlite file
+### Initialize a database from an Sqlite asset file
 
    ```dart
    import 'package:sqlcool/sqlcool.dart';
@@ -135,3 +135,8 @@ A stream controller is available for select blocs:
        }));
    }
    ```
+
+## Todo
+
+- [ ] Better error handling
+- [ ] Upsert
