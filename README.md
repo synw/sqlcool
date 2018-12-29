@@ -24,8 +24,8 @@ A database helper class for [Sqflite](https://github.com/tekartik/sqflite).
       String dbpath = "data.sqlite";
       List<String> queries = [q1, q2];
       db.init(dbpath, queries: queries, verbose: true).catchError((e) {
-		  print("Error initializing the database; $e");
-	  });
+          print("Error initializing the database; $e");
+      });
    }
    ```
 
@@ -39,8 +39,8 @@ The database is created in the documents directory. The create table queries wil
    void main() {
       String dbpath = "data.sqlite";
       db.init(dbpath, fromAsset: "assets/data.sqlite", verbose: true).catchError((e) {
-		  print("Error initializing the database; $e");
-	  });
+          print("Error initializing the database; $e");
+      });
    }
    ```
 
@@ -90,6 +90,18 @@ The database is created in the documents directory. The create table queries wil
    String table = "category";
    String where = "id=1";
    await db.delete(table, where);
+   ```
+
+### Join
+
+   ```dart
+   import 'package:sqlcool/sqlcool.dart';
+   
+   String table = "category";
+   await db.select(table, offset: 10, limit: 20,
+                   select: "id, name, price, category.name as category_name", 
+                   joinTable: "product",
+                   joinOn: "product.category=category.id");
    ```
 
 ### Raw query
@@ -142,8 +154,21 @@ A stream controller is available for select blocs:
                  }
              }
           }));
-	   }
+       }
    }
+   ```
+
+The select bloc supports join queries:
+
+   ```dart
+   @override
+   void initState() {
+      super.initState();
+      this.bloc = SelectBloc("category", offset: 10, limit: 20,
+                             select: "id, name, price, category.name as category_name", 
+                             joinTable: "product",
+                             joinOn: "product.category=category.id");
+      }
    ```
 
 ## Todo

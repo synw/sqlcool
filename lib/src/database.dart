@@ -86,6 +86,26 @@ class Db {
     }
   }
 
+  Future<List<Map<String, dynamic>>> join(
+      String table, String select, String joinTable, String joinOn,
+      {int offset = 0, int limit = 100, String where = ""}) async {
+    try {
+      String q = "SELECT $select FROM $table";
+      q = "$q INNER JOIN $joinTable ON $joinOn";
+      q = "$q LIMIT $limit OFFSET $offset";
+      if (where != "") {
+        q = q + " WHERE $where";
+      }
+      final List<Map<String, dynamic>> res = await this.database.rawQuery(q);
+      return res.toList();
+    } catch (e) {
+      // TODO : error handling
+      print(e);
+      final res = <Map<String, dynamic>>[];
+      return res;
+    }
+  }
+
   Future<void> insert(String table, Map<String, String> row,
       {bool verbose: false}) async {
     /// insert a row in the table
