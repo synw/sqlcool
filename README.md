@@ -104,6 +104,15 @@ The database is created in the documents directory. The create table queries wil
                    joinOn: "product.category=category.id");
    ```
 
+### Record exists
+
+   ```dart
+   import 'package:sqlcool/sqlcool.dart';
+   
+   String table = "category";
+   bool exists = await db.exists(table, "id=3");
+   ```
+
 ### Raw query
 
    ```dart
