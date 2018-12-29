@@ -66,7 +66,7 @@ The database is created in the documents directory. The create table queries wil
    import 'package:sqlcool/sqlcool.dart';
    
    String table = "category";
-   await db.select(table, offset: 10, limit: 20, where: "id=1");
+   List<Map<String, dynamic>> rows = await db.select(table, offset: 10, limit: 20, where: "id=1");
    ```
 
 ### Update
@@ -99,7 +99,8 @@ The database is created in the documents directory. The create table queries wil
    import 'package:sqlcool/sqlcool.dart';
    
    String table = "product";
-   await db.select(table, offset: 10, limit: 20,
+   List<Map<String, dynamic>> rows = await db.select(
+                   table, offset: 10, limit: 20,
                    select: "id, name, price, category.name as category_name", 
                    joinTable: "category",
                    joinOn: "product.category=category.id");
