@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:sqlcool/src/database.dart';
 
 class SelectBloc {
-  SelectBloc(this.table, {offset: 0, limit: 10, where: ""}) {
+  SelectBloc(this.table, {int offset: 0, int limit: 10, String where: ""}) {
     this.offset = offset;
     this.limit = limit;
     this.where = where;
