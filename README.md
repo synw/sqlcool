@@ -13,12 +13,13 @@ A database helper class for [Sqflite](https://github.com/tekartik/sqflite).
       String q1 = """CREATE TABLE category (
          id INTEGER PRIMARY KEY,
          slug TEXT UNIQUE NOT NULL,
-         name TEXT
+         name TEXT NOT NULL
          )""";
       String q2 = """CREATE TABLE product (
          id INTEGER PRIMARY KEY,
-         price REAL NULL,
-         date INTEGER,
+         slug TEXT UNIQUE NOT NULL,
+         name TEXT NOT NULL,
+         price REAL NOT NULL,
          category INTEGER
          )""";
       String dbpath = "data.sqlite";
@@ -173,7 +174,7 @@ The select bloc supports join queries:
    @override
    void initState() {
       super.initState();
-      this.bloc = SelectBloc("category", offset: 10, limit: 20,
+      this.bloc = SelectBloc("product", offset: 10, limit: 20,
                              select: """id, name, price, category.name as category_name""", 
                              joinTable: "product",
                              joinOn: "product.category=category.id");
