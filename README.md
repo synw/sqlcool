@@ -25,7 +25,7 @@ A database helper class for [Sqflite](https://github.com/tekartik/sqflite).
       String dbpath = "data.sqlite";
       List<String> queries = [q1, q2];
       db.init(dbpath, queries: queries, verbose: true).catchError((e) {
-          print("Error initializing the database; $e");
+          print("Error initializing the database: $e");
       });
    }
    ```
