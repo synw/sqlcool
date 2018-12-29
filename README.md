@@ -97,10 +97,10 @@ The database is created in the documents directory. The create table queries wil
    ```dart
    import 'package:sqlcool/sqlcool.dart';
    
-   String table = "category";
+   String table = "product";
    await db.select(table, offset: 10, limit: 20,
                    select: "id, name, price, category.name as category_name", 
-                   joinTable: "product",
+                   joinTable: "category",
                    joinOn: "product.category=category.id");
    ```
 
