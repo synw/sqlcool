@@ -99,7 +99,7 @@ The database is created in the documents directory. The create table queries wil
    import 'package:sqlcool/sqlcool.dart';
    
    String table = "product";
-   List<Map<String, dynamic>> rows = await db.select(
+   List<Map<String, dynamic>> rows = await db.join(
                    table, offset: 10, limit: 20,
                    select: "id, name, price, category.name as category_name", 
                    joinTable: "category",
@@ -176,7 +176,7 @@ The select bloc supports join queries:
    void initState() {
       super.initState();
       this.bloc = SelectBloc("product", offset: 10, limit: 20,
-                             select: """id, name, price, category.name as category_name""", 
+                             select: "id, name, price, category.name as category_name", 
                              joinTable: "product",
                              joinOn: "product.category=category.id");
    }
