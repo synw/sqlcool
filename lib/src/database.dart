@@ -70,12 +70,20 @@ class Db {
   }
 
   Future<List<Map<String, dynamic>>> select(String table,
-      {int offset = 0, int limit = 100, String where = ""}) async {
+      {int offset = 0,
+      int limit = 100,
+      String where = "",
+      verbose: false}) async {
     try {
-      String q = "SELECT * FROM $table LIMIT $limit OFFSET $offset";
+      String q = "SELECT * FROM $table";
       if (where != "") {
-        q = q + " WHERE $where";
+        q += " WHERE $where";
       }
+      q += " LIMIT $limit OFFSET $offset";
+      if (verbose == true) {
+        print(q);
+      }
+      ;
       final List<Map<String, dynamic>> res = await this.database.rawQuery(q);
       return res.toList();
     } catch (e) {
