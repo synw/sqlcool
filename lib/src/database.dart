@@ -73,17 +73,20 @@ class Db {
       {int offset = 0,
       int limit = 100,
       String where = "",
+      String orderBy = "",
       verbose: false}) async {
     try {
       String q = "SELECT * FROM $table";
       if (where != "") {
         q += " WHERE $where";
       }
+      if (orderBy != "") {
+        q = "$q ORDER BY $orderBy";
+      }
       q += " LIMIT $limit OFFSET $offset";
       if (verbose == true) {
         print(q);
       }
-      ;
       final List<Map<String, dynamic>> res = await this.database.rawQuery(q);
       return res.toList();
     } catch (e) {
