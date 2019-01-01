@@ -177,7 +177,7 @@ The select bloc supports join queries:
       super.initState();
       this.bloc = SelectBloc("product", offset: 10, limit: 20,
                              select: "id, name, price, category.name as category_name", 
-                             joinTable: "product",
+                             joinTable: "category",
                              joinOn: "product.category=category.id");
    }
    ```
