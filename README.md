@@ -45,6 +45,20 @@ The database is created in the documents directory. The create table queries wil
    }
    ```
 
+### Multiple databases
+
+The `db` object is an instance of the `Db` class. You can instantiate it yourself if you want to use multiple databases or to have full control over the instance(s):
+
+   ```dart
+   import 'package:sqlcool/sqlcool.dart';
+
+   void main() {
+      db1 = Db();
+	  db2 = Db();
+	  // ...
+   }
+   ```
+
 ## Database operations
 
 ### Insert
