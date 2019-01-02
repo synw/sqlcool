@@ -9,7 +9,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
    ```dart
    import 'package:sqlcool/sqlcool.dart';
 
-   void main() {
+   void someFunc() async {
       String q = """CREATE TABLE category (
          id INTEGER PRIMARY KEY,
          slug TEXT UNIQUE NOT NULL,
