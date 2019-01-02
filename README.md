@@ -17,7 +17,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
          )""";
       String dbpath = "data.sqlite";
       List<String> queries = [q];
-      db.init(dbpath, queries: queries, verbose: true).catchError((e) {
+      await db.init(dbpath, queries: queries, verbose: true).catchError((e) {
           print("Error initializing the database: $e");
       });
 	  // insert data
@@ -26,11 +26,15 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
        name: "My item",
       }
       String table = "category";
-      await db.insert(table, row, verbose: true);
+      db.insert(table, row, verbose: true).catchError((e) {
+          print("Error inserting data: $e");
+      });;
 	  // select data
       List<Map<String, dynamic>> rows =
         await db.select(table, limit: 20, where: "name LIKE '%something%'",
-           orderBy: "name ASC");
+           orderBy: "name ASC").catchError((e) {
+          print("Error selecting data: $e");
+      });;
    }
    ```
 
