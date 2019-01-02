@@ -2,7 +2,7 @@
 
 A database helper class for [Sqflite](https://github.com/tekartik/sqflite).
 
-Check the [documentation]() for usage instructions
+Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
 ## Quick example
 
