@@ -35,10 +35,9 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
       int updated = await db.update(table, row, where, verbose: true).catchError((e) {
           print("Error updating data: ${e.message}");
       // select
-      List<Map<String, dynamic>> rows =
-        List<Map<String, dynamic>> rows = await db.select(
-            table, limit: 20, where: "name LIKE '%something%'",
-            orderBy: "name ASC").catchError((e) {
+      List<Map<String, dynamic>> rows = await db.select(
+        table, limit: 20, where: "name LIKE '%something%'",
+        orderBy: "name ASC").catchError((e) {
           print("Error selecting data: $e");
       });
    }
