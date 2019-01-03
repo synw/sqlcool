@@ -1,6 +1,6 @@
 # Sqlcool
 
-A database helper class for [Sqflite](https://github.com/tekartik/sqflite).
+A database helper class for [Sqflite](https://github.com/tekartik/sqflite): forget implementation details and focus on the business logic.
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
