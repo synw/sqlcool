@@ -10,31 +10,37 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
    import 'package:sqlcool/sqlcool.dart';
 
    void someFunc() async {
-      String q = """CREATE TABLE category (
-         id INTEGER PRIMARY KEY,
-         slug TEXT UNIQUE NOT NULL,
-         name TEXT NOT NULL
-         )""";
-      String dbpath = "data.sqlite";
-      List<String> queries = [q];
-      await db.init(dbpath, queries: queries, verbose: true).catchError((e) {
-          print("Error initializing the database: $e");
+      await db.init(dbpath, fromAsset: "assets/db.sqlite", verbose: true).catchError((e) {
+          print("Error initializing the database: ${e.message}");
       });
-	  // insert data
+      // insert
       Map<String, String> row = {
        slug: "my-item",
        name: "My item",
-      }
+      };
       String table = "category";
       db.insert(table, row, verbose: true).catchError((e) {
-          print("Error inserting data: $e");
-      });;
-	  // select data
+          print("Error inserting data: ${e.message}");
+      });
+      // delete
+      db.delete(table, "id=3").catchError((e) {
+          print("Error deleting data: ${e.message}");
+      });
+      //update
+      Map<String, String> row = {
+       slug: "my-item-new",
+       name: "My item new",
+      };
+      String where = "id=1";
+      int updated = await db.update(table, row, where, verbose: true).catchError((e) {
+          print("Error updating data: ${e.message}");
+      // select
       List<Map<String, dynamic>> rows =
-        await db.select(table, limit: 20, where: "name LIKE '%something%'",
-           orderBy: "name ASC").catchError((e) {
+        List<Map<String, dynamic>> rows = await db.select(
+            table, limit: 20, where: "name LIKE '%something%'",
+            orderBy: "name ASC").catchError((e) {
           print("Error selecting data: $e");
-      });;
+      });
    }
    ```
 
