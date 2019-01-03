@@ -1,6 +1,6 @@
 # Sqlcool
 
-A database helper class for [Sqflite](https://github.com/tekartik/sqflite): forget implementation details and focus on the business logic.
+A database helper class for [Sqflite](https://github.com/tekartik/sqflite): forget implementation details and focus on the business logic
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
@@ -10,6 +10,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
    import 'package:sqlcool/sqlcool.dart';
 
    void someFunc() async {
+      String dbpath = "db.sqlite"; // relative to the documents directory
       await db.init(dbpath, fromAsset: "assets/db.sqlite", verbose: true).catchError((e) {
           print("Error initializing the database: ${e.message}");
       });
@@ -26,7 +27,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
       List<Map<String, dynamic>> rows = await db.select(
         table, limit: 20, where: "name LIKE '%something%'",
         orderBy: "name ASC").catchError((e) {
-          print("Error selecting data: $e");
+          print("Error selecting data: ${e.message}");
       });
       //update
       Map<String, String> row = {
