@@ -1,54 +1,56 @@
 Using the bloc pattern for select
 =================================
 
-A stream controller is available for select blocs
+A stream builder is available for select bloc
 
-Select bloc
------------
+List stream builder
+-------------------
 
 .. highlight:: dart
 
 ::
 
-   import 'package:sqlcool/sqlcool.dart';
+    import 'package:flutter/material.dart';
+    import 'package:sqlcool/sqlcool.dart';
 
-   class _CategoriesPageState extends State<CategoriesPage> {
-      SelectBloc bloc;
+    class _ProductsPageState extends State<ProductsPage> {
+        SelectBloc bloc;
 
-      _CategoriesPageState();
+        _ProductsPageState();
 
-      @override
-      void initState() {
-         super.initState();
-         // select the data
-         this.bloc = SelectBloc("category", offset: 10, limit: 20);
-      }
-
-      @override
-      void dispose() {
-         this.bloc.dispose();
-         super.dispose();
-      }
-
-      @override
-      Widget build(BuildContext context) {
-         return Scaffold(
-            body: StreamBuilder<List<Map<String, dynamic>>>(
-               stream: this.bloc.items,
-               builder: (BuildContext context,
-                  AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
-                     if (snapshot.hasData) {
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (BuildContext context, int index) {
-                            Map<String, dynamic> item = snapshot.data[index];
-                            // ....
-                            // ....
-                        }
-                     }
-                  }
-               )));
+        @override
+        void initState() {
+            super.initState();
+            this.bloc = SelectBloc("product",
+                limit: 20,
+                order_by: "name");
         }
-   }
+
+        @override
+        void dispose() {
+            this.bloc.dispose();
+            super.dispose();
+        }
+
+        getListTile(Map<String, dynamic> item) {
+            return ListTile(
+                title: Text('${item["name"]} : ${item["amount"]}'),
+            );
+        }
+
+        @override
+        Widget build(BuildContext context) {
+            return Scaffold(
+                appBar: AppBar(title: Text("My app")),
+                body: this.bloc.listStreamBuilder(getListTile));
+        }
+    }
+
+    class ProductsPage extends StatefulWidget {
+        @override
+        _ProductsPageState createState() => _ProductsPageState();
+    }
+
 
 ``SelectBloc`` class:
 
@@ -66,6 +68,10 @@ Optional named parameters:
 :limit: *int* the sql limit clause
 :offset: *int* the sql offset clause
 :verbose: *bool* ``true`` or ``false``
+
+``listStreamBuilder`` method:
+
+:getListTile: *ListTile* the list tile to return to build stream items
 
 Join queries
 ------------

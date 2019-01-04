@@ -11,5 +11,5 @@ and update your ``pubspec.yaml`` file:
    dependencies:
       # ...
       sqlcool:
-         - /path/to/clone/sqlcool
+		 path: /path/to/clone/parent/dir/sqlcool
 

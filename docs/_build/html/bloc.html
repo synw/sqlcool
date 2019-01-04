@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Conventions" href="conventions.html" />
     <link rel="prev" title="Database operations" href="db_ops.html" /> 
 
   
@@ -83,10 +84,11 @@
 <li class="toctree-l1"><a class="reference internal" href="init.html">Initialize database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="db_ops.html">Database operations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using the bloc pattern for select</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#select-bloc">Select bloc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list-stream-builder">List stream builder</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#join-queries">Join queries</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 </ul>
 
             
@@ -153,47 +155,48 @@
             
   <div class="section" id="using-the-bloc-pattern-for-select">
 <h1>Using the bloc pattern for select<a class="headerlink" href="#using-the-bloc-pattern-for-select" title="Permalink to this headline">¶</a></h1>
-<p>A stream controller is available for select blocs</p>
-<div class="section" id="select-bloc">
-<h2>Select bloc<a class="headerlink" href="#select-bloc" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span>import &#39;package:sqlcool/sqlcool.dart&#39;;
+<p>A stream builder is available for select bloc</p>
+<div class="section" id="list-stream-builder">
+<h2>List stream builder<a class="headerlink" href="#list-stream-builder" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-dart notranslate"><div class="highlight"><pre><span></span>import &#39;package:flutter/material.dart&#39;;
+import &#39;package:sqlcool/sqlcool.dart&#39;;
 
-class _CategoriesPageState extends State&lt;CategoriesPage&gt; {
-   SelectBloc bloc;
+class _ProductsPageState extends State&lt;ProductsPage&gt; {
+    SelectBloc bloc;
 
-   _CategoriesPageState();
+    _ProductsPageState();
 
-   @override
-   void initState() {
-      super.initState();
-      // select the data
-      this.bloc = SelectBloc(&quot;category&quot;, offset: 10, limit: 20);
-   }
+    @override
+    void initState() {
+        super.initState();
+        this.bloc = SelectBloc(&quot;product&quot;,
+            limit: 20,
+            order_by: &quot;name&quot;);
+    }
 
-   @override
-   void dispose() {
-      this.bloc.dispose();
-      super.dispose();
-   }
+    @override
+    void dispose() {
+        this.bloc.dispose();
+        super.dispose();
+    }
 
-   @override
-   Widget build(BuildContext context) {
-      return Scaffold(
-         body: StreamBuilder&lt;List&lt;Map&lt;String, dynamic&gt;&gt;&gt;(
-            stream: this.bloc.items,
-            builder: (BuildContext context,
-               AsyncSnapshot&lt;List&lt;Map&lt;String, dynamic&gt;&gt;&gt; snapshot) {
-                  if (snapshot.hasData) {
-                     itemCount: snapshot.data.length,
-                     itemBuilder: (BuildContext context, int index) {
-                         Map&lt;String, dynamic&gt; item = snapshot.data[index];
-                         // ....
-                         // ....
-                     }
-                  }
-               }
-            )));
-     }
+    getListTile(Map&lt;String, dynamic&gt; item) {
+        return ListTile(
+            title: Text(&#39;${item[&quot;name&quot;]} : ${item[&quot;amount&quot;]}&#39;),
+        );
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        return Scaffold(
+            appBar: AppBar(title: Text(&quot;My app&quot;)),
+            body: this.bloc.listStreamBuilder(getListTile));
+    }
+}
+
+class ProductsPage extends StatefulWidget {
+    @override
+    _ProductsPageState createState() =&gt; _ProductsPageState();
 }
 </pre></div>
 </div>
@@ -230,6 +233,15 @@ class _CategoriesPageState extends State&lt;CategoriesPage&gt; {
 </tr>
 </tbody>
 </table>
+<p><code class="docutils literal notranslate"><span class="pre">listStreamBuilder</span></code> method:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">getListTile:</th><td class="field-body"><em>ListTile</em> the list tile to return to build stream items</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="join-queries">
 <h2>Join queries<a class="headerlink" href="#join-queries" title="Permalink to this headline">¶</a></h2>
@@ -253,6 +265,8 @@ void initState() {
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="conventions.html" class="btn btn-neutral float-right" title="Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="db_ops.html" class="btn btn-neutral" title="Database operations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:sqlcool/src/database.dart';
 
 class SelectBloc {
@@ -15,7 +16,7 @@ class SelectBloc {
     this.select = select;
     this.joinTable = joinTable;
     this.joinOn = joinOn;
-    this.getItems();
+    this._getItems();
   }
 
   final String table;
@@ -34,7 +35,7 @@ class SelectBloc {
     _itemController.close();
   }
 
-  getItems() async {
+  _getItems() async {
     List<Map<String, dynamic>> res;
     if (joinTable == null) {
       res = await db.select(table, offset: offset, limit: limit, where: where);
@@ -43,5 +44,24 @@ class SelectBloc {
           offset: offset, limit: limit, where: where);
     }
     _itemController.sink.add(res);
+  }
+
+  StreamBuilder listStreamBuilder(Function getListTile) {
+    return StreamBuilder<dynamic>(
+      stream: this.items,
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            itemCount: snapshot.data.length,
+            itemBuilder: (BuildContext context, int index) {
+              var item = snapshot.data[index];
+              return getListTile(item);
+            },
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
+      },
+    );
   }
 }
