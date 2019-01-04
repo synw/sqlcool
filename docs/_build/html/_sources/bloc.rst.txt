@@ -10,10 +10,10 @@ List stream builder
 
 ::
 
-    import 'package:flutter/material.dart';
-    import 'package:sqlcool/sqlcool.dart';
+   import 'package:flutter/material.dart';
+   import 'package:sqlcool/sqlcool.dart';
 
-    class _ProductsPageState extends State<ProductsPage> {
+   class _ProductsPageState extends State<ProductsPage> {
         SelectBloc bloc;
 
         _ProductsPageState();
@@ -32,7 +32,7 @@ List stream builder
             super.dispose();
         }
 
-        getListTile(Map<String, dynamic> item) {
+        ListTile getListTile(Map<String, dynamic> item) {
             return ListTile(
                 title: Text('${item["name"]} : ${item["amount"]}'),
             );

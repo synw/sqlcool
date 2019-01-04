@@ -162,42 +162,42 @@
 import &#39;package:sqlcool/sqlcool.dart&#39;;
 
 class _ProductsPageState extends State&lt;ProductsPage&gt; {
-    SelectBloc bloc;
+     SelectBloc bloc;
 
-    _ProductsPageState();
+     _ProductsPageState();
 
-    @override
-    void initState() {
-        super.initState();
-        this.bloc = SelectBloc(&quot;product&quot;,
-            limit: 20,
-            order_by: &quot;name&quot;);
-    }
+     @override
+     void initState() {
+         super.initState();
+         this.bloc = SelectBloc(&quot;product&quot;,
+             limit: 20,
+             order_by: &quot;name&quot;);
+     }
 
-    @override
-    void dispose() {
-        this.bloc.dispose();
-        super.dispose();
-    }
+     @override
+     void dispose() {
+         this.bloc.dispose();
+         super.dispose();
+     }
 
-    getListTile(Map&lt;String, dynamic&gt; item) {
-        return ListTile(
-            title: Text(&#39;${item[&quot;name&quot;]} : ${item[&quot;amount&quot;]}&#39;),
-        );
-    }
+     ListTile getListTile(Map&lt;String, dynamic&gt; item) {
+         return ListTile(
+             title: Text(&#39;${item[&quot;name&quot;]} : ${item[&quot;amount&quot;]}&#39;),
+         );
+     }
 
-    @override
-    Widget build(BuildContext context) {
-        return Scaffold(
-            appBar: AppBar(title: Text(&quot;My app&quot;)),
-            body: this.bloc.listStreamBuilder(getListTile));
-    }
-}
+     @override
+     Widget build(BuildContext context) {
+         return Scaffold(
+             appBar: AppBar(title: Text(&quot;My app&quot;)),
+             body: this.bloc.listStreamBuilder(getListTile));
+     }
+ }
 
-class ProductsPage extends StatefulWidget {
-    @override
-    _ProductsPageState createState() =&gt; _ProductsPageState();
-}
+ class ProductsPage extends StatefulWidget {
+     @override
+     _ProductsPageState createState() =&gt; _ProductsPageState();
+ }
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">SelectBloc</span></code> class:</p>
