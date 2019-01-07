@@ -73,10 +73,11 @@ class Db {
       {int offset = 0,
       int limit = 100,
       String where = "",
+      String columns = "*",
       String orderBy = "",
       verbose: false}) async {
     try {
-      String q = "SELECT * FROM $table";
+      String q = "SELECT $columns FROM $table";
       if (where != "") {
         q += " WHERE $where";
       }

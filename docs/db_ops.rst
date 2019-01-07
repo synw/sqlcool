@@ -44,6 +44,7 @@ Required positional parameter:
 
 Optional named parameters:
 
+:columns: *String* the columns to select: default is `"*"`
 :where: *String* the where sql clause
 :orderBy: *String* the sql order_by clause
 :limit: *int* the sql limit clause
