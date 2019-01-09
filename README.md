@@ -4,6 +4,8 @@ A database helper class for [Sqflite](https://github.com/tekartik/sqflite): forg
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
+**Warning**: this module is still in the process of moving fast and the api can change
+
 ## Quick example
 
    ```dart
@@ -37,6 +39,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
       String where = "id=1";
       int updated = await db.update(table, row, where, verbose: true).catchError((e) {
           print("Error updating data: ${e.message}");
+	  });
       // delete
       db.delete(table, "id=3").catchError((e) {
           print("Error deleting data: ${e.message}");
