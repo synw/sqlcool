@@ -70,31 +70,33 @@ class Db {
   }
 
   Future<List<Map<String, dynamic>>> select(String table,
-      {int offset = 0,
-      int limit = 100,
-      String where = "",
-      String columns = "*",
-      String orderBy = "",
+      {String columns = "*",
+      String where,
+      String orderBy,
+      int limit,
+      int offset,
       verbose: false}) async {
     try {
       String q = "SELECT $columns FROM $table";
-      if (where != "") {
+      if (where != null) {
         q += " WHERE $where";
       }
-      if (orderBy != "") {
+      if (orderBy != null) {
         q = "$q ORDER BY $orderBy";
       }
-      q += " LIMIT $limit OFFSET $offset";
+      if (limit != null) {
+        q += " LIMIT $limit";
+      }
+      if (offset != null) {
+        q += " OFFSET $offset";
+      }
       if (verbose == true) {
         print(q);
       }
       final List<Map<String, dynamic>> res = await this.database.rawQuery(q);
       return res.toList();
     } catch (e) {
-      // TODO : error handling
-      print(e);
-      final res = <Map<String, dynamic>>[];
-      return res;
+      throw (e);
     }
   }
 
