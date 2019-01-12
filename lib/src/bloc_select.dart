@@ -3,18 +3,20 @@ import 'package:sqlcool/src/database.dart';
 
 class SelectBloc {
   SelectBloc(this.table,
-      {int offset,
-      int limit,
-      String where,
-      String select: "*",
-      String joinTable,
-      String joinOn}) {
+      {this.offset,
+      this.limit,
+      this.where,
+      this.columns,
+      this.select: "*",
+      this.joinTable,
+      this.joinOn}) {
     this._getItems();
   }
 
   final String table;
   int offset;
   int limit;
+  String columns;
   String where;
   String select;
   String joinTable;
@@ -31,9 +33,10 @@ class SelectBloc {
   _getItems() async {
     List<Map<String, dynamic>> res;
     if (joinTable == null) {
-      res = await db.select(table, offset: offset, limit: limit, where: where);
+      res = await db.select(table,
+          columns: columns, offset: offset, limit: limit, where: where);
     } else {
-      res = await db.join(table, select, joinTable, joinOn,
+      res = await db.join(table, columns, joinTable, joinOn,
           offset: offset, limit: limit, where: where);
     }
     _itemController.sink.add(res);
