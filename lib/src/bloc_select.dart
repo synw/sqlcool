@@ -9,7 +9,8 @@ class SelectBloc {
       this.columns,
       this.select: "*",
       this.joinTable,
-      this.joinOn}) {
+      this.joinOn,
+      this.verbose}) {
     this._getItems();
   }
 
@@ -21,6 +22,7 @@ class SelectBloc {
   String select;
   String joinTable;
   String joinOn;
+  bool verbose;
 
   final _itemController =
       StreamController<List<Map<String, dynamic>>>.broadcast();
@@ -33,11 +35,23 @@ class SelectBloc {
   _getItems() async {
     List<Map<String, dynamic>> res;
     if (joinTable == null) {
-      res = await db.select(table,
-          columns: columns, offset: offset, limit: limit, where: where);
+      res = await db.select(
+          table: table,
+          columns: columns,
+          offset: offset,
+          limit: limit,
+          where: where,
+          verbose: verbose);
     } else {
-      res = await db.join(table, columns, joinTable, joinOn,
-          offset: offset, limit: limit, where: where);
+      res = await db.join(
+          table: table,
+          columns: columns,
+          joinTable: joinTable,
+          joinOn: joinOn,
+          offset: offset,
+          limit: limit,
+          where: where,
+          verbose: verbose);
     }
     _itemController.sink.add(res);
   }

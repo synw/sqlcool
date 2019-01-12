@@ -11,31 +11,29 @@ Initialize an empty database
    import 'package:sqlcool/sqlcool.dart';
 
    void main() {
-      String q1 = """CREATE TABLE category (
+      String q1 = """CREATE TABLE product (
          id INTEGER PRIMARY KEY,
-         slug TEXT UNIQUE NOT NULL,
-         name TEXT NOT NULL
-         )""";
-      String q2 = """CREATE TABLE product (
-         id INTEGER PRIMARY KEY,
-         slug TEXT UNIQUE NOT NULL,
          name TEXT NOT NULL,
          price REAL NOT NULL,
-         category INTEGER
+         category INTEGER FOREIGN KEY (category) REFERENCES category(id)
+         )""";
+      String q2 = """CREATE TABLE category (
+         id INTEGER PRIMARY KEY,
+         name TEXT NOT NULL
          )""";
       String dbpath = "data.sqlite";
       List<String> queries = [q1, q2];
-      db.init(dbpath, queries: queries, verbose: true).catchError((e) {
+      db.init(path: dbpath, queries: queries, verbose: true).catchError((e) {
           print("Error initializing the database: $e");
       });
    }
 
-Required positional parameters:
+Required parameters:
 
-:dbpath: *String* path where the database file will be stored:
+:path: *String* path where the database file will be stored:
    relative to the documents directory path
 
-Optional named parameter:
+Optional parameter:
 
 :queries: *List<String>* queries to run at database creation
 :fromAsset: *String* path to the Sqlite asset file, relative to the
@@ -52,7 +50,7 @@ Initialize a database from an Sqlite asset file
 
    void main() {
       String dbpath = "data.sqlite";
-      db.init(dbpath, fromAsset: "assets/data.sqlite", verbose: true).catchError((e) {
+      db.init(path: dbpath, fromAsset: "assets/data.sqlite", verbose: true).catchError((e) {
           print("Error initializing the database; $e");
       });
    }

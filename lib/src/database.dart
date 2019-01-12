@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:meta/meta.dart';
 import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:synchronized/synchronized.dart';
@@ -13,8 +14,9 @@ class Db {
   Database database;
   final _lock = new Lock();
 
-  Future<void> init(String path,
-      {List<String> queries: const <String>[],
+  Future<void> init(
+      {@required String path,
+      List<String> queries: const <String>[],
       bool verbose: false,
       String fromAsset: ""}) async {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
@@ -69,13 +71,14 @@ class Db {
     }
   }
 
-  Future<List<Map<String, dynamic>>> select(String table,
-      {String columns = "*",
+  Future<List<Map<String, dynamic>>> select(
+      {@required String table,
+      String columns = "*",
       String where,
       String orderBy,
       int limit,
       int offset,
-      verbose: false}) async {
+      bool verbose: false}) async {
     try {
       String q = "SELECT $columns FROM $table";
       if (where != null) {
@@ -101,27 +104,44 @@ class Db {
   }
 
   Future<List<Map<String, dynamic>>> join(
-      String table, String columns, String joinTable, String joinOn,
-      {int offset = 0, int limit = 100, String where = ""}) async {
+      {@required String table,
+      @required String joinTable,
+      @required String joinOn,
+      String columns = "*",
+      int offset = 0,
+      int limit = 100,
+      String orderBy,
+      String where,
+      bool verbose}) async {
     try {
       String q = "SELECT $columns FROM $table";
       q = "$q INNER JOIN $joinTable ON $joinOn";
-      q = "$q LIMIT $limit OFFSET $offset";
-      if (where != "") {
+      if (orderBy != null) {
+        q = "$q ORDER BY $orderBy";
+      }
+      if (limit != null) {
+        q += " LIMIT $limit";
+      }
+      if (offset != null) {
+        q += " OFFSET $offset";
+      }
+      if (where != null) {
         q = q + " WHERE $where";
+      }
+      if (verbose == true) {
+        print(q);
       }
       final List<Map<String, dynamic>> res = await this.database.rawQuery(q);
       return res.toList();
     } catch (e) {
-      // TODO : error handling
-      print(e);
-      final res = <Map<String, dynamic>>[];
-      return res;
+      throw (e);
     }
   }
 
-  Future<void> insert(String table, Map<String, String> row,
-      {bool verbose: false}) async {
+  Future<void> insert(
+      {@required String table,
+      @required Map<String, String> row,
+      bool verbose: false}) async {
     /// insert a row in the table
     if (verbose == true) {
       print("INSERTING DATAPOINT in $table");
@@ -151,7 +171,7 @@ class Db {
     });
   }
 
-  Future<bool> exists(String table, String where) async {
+  Future<bool> exists({@required String table, @required String where}) async {
     /// check if a value exists in the table
     int count = Sqflite.firstIntValue(
         await database.rawQuery('SELECT COUNT(*) FROM $table WHERE $where'));
@@ -161,8 +181,11 @@ class Db {
     return false;
   }
 
-  Future<int> update(String table, Map<String, String> row, String where,
-      {bool verbose = false}) async {
+  Future<int> update(
+      {@required String table,
+      @required Map<String, String> row,
+      @required String where,
+      bool verbose = false}) async {
     /// update some datapoints in the database
     /// returns a count of the updated rows
     if (verbose == true) {
@@ -189,7 +212,10 @@ class Db {
     }
   }
 
-  Future<int> delete(String table, String where, {bool verbose: false}) async {
+  Future<int> delete(
+      {@required String table,
+      @required String where,
+      bool verbose: false}) async {
     /// delete some datapoints from the database
     /// returns a count of the deleted rows
     if (verbose == true) {

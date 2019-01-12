@@ -14,15 +14,14 @@ Insert
        slug: "my-item",
        name: "My item",
    }
-   String table = "category";
-   await db.insert(table, row, verbose: true);
+   await db.insert(table: "category", row: row, verbose: true);
 
-Required positional parameters:
+Required parameters:
 
 :table: *String* name of the table, required
 :row: *Map<String, String>* data, required
 
-Optional named parameter:
+Optional parameter:
 
 :verbose: *bool* ``true`` or ``false``
 
@@ -33,16 +32,15 @@ Select
 
    import 'package:sqlcool/sqlcool.dart';
 
-   String table = "product";
    List<Map<String, dynamic>> rows =
-      await db.select(table, limit: 20, where: "name LIKE '%something%'",
+      await db.select(table: "product", limit: 20, where: "name LIKE '%something%'",
          orderBy: "price ASC");
 
-Required positional parameter:
+Required parameter:
 
 :table: *String* name of the table, required
 
-Optional named parameters:
+Optional parameters:
 
 :columns: *String* the columns to select: default is `"*"`
 :where: *String* the where sql clause
@@ -58,20 +56,18 @@ Update
 
    import 'package:sqlcool/sqlcool.dart';
 
-   String table = "category";
    Map<String, String> row = {
        slug: "my-item-new",
        name: "My item new",
    }
-   String where = "id=1";
-   int updated = await db.update(table, row, where, verbose: true);
+   int updated = await db.update(table: category, row: row, where: "id=1", verbose: true);
 
-Required positional parameters:
+Required parameters:
 
 :table: *String* name of the table, required
 :row: *Map<String, String>* data, required
 
-Optional named parameters:
+Optional parameters:
 
 :where: *String* the where sql clause
 :verbose: *bool* ``true`` or ``false``
@@ -84,16 +80,14 @@ Delete
 
    import 'package:sqlcool/sqlcool.dart';
 
-   String table = "category";
-   String where = "id=1";
-   await db.delete(table, where);
+   await db.delete(table: "category", where: "id=1");
 
-Required positional parameters:
+Required parameters:
 
 :table: *String* name of the table, required
 :where: *String* the where sql clause
 
-Optional named parameter:
+Optional parameter:
 
 :verbose: *bool* ``true`` or ``false``
 
@@ -104,19 +98,18 @@ Join
 
    import 'package:sqlcool/sqlcool.dart';
 
-   String table = "product";
    List<Map<String, dynamic>> rows = await db.join(
-                   table, offset: 10, limit: 20,
+                   table: product, offset: 10, limit: 20,
                    columns: "id, name, price, category.name as category_name",
                    joinTable: "category",
                    joinOn: "product.category=category.id");
 
 
-Required positional parameter:
+Required parameter:
 
 :table: *String* name of the table, required
 
-Optional named parameters:
+Optional parameters:
 
 :columns: *String* the select sql clause
 :where: *String* the where sql clause
@@ -134,10 +127,9 @@ Exists
 
    import 'package:sqlcool/sqlcool.dart';
 
-   String table = "category";
-   bool exists = await db.exists(table, "id=3");
+   bool exists = await db.exists(table: "category", "id=3");
 
-Required positional parameters:
+Required parameters:
 
 :table: *String* name of the table, required
 :where: *String* the where sql clause

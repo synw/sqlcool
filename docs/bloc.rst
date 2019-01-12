@@ -21,7 +21,7 @@ List stream builder
         @override
         void initState() {
             super.initState();
-            this.bloc = SelectBloc("product",
+            this.bloc = SelectBloc(table: "product",
                 limit: 20,
                 order_by: "name");
         }
@@ -54,11 +54,11 @@ List stream builder
 
 ``SelectBloc`` class:
 
-Required positional parameter:
+Required parameter:
 
 :table: *String* name of the table, required
 
-Optional named parameters:
+Optional parameters:
 
 :select: *String* the select sql clause
 :where: *String* the where sql clause
@@ -81,7 +81,7 @@ Join queries
    @override
    void initState() {
       super.initState();
-      this.bloc = SelectBloc("product", offset: 10, limit: 20,
+      this.bloc = SelectBloc(table: "product", offset: 10, limit: 20,
                              select: "id, name, price, category.name as category_name",
                              joinTable: "category",
                              joinOn: "product.category=category.id");

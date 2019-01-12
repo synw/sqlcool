@@ -13,7 +13,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
 
    void someFunc() async {
       String dbpath = "db.sqlite"; // relative to the documents directory
-      await db.init(dbpath, fromAsset: "assets/db.sqlite", verbose: true).catchError((e) {
+      await db.init(path: dbpath, fromAsset: "assets/db.sqlite", verbose: true).catchError((e) {
           print("Error initializing the database: ${e.message}");
       });
       // insert
@@ -21,13 +21,13 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
        slug: "my-item",
        name: "My item",
       };
-      String table = "category";
-      db.insert(table, row, verbose: true).catchError((e) {
+      db.insert(table: "category", row: row, verbose: true).catchError((e) {
           print("Error inserting data: ${e.message}");
       });
       // select
       List<Map<String, dynamic>> rows = await db.select(
-        table, limit: 20, where: "name LIKE '%something%'",
+        table: "product", limit: 20, columns: "id,name",
+        where: "name LIKE '%something%'",
         orderBy: "name ASC").catchError((e) {
           print("Error selecting data: ${e.message}");
       });
@@ -36,12 +36,12 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
        slug: "my-item-new",
        name: "My item new",
       };
-      String where = "id=1";
-      int updated = await db.update(table, row, where, verbose: true).catchError((e) {
-          print("Error updating data: ${e.message}");
-	  });
+      int updated = await db.update(table: "category", 
+          row: row, where: "id=1", verbose: true).catchError((e) {
+             print("Error updating data: ${e.message}");
+      });
       // delete
-      db.delete(table, "id=3").catchError((e) {
+      db.delete(table: "category", where: "id=3").catchError((e) {
           print("Error deleting data: ${e.message}");
       });
    }
