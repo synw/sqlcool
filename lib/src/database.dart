@@ -116,8 +116,8 @@ class Db {
     try {
       String q = "SELECT $columns FROM $table";
       q = "$q INNER JOIN $joinTable ON $joinOn";
-      if (orderBy != null) {
-        q = "$q ORDER BY $orderBy";
+      if (where != null) {
+        q = q + " WHERE $where";
       }
       if (limit != null) {
         q += " LIMIT $limit";
@@ -125,8 +125,8 @@ class Db {
       if (offset != null) {
         q += " OFFSET $offset";
       }
-      if (where != null) {
-        q = q + " WHERE $where";
+      if (orderBy != null) {
+        q = "$q ORDER BY $orderBy";
       }
       if (verbose == true) {
         print(q);
@@ -225,6 +225,20 @@ class Db {
       int count =
           await this.database.rawDelete('DELETE FROM $table WHERE $where');
       return count;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<int> count(
+      {@required String table,
+      @required String where,
+      bool verbose: false}) async {
+    try {
+      final num = Sqflite.firstIntValue(await this
+          .database
+          .rawQuery('SELECT COUNT(*) FROM $table WHERE $where'));
+      return num;
     } catch (e) {
       throw (e);
     }
