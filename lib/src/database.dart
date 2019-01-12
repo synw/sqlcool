@@ -101,10 +101,10 @@ class Db {
   }
 
   Future<List<Map<String, dynamic>>> join(
-      String table, String select, String joinTable, String joinOn,
+      String table, String columns, String joinTable, String joinOn,
       {int offset = 0, int limit = 100, String where = ""}) async {
     try {
-      String q = "SELECT $select FROM $table";
+      String q = "SELECT $columns FROM $table";
       q = "$q INNER JOIN $joinTable ON $joinOn";
       q = "$q LIMIT $limit OFFSET $offset";
       if (where != "") {

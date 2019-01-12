@@ -107,7 +107,7 @@ Join
    String table = "product";
    List<Map<String, dynamic>> rows = await db.join(
                    table, offset: 10, limit: 20,
-                   select: "id, name, price, category.name as category_name",
+                   columns: "id, name, price, category.name as category_name",
                    joinTable: "category",
                    joinOn: "product.category=category.id");
 
@@ -118,7 +118,7 @@ Required positional parameter:
 
 Optional named parameters:
 
-:select: *String* the select sql clause
+:columns: *String* the select sql clause
 :where: *String* the where sql clause
 :joinTable: *String* join table name
 :joinOn: *String* join on sql clause
