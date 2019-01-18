@@ -231,13 +231,14 @@ class Db {
   }
 
   Future<int> count(
-      {@required String table,
-      @required String where,
-      bool verbose: false}) async {
+      {@required String table, String where, bool verbose: false}) async {
     try {
-      final num = Sqflite.firstIntValue(await this
-          .database
-          .rawQuery('SELECT COUNT(*) FROM $table WHERE $where'));
+      String w = "";
+      if (where != null) {
+        w = " WHERE $where";
+      }
+      final num = Sqflite.firstIntValue(
+          await this.database.rawQuery('SELECT COUNT(*) FROM $table$w'));
       return num;
     } catch (e) {
       throw (e);
