@@ -14,6 +14,7 @@ Welcome to Sqlcool's documentation!
    init.rst
    db_ops.rst
    bloc.rst
+   upload.rst
 
 
 

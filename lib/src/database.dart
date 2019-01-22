@@ -250,11 +250,15 @@ class Db {
     }
   }
 
-  upload(String serverUrl) async {
-    FormData formData =
-        FormData.from({"file": UploadFileInfo(dbFile, "db.sqlite")});
-    var response = await dio.post(serverUrl, data: formData);
-    print(response.statusCode);
-    print("RESP $response");
+  Future<num> upload(
+      {@required String serverUrl, String filename = "db.sqlite"}) async {
+    try {
+      FormData formData =
+          FormData.from({"file": UploadFileInfo(dbFile, filename)});
+      var response = await dio.post(serverUrl, data: formData);
+      return response.statusCode;
+    } catch (e) {
+      throw (e);
+    }
   }
 }
