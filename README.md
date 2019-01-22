@@ -4,8 +4,6 @@ A database helper class for [Sqflite](https://github.com/tekartik/sqflite): forg
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
-**Warning**: this module is still in the process of moving fast and the api can change
-
 ## Quick example
 
    ```dart
