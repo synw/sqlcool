@@ -32,17 +32,12 @@ List stream builder
             super.dispose();
         }
 
-        ListTile getListTile(Map<String, dynamic> item) {
-            return ListTile(
-                title: Text('${item["name"]} : ${item["amount"]}'),
-            );
-        }
-
         @override
         Widget build(BuildContext context) {
-            return Scaffold(
-                appBar: AppBar(title: Text("My app")),
-                body: this.bloc.listStreamBuilder(getListTile));
+            return Container(
+               child: StreamBuilder<List<Map>>(
+               stream: bloc.items,
+			   // ....);
         }
     }
 
