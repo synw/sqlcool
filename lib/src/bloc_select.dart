@@ -6,8 +6,7 @@ class SelectBloc {
       {this.offset,
       this.limit,
       this.where,
-      this.columns,
-      this.select: "*",
+      this.columns: "*",
       this.joinTable,
       this.joinOn,
       this.verbose}) {
@@ -19,7 +18,6 @@ class SelectBloc {
   int limit;
   String columns;
   String where;
-  String select;
   String joinTable;
   String joinOn;
   bool verbose;

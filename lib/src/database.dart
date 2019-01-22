@@ -5,13 +5,17 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:synchronized/synchronized.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:dio/dio.dart';
 
 Db db = Db();
+
+Dio dio = Dio();
 
 class Db {
   Db();
 
   Database database;
+  File dbFile;
   final _lock = new Lock();
 
   Future<void> init(
@@ -24,7 +28,6 @@ class Db {
     if (verbose == true) {
       print("INITIALIZING DATABASE at " + dbpath);
     }
-
     // copy the database from an asset if necessary
     if (fromAsset != "") {
       bool exists = await File(dbpath).exists();
@@ -69,6 +72,8 @@ class Db {
         }
       });
     }
+    // file
+    dbFile = File(dbpath);
   }
 
   Future<List<Map<String, dynamic>>> select(
@@ -243,5 +248,13 @@ class Db {
     } catch (e) {
       throw (e);
     }
+  }
+
+  upload(String serverUrl) async {
+    FormData formData =
+        FormData.from({"file": UploadFileInfo(dbFile, "db.sqlite")});
+    var response = await dio.post(serverUrl, data: formData);
+    print(response.statusCode);
+    print("RESP $response");
   }
 }

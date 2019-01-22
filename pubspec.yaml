@@ -18,6 +18,7 @@ dependencies:
   synchronized: ^1.5.3
   path_provider: any
   sqflite: any
+  dio: any
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
