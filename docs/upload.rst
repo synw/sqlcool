@@ -1,7 +1,7 @@
 Upload the database
 ===================
 
-To upload database to a server:
+To upload the database to a server:
 
 .. highlight:: dart
 
@@ -11,7 +11,7 @@ To upload database to a server:
 
    void uploadDb() {
      String url = "http://myserver:8080/upload";
-     num statusCode = await db.upload(url);
+     num statusCode = await db.upload(serverUrl: url);
    }
 
 
