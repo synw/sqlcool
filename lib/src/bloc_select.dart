@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'package:sqlcool/src/database.dart';
+import 'package:flutter/foundation.dart';
+import 'database.dart';
 
 class SelectBloc {
   SelectBloc(
-      {this.table,
+      {@required this.table,
+      this.database,
       this.offset,
       this.limit,
       this.where,
@@ -15,6 +17,7 @@ class SelectBloc {
     this._getItems();
   }
 
+  Db database = db;
   final String table;
   int offset;
   int limit;
@@ -36,25 +39,35 @@ class SelectBloc {
   _getItems() async {
     List<Map<String, dynamic>> res;
     if (joinTable == null) {
-      res = await db.select(
-          table: table,
-          columns: columns,
-          offset: offset,
-          limit: limit,
-          where: where,
-          orderBy: orderBy,
-          verbose: verbose);
+      try {
+        res = await database.select(
+            table: table,
+            columns: columns,
+            offset: offset,
+            limit: limit,
+            where: where,
+            orderBy: orderBy,
+            verbose: verbose);
+      } catch (e) {
+        _itemController.sink.addError(e);
+        return;
+      }
     } else {
-      res = await db.join(
-          table: table,
-          columns: columns,
-          joinTable: joinTable,
-          joinOn: joinOn,
-          offset: offset,
-          limit: limit,
-          where: where,
-          orderBy: orderBy,
-          verbose: verbose);
+      try {
+        res = await database.join(
+            table: table,
+            columns: columns,
+            joinTable: joinTable,
+            joinOn: joinOn,
+            offset: offset,
+            limit: limit,
+            where: where,
+            orderBy: orderBy,
+            verbose: verbose);
+      } catch (e) {
+        _itemController.sink.addError(e);
+        return;
+      }
     }
     _itemController.sink.add(res);
   }
