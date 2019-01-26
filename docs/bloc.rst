@@ -34,10 +34,10 @@ List stream builder
 
         @override
         Widget build(BuildContext context) {
-            return Container(
-               child: StreamBuilder<List<Map>>(
+            return StreamBuilder<List<Map>>(
                stream: bloc.items,
-			   // ....);
+               // ....
+               );
         }
     }
 
@@ -63,10 +63,7 @@ Optional parameters:
 :limit: *int* the sql limit clause
 :offset: *int* the sql offset clause
 :verbose: *bool* ``true`` or ``false``
-
-``listStreamBuilder`` method:
-
-:getListTile: *ListTile* the list tile to return to build stream items
+:db: *Db* the database to use: default is the default database
 
 Join queries
 ------------
