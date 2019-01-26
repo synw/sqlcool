@@ -5,11 +5,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:synchronized/synchronized.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:dio/dio.dart';
 
 Db db = Db();
-
-Dio dio = Dio();
 
 class Db {
   Db();
