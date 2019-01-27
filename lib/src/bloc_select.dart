@@ -14,10 +14,11 @@ class SelectBloc {
       this.joinOn,
       this.orderBy,
       this.verbose}) {
+    (database == null) ? database = db : database = database;
     this._getItems();
   }
 
-  Db database = db;
+  Db database;
   final String table;
   int offset;
   int limit;
