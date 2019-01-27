@@ -63,7 +63,7 @@ Optional parameters:
 :limit: *int* the sql limit clause
 :offset: *int* the sql offset clause
 :verbose: *bool* ``true`` or ``false``
-:db: *Db* the database to use: default is the default database
+:database: *Db* the database to use: default is the default database
 
 Join queries
 ------------
