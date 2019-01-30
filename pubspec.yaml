@@ -1,5 +1,7 @@
 name: sqlcool
-description: A new Flutter project.
+author: synw <synwe@yahoo.com>
+description: A Flutter library to work with Sqflite. Provide helpers for crud operations.
+homepage: https://github.com/synw/sqlcool
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -16,8 +18,8 @@ dependencies:
   flutter:
     sdk: flutter
   synchronized: ^1.5.3
-  path_provider: any
-  sqflite: any
+  path_provider: ^0.5.0
+  sqflite: ^1.0.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
