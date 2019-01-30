@@ -25,7 +25,7 @@ class Db {
     /// documents directory
     /// [queries] list of queries to run at initialization
     /// [fromAsset] copy the database from an asset file
-    /// [verbose] print the query
+    /// [verbose] print info
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String dbpath = documentsDirectory.path + "/" + path;
     if (verbose == true) {
@@ -61,14 +61,11 @@ class Db {
           this.database = await openDatabase(dbpath, version: 1,
               onCreate: (Database _db, int version) async {
             if (queries.length > 0) {
-              if (verbose == true) {
-                print("CREATING TABLES");
-              }
               for (String q in queries) {
+                if (verbose == true) {
+                  print(q);
+                }
                 await _db.execute(q);
-              }
-              if (verbose == true) {
-                print("Created tables");
               }
             }
           });
@@ -174,10 +171,6 @@ class Db {
     /// [table] the table to insert into
     /// [row] the data to insert
     /// [verbose] print the query
-    if (verbose == true) {
-      print("INSERTING DATAPOINT in $table");
-    }
-    // insert
     String fields = "";
     String values = "";
     int n = row.length;
@@ -195,20 +188,25 @@ class Db {
     }
     String q = "INSERT INTO $table ($fields) VALUES($values)";
     if (verbose == true) {
-      print("$q $datapoint");
+      print(q);
     }
     this.database.rawInsert(q, datapoint).catchError((e) {
       throw (e);
     });
   }
 
-  Future<bool> exists({@required String table, @required String where}) async {
+  Future<bool> exists(
+      {@required String table, @required String where, verbose: false}) async {
     /// check if a value exists in the table
     /// [table] the table to use
     /// [where] the where sql clause
+    /// [verbose] print the query
     /// returns true if exists
-    int count = Sqflite.firstIntValue(
-        await database.rawQuery('SELECT COUNT(*) FROM $table WHERE $where'));
+    String q = 'SELECT COUNT(*) FROM $table WHERE $where';
+    if (verbose == true) {
+      print(q);
+    }
+    int count = Sqflite.firstIntValue(await database.rawQuery(q));
     if (count > 0) {
       return true;
     }
@@ -226,9 +224,6 @@ class Db {
     /// [where] the sql where clause
     /// [verbose] print the query
     /// returns a count of the updated rows
-    if (verbose == true) {
-      print("UPDATING DATAPOINT in $table");
-    }
     try {
       String pairs = "";
       int n = row.length - 1;
@@ -243,6 +238,9 @@ class Db {
         i++;
       }
       String q = 'UPDATE $table SET $pairs WHERE $where';
+      if (verbose == true) {
+        print(q);
+      }
       int updated = await this.database.rawUpdate(q, datapoint);
       return updated;
     } catch (e) {
@@ -259,12 +257,12 @@ class Db {
     /// [where] the sql where clause
     /// [verbose] print the query
     /// returns a count of the deleted rows
-    if (verbose == true) {
-      print("DELETING FROM TABLE $table");
-    }
     try {
-      int count =
-          await this.database.rawDelete('DELETE FROM $table WHERE $where');
+      String q = 'DELETE FROM $table WHERE $where';
+      if (verbose == true) {
+        print(q);
+      }
+      int count = await this.database.rawDelete(q);
       return count;
     } catch (e) {
       throw (e);
@@ -283,8 +281,11 @@ class Db {
       if (where != null) {
         w = " WHERE $where";
       }
-      final num = Sqflite.firstIntValue(
-          await this.database.rawQuery('SELECT COUNT(*) FROM $table$w'));
+      String q = 'SELECT COUNT(*) FROM $table$w';
+      if (verbose == true) {
+        print(q);
+      }
+      final num = Sqflite.firstIntValue(await this.database.rawQuery(q));
       return num;
     } catch (e) {
       throw (e);
