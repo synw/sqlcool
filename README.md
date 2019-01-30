@@ -4,6 +4,12 @@ A database helper class for [Sqflite](https://github.com/tekartik/sqflite): forg
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
+   ```yaml
+
+   dependencies:
+     sqlcool: ^1.0.0+1
+   ```
+
 ## Quick example
 
    ```dart
