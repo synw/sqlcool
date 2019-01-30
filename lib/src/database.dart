@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:meta/meta.dart';
 import 'dart:typed_data';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:synchronized/synchronized.dart';
