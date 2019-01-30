@@ -20,6 +20,12 @@ class Db {
       List<String> queries: const <String>[],
       bool verbose: false,
       String fromAsset: ""}) async {
+    /// initialize the database
+    /// [path] the database file path relative to the
+    /// documents directory
+    /// [queries] list of queries to run at initialization
+    /// [fromAsset] copy the database from an asset file
+    /// [verbose] print the query
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String dbpath = documentsDirectory.path + "/" + path;
     if (verbose == true) {
@@ -81,6 +87,15 @@ class Db {
       int limit,
       int offset,
       bool verbose: false}) async {
+    /// select query
+    /// [table] the table to select from
+    /// [columns] the columns to return
+    /// [where] the sql where clause
+    /// [orderBy] the sql order_by clause
+    /// [limit] the sql limit clause
+    /// [offset] the sql offset clause
+    /// [verbose] print the query
+    /// returns the selected data
     try {
       String q = "SELECT $columns FROM $table";
       if (where != null) {
@@ -115,6 +130,17 @@ class Db {
       String orderBy,
       String where,
       bool verbose}) async {
+    /// select query with a join table
+    /// [table] the table to select from
+    /// [joinTable] the table to join from
+    /// [joinOn] the columns to join
+    /// [columns] the columns to return
+    /// [where] the sql where clause
+    /// [orderBy] the sql order_by clause
+    /// [limit] the sql limit clause
+    /// [offset] the sql offset clause
+    /// [verbose] print the query
+    /// returns the selected data
     try {
       String q = "SELECT $columns FROM $table";
       q = "$q INNER JOIN $joinTable ON $joinOn";
@@ -144,7 +170,10 @@ class Db {
       {@required String table,
       @required Map<String, String> row,
       bool verbose: false}) async {
-    /// insert a row in the table
+    /// an insert query
+    /// [table] the table to insert into
+    /// [row] the data to insert
+    /// [verbose] print the query
     if (verbose == true) {
       print("INSERTING DATAPOINT in $table");
     }
@@ -175,6 +204,9 @@ class Db {
 
   Future<bool> exists({@required String table, @required String where}) async {
     /// check if a value exists in the table
+    /// [table] the table to use
+    /// [where] the where sql clause
+    /// returns true if exists
     int count = Sqflite.firstIntValue(
         await database.rawQuery('SELECT COUNT(*) FROM $table WHERE $where'));
     if (count > 0) {
@@ -189,6 +221,10 @@ class Db {
       @required String where,
       bool verbose = false}) async {
     /// update some datapoints in the database
+    /// [table] the table to use
+    /// [row] the data to update
+    /// [where] the sql where clause
+    /// [verbose] print the query
     /// returns a count of the updated rows
     if (verbose == true) {
       print("UPDATING DATAPOINT in $table");
@@ -219,6 +255,9 @@ class Db {
       @required String where,
       bool verbose: false}) async {
     /// delete some datapoints from the database
+    /// [table] the table to use
+    /// [where] the sql where clause
+    /// [verbose] print the query
     /// returns a count of the deleted rows
     if (verbose == true) {
       print("DELETING FROM TABLE $table");
@@ -234,6 +273,11 @@ class Db {
 
   Future<int> count(
       {@required String table, String where, bool verbose: false}) async {
+    /// count rows in a table
+    /// [table] the table to use
+    /// [where] the sql where clause
+    /// [verbose] print the query
+    /// returns a count of the rows
     try {
       String w = "";
       if (where != null) {
