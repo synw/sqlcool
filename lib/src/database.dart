@@ -6,8 +6,10 @@ import 'package:synchronized/synchronized.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
+/// the default database instance
 Db db = Db();
 
+/// A class to handle database operations
 class Db {
   Db();
 
