@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -146,14 +147,14 @@ class Db {
       if (where != null) {
         q = q + " WHERE $where";
       }
+      if (orderBy != null) {
+        q = "$q ORDER BY $orderBy";
+      }
       if (limit != null) {
         q += " LIMIT $limit";
       }
       if (offset != null) {
         q += " OFFSET $offset";
-      }
-      if (orderBy != null) {
-        q = "$q ORDER BY $orderBy";
       }
       if (verbose == true) {
         print(q);
@@ -241,7 +242,7 @@ class Db {
       }
       String q = 'UPDATE $table SET $pairs WHERE $where';
       if (verbose == true) {
-        print(q);
+        print("$q $datapoint");
       }
       int updated = await this.database.rawUpdate(q, datapoint);
       return updated;
