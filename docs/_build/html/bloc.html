@@ -24,11 +24,12 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Conventions" href="conventions.html" />
+    <link rel="next" title="Reactivity" href="changefeed.html" />
     <link rel="prev" title="Database operations" href="db_ops.html" /> 
 
   
@@ -78,17 +79,25 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul class="current">
+              <p class="caption"><span class="caption-text">Install:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
-<li class="toctree-l1"><a class="reference internal" href="init.html">Initialize database</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Crud operations:</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="db_ops.html">Database operations</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Select bloc:</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using the bloc pattern for select</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#list-stream-builder">List stream builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#select-bloc">Select bloc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#join-queries">Join queries</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reactivity:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changefeed.html">Reactivity</a></li>
 </ul>
 
             
@@ -155,53 +164,68 @@
             
   <div class="section" id="using-the-bloc-pattern-for-select">
 <h1>Using the bloc pattern for select<a class="headerlink" href="#using-the-bloc-pattern-for-select" title="Permalink to this headline">¶</a></h1>
-<p>A stream builder is available for select bloc</p>
-<div class="section" id="list-stream-builder">
-<h2>List stream builder<a class="headerlink" href="#list-stream-builder" title="Permalink to this headline">¶</a></h2>
+<p>A <cite>SelectBloc</cite> is available to use the bloc pattern.</p>
+<div class="section" id="select-bloc">
+<h2>Select bloc<a class="headerlink" href="#select-bloc" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span>import &#39;package:flutter/material.dart&#39;;
 import &#39;package:sqlcool/sqlcool.dart&#39;;
 
-class _ProductsPageState extends State&lt;ProductsPage&gt; {
-     SelectBloc bloc;
+class _PageSelectBlocState extends State&lt;PageSelectBloc&gt; {
+  SelectBloc bloc;
 
-     _ProductsPageState();
+  @override
+  void initState() {
+    super.initState();
+    this.bloc = SelectBloc(
+        table: &quot;items&quot;, orderBy: &quot;name&quot;, verbose: true);
+  }
 
-     @override
-     void initState() {
-         super.initState();
-         this.bloc = SelectBloc(&quot;product&quot;,
-             limit: 20,
-             order_by: &quot;name&quot;);
-     }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(&quot;My app&quot;),
+      ),
+      body: StreamBuilder&lt;List&lt;Map&gt;&gt;(
+          stream: bloc.items,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.hasData) {
+              // the select query has not found anything
+              if (snapshot.data.length == 0) {
+                return Center(
+                  child: Text(
+                      &quot;No data. Use the + in the appbar to insert an item&quot;),
+                );
+              }
+              // the select query has results
+              return ListView.builder(
+                  itemCount: snapshot.data.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    var item = snapshot.data[index];
+                    return ListTile(
+                      title: GestureDetector(
+                        child: Text(item[&quot;name&quot;]),
+                        onTap: () =&gt; print(&quot;Action&quot;),
+                      ),
+                    );
+                  });
+            } else {
+              // the select query is still running
+              return CircularProgressIndicator();
+            }
+          }),
+    );
+  }
+}
 
-     @override
-     void dispose() {
-         this.bloc.dispose();
-         super.dispose();
-     }
-
-     ListTile getListTile(Map&lt;String, dynamic&gt; item) {
-         return ListTile(
-             title: Text(&#39;${item[&quot;name&quot;]} : ${item[&quot;amount&quot;]}&#39;),
-         );
-     }
-
-     @override
-     Widget build(BuildContext context) {
-         return Scaffold(
-             appBar: AppBar(title: Text(&quot;My app&quot;)),
-             body: this.bloc.listStreamBuilder(getListTile));
-     }
- }
-
- class ProductsPage extends StatefulWidget {
-     @override
-     _ProductsPageState createState() =&gt; _ProductsPageState();
- }
+class PageSelectBloc extends StatefulWidget {
+  @override
+  _PageSelectBlocState createState() =&gt; _PageSelectBlocState();
+}
 </pre></div>
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">SelectBloc</span></code> class:</p>
-<p>Required positional parameter:</p>
+<p>Required parameter:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -210,7 +234,7 @@ class _ProductsPageState extends State&lt;ProductsPage&gt; {
 </tr>
 </tbody>
 </table>
-<p>Optional named parameters:</p>
+<p>Optional parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -229,16 +253,11 @@ class _ProductsPageState extends State&lt;ProductsPage&gt; {
 </tr>
 <tr class="field-odd field"><th class="field-name">offset:</th><td class="field-body"><em>int</em> the sql offset clause</td>
 </tr>
-<tr class="field-even field"><th class="field-name">verbose:</th><td class="field-body"><em>bool</em> <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code></td>
+<tr class="field-even field"><th class="field-name">reactive:</th><td class="field-body"><em>bool</em> if <cite>true</cite> the select bloc will react to database changes. Defaults to <cite>false</cite></td>
 </tr>
-</tbody>
-</table>
-<p><code class="docutils literal notranslate"><span class="pre">listStreamBuilder</span></code> method:</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">getListTile:</th><td class="field-body"><em>ListTile</em> the list tile to return to build stream items</td>
+<tr class="field-odd field"><th class="field-name">verbose:</th><td class="field-body"><em>bool</em> <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code></td>
+</tr>
+<tr class="field-even field"><th class="field-name">database:</th><td class="field-body"><em>Db</em> the database to use: default is the default database</td>
 </tr>
 </tbody>
 </table>
@@ -248,7 +267,7 @@ class _ProductsPageState extends State&lt;ProductsPage&gt; {
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span>@override
 void initState() {
    super.initState();
-   this.bloc = SelectBloc(&quot;product&quot;, offset: 10, limit: 20,
+   this.bloc = SelectBloc(table: &quot;product&quot;, offset: 10, limit: 20,
                           select: &quot;id, name, price, category.name as category_name&quot;,
                           joinTable: &quot;category&quot;,
                           joinOn: &quot;product.category=category.id&quot;);
@@ -266,7 +285,7 @@ void initState() {
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="conventions.html" class="btn btn-neutral float-right" title="Conventions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="changefeed.html" class="btn btn-neutral float-right" title="Reactivity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="db_ops.html" class="btn btn-neutral" title="Database operations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
@@ -278,7 +297,7 @@ void initState() {
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, synw
+        &copy; Copyright 2019, synw.
 
     </p>
   </div>
@@ -297,31 +316,33 @@ void initState() {
 
   
 
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
   </script> 
 

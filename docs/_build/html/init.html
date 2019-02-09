@@ -24,7 +24,8 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -88,6 +89,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="db_ops.html">Database operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bloc.html">Using the bloc pattern for select</a></li>
 </ul>
 
             
@@ -159,37 +161,35 @@
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="s1">&#39;package:sqlcool/sqlcool.dart&#39;</span><span class="p">;</span>
 
 <span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
-   <span class="kt">String</span> <span class="n">q1</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE category (</span>
+   <span class="kt">String</span> <span class="n">q1</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE product (</span>
 <span class="s2">      id INTEGER PRIMARY KEY,</span>
-<span class="s2">      slug TEXT UNIQUE NOT NULL,</span>
-<span class="s2">      name TEXT NOT NULL</span>
-<span class="s2">      )&quot;&quot;&quot;</span><span class="p">;</span>
-   <span class="kt">String</span> <span class="n">q2</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE product (</span>
-<span class="s2">      id INTEGER PRIMARY KEY,</span>
-<span class="s2">      slug TEXT UNIQUE NOT NULL,</span>
 <span class="s2">      name TEXT NOT NULL,</span>
 <span class="s2">      price REAL NOT NULL,</span>
-<span class="s2">      category INTEGER</span>
+<span class="s2">      category INTEGER FOREIGN KEY (category) REFERENCES category(id)</span>
+<span class="s2">      )&quot;&quot;&quot;</span><span class="p">;</span>
+   <span class="kt">String</span> <span class="n">q2</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;CREATE TABLE category (</span>
+<span class="s2">      id INTEGER PRIMARY KEY,</span>
+<span class="s2">      name TEXT NOT NULL</span>
 <span class="s2">      )&quot;&quot;&quot;</span><span class="p">;</span>
    <span class="kt">String</span> <span class="n">dbpath</span> <span class="o">=</span> <span class="s2">&quot;data.sqlite&quot;</span><span class="p">;</span>
    <span class="n">List</span><span class="o">&lt;</span><span class="kt">String</span><span class="o">&gt;</span> <span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="n">q1</span><span class="p">,</span> <span class="n">q2</span><span class="p">];</span>
-   <span class="n">db</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">dbpath</span><span class="p">,</span> <span class="nl">queries:</span> <span class="n">queries</span><span class="p">,</span> <span class="nl">verbose:</span> <span class="kc">true</span><span class="p">).</span><span class="n">catchError</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">db</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="nl">path:</span> <span class="n">dbpath</span><span class="p">,</span> <span class="nl">queries:</span> <span class="n">queries</span><span class="p">,</span> <span class="nl">verbose:</span> <span class="kc">true</span><span class="p">).</span><span class="n">catchError</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
        <span class="n">print</span><span class="p">(</span><span class="s2">&quot;Error initializing the database: </span><span class="si">$</span><span class="n">e</span><span class="s2">&quot;</span><span class="p">);</span>
    <span class="p">});</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Required positional parameters:</p>
+<p>Required parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">dbpath:</th><td class="field-body"><em>String</em> path where the database file will be stored:
+<tr class="field-odd field"><th class="field-name">path:</th><td class="field-body"><em>String</em> path where the database file will be stored:
 relative to the documents directory path</td>
 </tr>
 </tbody>
 </table>
-<p>Optional named parameter:</p>
+<p>Optional parameter:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -210,7 +210,7 @@ The create table queries will run once on database file creation.</p>
 <h2>Initialize a database from an Sqlite asset file<a class="headerlink" href="#initialize-a-database-from-an-sqlite-asset-file" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
    <span class="kt">String</span> <span class="n">dbpath</span> <span class="o">=</span> <span class="s2">&quot;data.sqlite&quot;</span><span class="p">;</span>
-   <span class="n">db</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">dbpath</span><span class="p">,</span> <span class="nl">fromAsset:</span> <span class="s2">&quot;assets/data.sqlite&quot;</span><span class="p">,</span> <span class="nl">verbose:</span> <span class="kc">true</span><span class="p">).</span><span class="n">catchError</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">db</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="nl">path:</span> <span class="n">dbpath</span><span class="p">,</span> <span class="nl">fromAsset:</span> <span class="s2">&quot;assets/data.sqlite&quot;</span><span class="p">,</span> <span class="nl">verbose:</span> <span class="kc">true</span><span class="p">).</span><span class="n">catchError</span><span class="p">((</span><span class="n">e</span><span class="p">)</span> <span class="p">{</span>
        <span class="n">print</span><span class="p">(</span><span class="s2">&quot;Error initializing the database; </span><span class="si">$</span><span class="n">e</span><span class="s2">&quot;</span><span class="p">);</span>
    <span class="p">});</span>
 <span class="p">}</span>
@@ -254,7 +254,7 @@ control over the instance(s):</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, synw
+        &copy; Copyright 2019, synw.
 
     </p>
   </div>
@@ -273,31 +273,33 @@ control over the instance(s):</p>
 
   
 
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
   </script> 
 

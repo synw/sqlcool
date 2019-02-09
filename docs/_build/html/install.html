@@ -24,7 +24,8 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -84,7 +85,6 @@
 <li class="toctree-l1"><a class="reference internal" href="init.html">Initialize database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="db_ops.html">Database operations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="bloc.html">Using the bloc pattern for select</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 </ul>
 
             
@@ -151,12 +151,9 @@
             
   <div class="section" id="install">
 <h1>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h1>
-<p>The library is not yet available on pub. To install clone the repository
-and update your <code class="docutils literal notranslate"><span class="pre">pubspec.yaml</span></code> file:</p>
+<p>Update your <code class="docutils literal notranslate"><span class="pre">pubspec.yaml</span></code> file:</p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="l l-Scalar l-Scalar-Plain">dependencies</span><span class="p p-Indicator">:</span>
-   <span class="c1"># ...</span>
-   <span class="l l-Scalar l-Scalar-Plain">sqlcool</span><span class="p p-Indicator">:</span>
-              <span class="l l-Scalar l-Scalar-Plain">path</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">/path/to/clone/parent/dir/sqlcool</span>
+   <span class="l l-Scalar l-Scalar-Plain">sqlcool</span><span class="p p-Indicator">:</span> <span class="l l-Scalar l-Scalar-Plain">^1.0.0+1</span>
 </pre></div>
 </div>
 </div>
@@ -181,7 +178,7 @@ and update your <code class="docutils literal notranslate"><span class="pre">pub
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, synw
+        &copy; Copyright 2019, synw.
 
     </p>
   </div>
@@ -200,31 +197,33 @@ and update your <code class="docutils literal notranslate"><span class="pre">pub
 
   
 
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
   </script> 
 

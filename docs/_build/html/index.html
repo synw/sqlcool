@@ -24,7 +24,8 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -77,13 +78,22 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption"><span class="caption-text">Install</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Crud operations</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="init.html">Initialize database</a></li>
 <li class="toctree-l1"><a class="reference internal" href="db_ops.html">Database operations</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Select bloc</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="bloc.html">Using the bloc pattern for select</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Reactivity</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changefeed.html">Reactivity</a></li>
 </ul>
 
             
@@ -151,9 +161,14 @@
   <div class="section" id="welcome-to-sqlcool-s-documentation">
 <h1>Welcome to Sqlcool’s documentation!<a class="headerlink" href="#welcome-to-sqlcool-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
+<p class="caption"><span class="caption-text">Install</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Install</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Crud operations</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="init.html">Initialize database</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="init.html#initialize-an-empty-database">Initialize an empty database</a></li>
 <li class="toctree-l2"><a class="reference internal" href="init.html#initialize-a-database-from-an-sqlite-asset-file">Initialize a database from an Sqlite asset file</a></li>
@@ -169,12 +184,26 @@
 <li class="toctree-l2"><a class="reference internal" href="db_ops.html#exists">Exists</a></li>
 </ul>
 </li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Select bloc</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="bloc.html">Using the bloc pattern for select</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bloc.html#list-stream-builder">List stream builder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bloc.html#select-bloc">Select bloc</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bloc.html#join-queries">Join queries</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Reactivity</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="changefeed.html">Reactivity</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changefeed.html#changefeed">Changefeed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changefeed.html#reactive-select-bloc">Reactive select bloc</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -205,7 +234,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, synw
+        &copy; Copyright 2019, synw.
 
     </p>
   </div>
@@ -224,31 +253,33 @@
 
   
 
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
   </script> 
 

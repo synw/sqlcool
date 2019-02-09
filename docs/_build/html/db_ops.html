@@ -24,10 +24,12 @@
 
   
 
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Using the bloc pattern for select" href="bloc.html" />
     <link rel="prev" title="Initialize database" href="init.html" /> 
 
   
@@ -90,6 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#exists">Exists</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="bloc.html">Using the bloc pattern for select</a></li>
 </ul>
 
             
@@ -164,11 +167,10 @@
     <span class="nl">slug:</span> <span class="s2">&quot;my-item&quot;</span><span class="p">,</span>
     <span class="nl">name:</span> <span class="s2">&quot;My item&quot;</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="kt">String</span> <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;category&quot;</span><span class="p">;</span>
-<span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="nl">verbose:</span> <span class="kc">true</span><span class="p">);</span>
+<span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="nl">table:</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="nl">row:</span> <span class="n">row</span><span class="p">,</span> <span class="nl">verbose:</span> <span class="kc">true</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Required positional parameters:</p>
+<p>Required parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -179,7 +181,7 @@
 </tr>
 </tbody>
 </table>
-<p>Optional named parameter:</p>
+<p>Optional parameter:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -193,13 +195,12 @@
 <h2>Select<a class="headerlink" href="#select" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="s1">&#39;package:sqlcool/sqlcool.dart&#39;</span><span class="p">;</span>
 
-<span class="kt">String</span> <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;product&quot;</span><span class="p">;</span>
 <span class="n">List</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">dynamic</span><span class="o">&gt;&gt;</span> <span class="n">rows</span> <span class="o">=</span>
-   <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="nl">limit:</span> <span class="m">20</span><span class="p">,</span> <span class="nl">where:</span> <span class="s2">&quot;name LIKE &#39;%something%&#39;&quot;</span><span class="p">,</span>
+   <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="nl">table:</span> <span class="s2">&quot;product&quot;</span><span class="p">,</span> <span class="nl">limit:</span> <span class="m">20</span><span class="p">,</span> <span class="nl">where:</span> <span class="s2">&quot;name LIKE &#39;%something%&#39;&quot;</span><span class="p">,</span>
       <span class="nl">orderBy:</span> <span class="s2">&quot;price ASC&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Required positional parameter:</p>
+<p>Required parameter:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -208,20 +209,22 @@
 </tr>
 </tbody>
 </table>
-<p>Optional named parameters:</p>
+<p>Optional parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">where:</th><td class="field-body"><em>String</em> the where sql clause</td>
+<tr class="field-odd field"><th class="field-name">columns:</th><td class="field-body"><em>String</em> the columns to select: default is <cite>“*”</cite></td>
 </tr>
-<tr class="field-even field"><th class="field-name">orderBy:</th><td class="field-body"><em>String</em> the sql order_by clause</td>
+<tr class="field-even field"><th class="field-name">where:</th><td class="field-body"><em>String</em> the where sql clause</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">limit:</th><td class="field-body"><em>int</em> the sql limit clause</td>
+<tr class="field-odd field"><th class="field-name">orderBy:</th><td class="field-body"><em>String</em> the sql order_by clause</td>
 </tr>
-<tr class="field-even field"><th class="field-name">offset:</th><td class="field-body"><em>int</em> the sql offset clause</td>
+<tr class="field-even field"><th class="field-name">limit:</th><td class="field-body"><em>int</em> the sql limit clause</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">verbose:</th><td class="field-body"><em>bool</em> <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code></td>
+<tr class="field-odd field"><th class="field-name">offset:</th><td class="field-body"><em>int</em> the sql offset clause</td>
+</tr>
+<tr class="field-even field"><th class="field-name">verbose:</th><td class="field-body"><em>bool</em> <code class="docutils literal notranslate"><span class="pre">true</span></code> or <code class="docutils literal notranslate"><span class="pre">false</span></code></td>
 </tr>
 </tbody>
 </table>
@@ -230,16 +233,14 @@
 <h2>Update<a class="headerlink" href="#update" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="s1">&#39;package:sqlcool/sqlcool.dart&#39;</span><span class="p">;</span>
 
-<span class="kt">String</span> <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;category&quot;</span><span class="p">;</span>
 <span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">String</span><span class="o">&gt;</span> <span class="n">row</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nl">slug:</span> <span class="s2">&quot;my-item-new&quot;</span><span class="p">,</span>
     <span class="nl">name:</span> <span class="s2">&quot;My item new&quot;</span><span class="p">,</span>
 <span class="p">}</span>
-<span class="kt">String</span> <span class="n">where</span> <span class="o">=</span> <span class="s2">&quot;id=1&quot;</span><span class="p">;</span>
-<span class="kt">int</span> <span class="n">updated</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">where</span><span class="p">,</span> <span class="nl">verbose:</span> <span class="kc">true</span><span class="p">);</span>
+<span class="kt">int</span> <span class="n">updated</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">update</span><span class="p">(</span><span class="nl">table:</span> <span class="n">category</span><span class="p">,</span> <span class="nl">row:</span> <span class="n">row</span><span class="p">,</span> <span class="nl">where:</span> <span class="s2">&quot;id=1&quot;</span><span class="p">,</span> <span class="nl">verbose:</span> <span class="kc">true</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Required positional parameters:</p>
+<p>Required parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -250,7 +251,7 @@
 </tr>
 </tbody>
 </table>
-<p>Optional named parameters:</p>
+<p>Optional parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -266,12 +267,10 @@
 <h2>Delete<a class="headerlink" href="#delete" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="s1">&#39;package:sqlcool/sqlcool.dart&#39;</span><span class="p">;</span>
 
-<span class="kt">String</span> <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;category&quot;</span><span class="p">;</span>
-<span class="kt">String</span> <span class="n">where</span> <span class="o">=</span> <span class="s2">&quot;id=1&quot;</span><span class="p">;</span>
-<span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">where</span><span class="p">);</span>
+<span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="nl">table:</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="nl">where:</span> <span class="s2">&quot;id=1&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Required positional parameters:</p>
+<p>Required parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -282,7 +281,7 @@
 </tr>
 </tbody>
 </table>
-<p>Optional named parameter:</p>
+<p>Optional parameter:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -296,15 +295,14 @@
 <h2>Join<a class="headerlink" href="#join" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="s1">&#39;package:sqlcool/sqlcool.dart&#39;</span><span class="p">;</span>
 
-<span class="kt">String</span> <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;product&quot;</span><span class="p">;</span>
 <span class="n">List</span><span class="o">&lt;</span><span class="n">Map</span><span class="o">&lt;</span><span class="kt">String</span><span class="p">,</span> <span class="kt">dynamic</span><span class="o">&gt;&gt;</span> <span class="n">rows</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">join</span><span class="p">(</span>
-                <span class="n">table</span><span class="p">,</span> <span class="nl">offset:</span> <span class="m">10</span><span class="p">,</span> <span class="nl">limit:</span> <span class="m">20</span><span class="p">,</span>
-                <span class="nl">select:</span> <span class="s2">&quot;id, name, price, category.name as category_name&quot;</span><span class="p">,</span>
+                <span class="nl">table:</span> <span class="n">product</span><span class="p">,</span> <span class="nl">offset:</span> <span class="m">10</span><span class="p">,</span> <span class="nl">limit:</span> <span class="m">20</span><span class="p">,</span>
+                <span class="nl">columns:</span> <span class="s2">&quot;id, name, price, category.name as category_name&quot;</span><span class="p">,</span>
                 <span class="nl">joinTable:</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span>
                 <span class="nl">joinOn:</span> <span class="s2">&quot;product.category=category.id&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Required positional parameter:</p>
+<p>Required parameter:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -313,12 +311,12 @@
 </tr>
 </tbody>
 </table>
-<p>Optional named parameters:</p>
+<p>Optional parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">select:</th><td class="field-body"><em>String</em> the select sql clause</td>
+<tr class="field-odd field"><th class="field-name">columns:</th><td class="field-body"><em>String</em> the select sql clause</td>
 </tr>
 <tr class="field-even field"><th class="field-name">where:</th><td class="field-body"><em>String</em> the where sql clause</td>
 </tr>
@@ -341,11 +339,10 @@
 <h2>Exists<a class="headerlink" href="#exists" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-dart notranslate"><div class="highlight"><pre><span></span><span class="k">import</span> <span class="s1">&#39;package:sqlcool/sqlcool.dart&#39;</span><span class="p">;</span>
 
-<span class="kt">String</span> <span class="n">table</span> <span class="o">=</span> <span class="s2">&quot;category&quot;</span><span class="p">;</span>
-<span class="kt">bool</span> <span class="n">exists</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="s2">&quot;id=3&quot;</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="n">exists</span> <span class="o">=</span> <span class="kd">await</span> <span class="n">db</span><span class="p">.</span><span class="n">exists</span><span class="p">(</span><span class="nl">table:</span> <span class="s2">&quot;category&quot;</span><span class="p">,</span> <span class="s2">&quot;id=3&quot;</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Required positional parameters:</p>
+<p>Required parameters:</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -367,6 +364,8 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
+        <a href="bloc.html" class="btn btn-neutral float-right" title="Using the bloc pattern for select" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
       
         <a href="init.html" class="btn btn-neutral" title="Initialize database" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
@@ -377,7 +376,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2019, synw
+        &copy; Copyright 2019, synw.
 
     </p>
   </div>
@@ -396,31 +395,33 @@
 
   
 
-    
-    
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'0.1',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-    
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            LANGUAGE:'None',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
 
   
 
-  <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
 
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
+          
+          SphinxRtdTheme.Navigation.enableSticky();
+          
       });
   </script> 
 

@@ -1,10 +1,10 @@
 Using the bloc pattern for select
 =================================
 
-A stream builder is available for select bloc
+A `SelectBloc` is available to use the bloc pattern.
 
-List stream builder
--------------------
+Select bloc
+-----------
 
 .. highlight:: dart
 
@@ -13,39 +13,58 @@ List stream builder
    import 'package:flutter/material.dart';
    import 'package:sqlcool/sqlcool.dart';
 
-   class _ProductsPageState extends State<ProductsPage> {
-        SelectBloc bloc;
+   class _PageSelectBlocState extends State<PageSelectBloc> {
+     SelectBloc bloc;
 
-        _ProductsPageState();
+     @override
+     void initState() {
+       super.initState();
+       this.bloc = SelectBloc(
+           table: "items", orderBy: "name", verbose: true);
+     }
 
-        @override
-        void initState() {
-            super.initState();
-            this.bloc = SelectBloc(table: "product",
-                limit: 20,
-                order_by: "name");
-        }
+     @override
+     Widget build(BuildContext context) {
+       return Scaffold(
+         appBar: AppBar(
+           title: Text("My app"),
+         ),
+         body: StreamBuilder<List<Map>>(
+             stream: bloc.items,
+             builder: (BuildContext context, AsyncSnapshot snapshot) {
+               if (snapshot.hasData) {
+                 // the select query has not found anything
+                 if (snapshot.data.length == 0) {
+                   return Center(
+                     child: Text(
+                         "No data. Use the + in the appbar to insert an item"),
+                   );
+                 }
+                 // the select query has results
+                 return ListView.builder(
+                     itemCount: snapshot.data.length,
+                     itemBuilder: (BuildContext context, int index) {
+                       var item = snapshot.data[index];
+                       return ListTile(
+                         title: GestureDetector(
+                           child: Text(item["name"]),
+                           onTap: () => print("Action"),
+                         ),
+                       );
+                     });
+               } else {
+                 // the select query is still running
+                 return CircularProgressIndicator();
+               }
+             }),
+       );
+     }
+   }
 
-        @override
-        void dispose() {
-            this.bloc.dispose();
-            super.dispose();
-        }
-
-        @override
-        Widget build(BuildContext context) {
-            return StreamBuilder<List<Map>>(
-               stream: bloc.items,
-               // ....
-               );
-        }
-    }
-
-    class ProductsPage extends StatefulWidget {
-        @override
-        _ProductsPageState createState() => _ProductsPageState();
-    }
-
+   class PageSelectBloc extends StatefulWidget {
+     @override
+     _PageSelectBlocState createState() => _PageSelectBlocState();
+   }
 
 ``SelectBloc`` class:
 
@@ -62,6 +81,7 @@ Optional parameters:
 :orderBy: *String* the sql order_by clause
 :limit: *int* the sql limit clause
 :offset: *int* the sql offset clause
+:reactive: *bool* if `true` the select bloc will react to database changes. Defaults to `false`
 :verbose: *bool* ``true`` or ``false``
 :database: *Db* the database to use: default is the default database
 
