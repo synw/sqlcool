@@ -7,7 +7,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
    ```yaml
 
    dependencies:
-     sqlcool: ^1.0.0+1
+     sqlcool: ^1.1.1
    ```
 
 ## Quick example
