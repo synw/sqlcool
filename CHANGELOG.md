@@ -1,3 +1,7 @@
+## 1.1.2
+
+Fix: close `_changeFeedController` sink
+
 ## 1.1.1
 
 Minor fixes
