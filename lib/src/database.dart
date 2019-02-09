@@ -22,6 +22,10 @@ class Db {
 
   get changefeed => _changeFeedController.stream;
 
+  dispose() {
+    _changeFeedController.close();
+  }
+
   Future<void> init(
       {@required String path,
       List<String> queries: const <String>[],
