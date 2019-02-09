@@ -13,10 +13,19 @@ class SelectBloc {
       this.joinTable,
       this.joinOn,
       this.orderBy,
+      this.reactive: false,
       this.verbose})
       : assert(table != null) {
-    (database == null) ? database = db : database = database;
-    this._getItems();
+    database = database ?? db;
+    _getItems();
+    if (reactive) {
+      _changefeed = database.changefeed.listen((change) {
+        _getItems();
+        if (verbose) {
+          print("CHANGE IN THE DATABASE: $change");
+        }
+      });
+    }
   }
 
   Db database;
@@ -28,14 +37,20 @@ class SelectBloc {
   String where;
   String joinTable;
   String joinOn;
+  bool reactive;
   bool verbose;
+  StreamSubscription _changefeed;
 
   final _itemController =
       StreamController<List<Map<String, dynamic>>>.broadcast();
+
   get items => _itemController.stream;
 
   dispose() {
     _itemController.close();
+    if (reactive) {
+      _changefeed.cancel();
+    }
   }
 
   _getItems() async {

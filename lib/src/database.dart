@@ -17,6 +17,10 @@ class Db {
   Database database;
   File dbFile;
   final _lock = new Lock();
+  final StreamController<ChangeFeedItem> _changeFeedController =
+      StreamController<ChangeFeedItem>.broadcast();
+
+  get changefeed => _changeFeedController.stream;
 
   Future<void> init(
       {@required String path,
@@ -196,24 +200,7 @@ class Db {
     this.database.rawInsert(q, datapoint).catchError((e) {
       throw (e);
     });
-  }
-
-  Future<bool> exists(
-      {@required String table, @required String where, verbose: false}) async {
-    /// check if a value exists in the table
-    /// [table] the table to use
-    /// [where] the where sql clause
-    /// [verbose] print the query
-    /// returns true if exists
-    String q = 'SELECT COUNT(*) FROM $table WHERE $where';
-    if (verbose == true) {
-      print(q);
-    }
-    int count = Sqflite.firstIntValue(await database.rawQuery(q));
-    if (count > 0) {
-      return true;
-    }
-    return false;
+    _changeFeedController.sink.add(ChangeFeedItem("insert", 1));
   }
 
   Future<int> update(
@@ -245,6 +232,7 @@ class Db {
         print("$q $datapoint");
       }
       int updated = await this.database.rawUpdate(q, datapoint);
+      _changeFeedController.sink.add(ChangeFeedItem("update", updated));
       return updated;
     } catch (e) {
       throw (e);
@@ -266,10 +254,29 @@ class Db {
         print(q);
       }
       int count = await this.database.rawDelete(q);
+      _changeFeedController.sink.add(ChangeFeedItem("delete", count));
       return count;
     } catch (e) {
       throw (e);
     }
+  }
+
+  Future<bool> exists(
+      {@required String table, @required String where, verbose: false}) async {
+    /// check if a value exists in the table
+    /// [table] the table to use
+    /// [where] the where sql clause
+    /// [verbose] print the query
+    /// returns true if exists
+    String q = 'SELECT COUNT(*) FROM $table WHERE $where';
+    if (verbose == true) {
+      print(q);
+    }
+    int count = Sqflite.firstIntValue(await database.rawQuery(q));
+    if (count > 0) {
+      return true;
+    }
+    return false;
   }
 
   Future<int> count(
@@ -293,5 +300,28 @@ class Db {
     } catch (e) {
       throw (e);
     }
+  }
+}
+
+class ChangeFeedItem {
+  ChangeFeedItem(this.changeType, this.value);
+
+  String changeType;
+  int value;
+
+  @override
+  String toString() {
+    String s = "";
+    if (value > 1) {
+      s = "s";
+    }
+    if (this.changeType == "delete") {
+      return "${this.value} item$s deleted";
+    } else if (this.changeType == "update") {
+      return "${this.value} item$s updated";
+    } else if (this.changeType == "create") {
+      return "${this.value} item$s created";
+    }
+    return "${this.changeType} : ${this.value}";
   }
 }
