@@ -13,7 +13,8 @@ class SelectBloc {
       this.joinTable,
       this.joinOn,
       this.orderBy,
-      this.verbose}) {
+      this.verbose})
+      : assert(table != null) {
     (database == null) ? database = db : database = database;
     this._getItems();
   }
