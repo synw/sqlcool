@@ -199,7 +199,7 @@ class Db {
     }
     String q = "INSERT INTO $table ($fields) VALUES($values)";
     if (verbose == true) {
-      print(q);
+      print("$q $row");
     }
     this.database.rawInsert(q, datapoint).catchError((e) {
       throw (e);
