@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:synchronized/synchronized.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'models.dart';
 
 /// the default database instance
 Db db = Db();
@@ -204,7 +205,7 @@ class Db {
     this.database.rawInsert(q, datapoint).catchError((e) {
       throw (e);
     });
-    _changeFeedController.sink.add(ChangeFeedItem("insert", 1));
+    _changeFeedController.sink.add(ChangeFeedItem("insert", 1, q));
   }
 
   Future<int> update(
@@ -236,7 +237,7 @@ class Db {
         print("$q $datapoint");
       }
       int updated = await this.database.rawUpdate(q, datapoint);
-      _changeFeedController.sink.add(ChangeFeedItem("update", updated));
+      _changeFeedController.sink.add(ChangeFeedItem("update", updated, q));
       return updated;
     } catch (e) {
       throw (e);
@@ -258,7 +259,7 @@ class Db {
         print(q);
       }
       int count = await this.database.rawDelete(q);
-      _changeFeedController.sink.add(ChangeFeedItem("delete", count));
+      _changeFeedController.sink.add(ChangeFeedItem("delete", count, q));
       return count;
     } catch (e) {
       throw (e);
@@ -304,28 +305,5 @@ class Db {
     } catch (e) {
       throw (e);
     }
-  }
-}
-
-class ChangeFeedItem {
-  ChangeFeedItem(this.changeType, this.value);
-
-  String changeType;
-  int value;
-
-  @override
-  String toString() {
-    String s = "";
-    if (value > 1) {
-      s = "s";
-    }
-    if (this.changeType == "delete") {
-      return "${this.value} item$s deleted";
-    } else if (this.changeType == "update") {
-      return "${this.value} item$s updated";
-    } else if (this.changeType == "create") {
-      return "${this.value} item$s created";
-    }
-    return "${this.changeType} : ${this.value}";
   }
 }
