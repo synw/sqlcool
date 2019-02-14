@@ -17,7 +17,7 @@ class Db {
 
   Database database;
   File dbFile;
-  final _lock = new Lock();
+  final _mutex = new Lock();
   final StreamController<ChangeFeedItem> _changeFeedController =
       StreamController<ChangeFeedItem>.broadcast();
 
@@ -64,7 +64,7 @@ class Db {
       }
     }
     if (this.database == null) {
-      await _lock.synchronized(() async {
+      await _mutex.synchronized(() async {
         if (this.database == null) {
           // open
           if (verbose == true) {
@@ -183,29 +183,31 @@ class Db {
     /// [table] the table to insert into
     /// [row] the data to insert
     /// [verbose] print the query
-    String fields = "";
-    String values = "";
-    int n = row.length;
-    int i = 1;
-    List<String> datapoint = [];
-    for (var k in row.keys) {
-      fields = "$fields$k";
-      values = "$values?";
-      datapoint.add(row[k]);
-      if (i < n) {
-        fields = "$fields,";
-        values = "$values,";
+    await _mutex.synchronized(() async {
+      String fields = "";
+      String values = "";
+      int n = row.length;
+      int i = 1;
+      List<String> datapoint = [];
+      for (var k in row.keys) {
+        fields = "$fields$k";
+        values = "$values?";
+        datapoint.add(row[k]);
+        if (i < n) {
+          fields = "$fields,";
+          values = "$values,";
+        }
+        i++;
       }
-      i++;
-    }
-    String q = "INSERT INTO $table ($fields) VALUES($values)";
-    if (verbose == true) {
-      print("$q $row");
-    }
-    this.database.rawInsert(q, datapoint).catchError((e) {
-      throw (e);
+      String q = "INSERT INTO $table ($fields) VALUES($values)";
+      if (verbose == true) {
+        print("$q $row");
+      }
+      this.database.rawInsert(q, datapoint).catchError((e) {
+        throw (e);
+      });
+      _changeFeedController.sink.add(ChangeFeedItem("insert", 1, q));
     });
-    _changeFeedController.sink.add(ChangeFeedItem("insert", 1, q));
   }
 
   Future<int> update(
@@ -219,29 +221,31 @@ class Db {
     /// [where] the sql where clause
     /// [verbose] print the query
     /// returns a count of the updated rows
-    try {
-      String pairs = "";
-      int n = row.length - 1;
-      int i = 0;
-      List<String> datapoint = [];
-      for (var el in row.keys) {
-        pairs = "$pairs$el= ?";
-        datapoint.add(row[el]);
-        if (i < n) {
-          pairs = "$pairs, ";
+    await _mutex.synchronized(() async {
+      try {
+        String pairs = "";
+        int n = row.length - 1;
+        int i = 0;
+        List<String> datapoint = [];
+        for (var el in row.keys) {
+          pairs = "$pairs$el= ?";
+          datapoint.add(row[el]);
+          if (i < n) {
+            pairs = "$pairs, ";
+          }
+          i++;
         }
-        i++;
+        String q = 'UPDATE $table SET $pairs WHERE $where';
+        if (verbose == true) {
+          print("$q $datapoint");
+        }
+        int updated = await this.database.rawUpdate(q, datapoint);
+        _changeFeedController.sink.add(ChangeFeedItem("update", updated, q));
+        return updated;
+      } catch (e) {
+        throw (e);
       }
-      String q = 'UPDATE $table SET $pairs WHERE $where';
-      if (verbose == true) {
-        print("$q $datapoint");
-      }
-      int updated = await this.database.rawUpdate(q, datapoint);
-      _changeFeedController.sink.add(ChangeFeedItem("update", updated, q));
-      return updated;
-    } catch (e) {
-      throw (e);
-    }
+    });
   }
 
   Future<int> delete(
@@ -253,17 +257,19 @@ class Db {
     /// [where] the sql where clause
     /// [verbose] print the query
     /// returns a count of the deleted rows
-    try {
-      String q = 'DELETE FROM $table WHERE $where';
-      if (verbose == true) {
-        print(q);
+    await _mutex.synchronized(() async {
+      try {
+        String q = 'DELETE FROM $table WHERE $where';
+        if (verbose == true) {
+          print(q);
+        }
+        int count = await this.database.rawDelete(q);
+        _changeFeedController.sink.add(ChangeFeedItem("delete", count, q));
+        return count;
+      } catch (e) {
+        throw (e);
       }
-      int count = await this.database.rawDelete(q);
-      _changeFeedController.sink.add(ChangeFeedItem("delete", count, q));
-      return count;
-    } catch (e) {
-      throw (e);
-    }
+    });
   }
 
   Future<bool> exists(
