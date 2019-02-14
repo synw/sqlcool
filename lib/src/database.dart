@@ -221,6 +221,7 @@ class Db {
     /// [where] the sql where clause
     /// [verbose] print the query
     /// returns a count of the updated rows
+    int updated = 0;
     await _mutex.synchronized(() async {
       try {
         String pairs = "";
@@ -239,13 +240,14 @@ class Db {
         if (verbose == true) {
           print("$q $datapoint");
         }
-        int updated = await this.database.rawUpdate(q, datapoint);
+        updated = await this.database.rawUpdate(q, datapoint);
         _changeFeedController.sink.add(ChangeFeedItem("update", updated, q));
         return updated;
       } catch (e) {
         throw (e);
       }
     });
+    return updated;
   }
 
   Future<int> delete(
@@ -257,19 +259,21 @@ class Db {
     /// [where] the sql where clause
     /// [verbose] print the query
     /// returns a count of the deleted rows
+    int deleted = 0;
     await _mutex.synchronized(() async {
       try {
         String q = 'DELETE FROM $table WHERE $where';
         if (verbose == true) {
           print(q);
         }
-        int count = await this.database.rawDelete(q);
-        _changeFeedController.sink.add(ChangeFeedItem("delete", count, q));
-        return count;
+        int deleted = await this.database.rawDelete(q);
+        _changeFeedController.sink.add(ChangeFeedItem("delete", deleted, q));
+        return deleted;
       } catch (e) {
         throw (e);
       }
     });
+    return deleted;
   }
 
   Future<bool> exists(
