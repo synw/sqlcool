@@ -9,5 +9,5 @@ Update your ``pubspec.yaml`` file:
 
 
    dependencies:
-      sqlcool: ^1.0.0+1
+      sqlcool: ^1.2.0
 
