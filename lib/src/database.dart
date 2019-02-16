@@ -15,13 +15,16 @@ Db db = Db();
 class Db {
   Db();
 
+  // A Sqflite database
   Database database;
-  File dbFile;
+
   final _mutex = new Lock();
   final StreamController<ChangeFeedItem> _changeFeedController =
       StreamController<ChangeFeedItem>.broadcast();
+  File _dbFile;
 
-  get changefeed => _changeFeedController.stream;
+  Stream<ChangeFeedItem> get changefeed => _changeFeedController.stream;
+  File get file => _dbFile;
 
   dispose() {
     _changeFeedController.close();
@@ -87,7 +90,7 @@ class Db {
       });
     }
     // file
-    dbFile = File(dbpath);
+    _dbFile = File(dbpath);
   }
 
   Future<List<Map<String, dynamic>>> select(
