@@ -14,7 +14,7 @@ class SelectBloc {
       this.joinOn,
       this.orderBy,
       this.reactive: false,
-      this.verbose})
+      this.verbose: false})
       : assert(table != null) {
     database = database ?? db;
     _getItems();
