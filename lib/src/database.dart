@@ -213,8 +213,12 @@ class Db {
         throw (e);
       });
       String qStr = "$q $row";
-      _changeFeedController.sink.add(ChangeFeedItem("insert", 1, qStr));
       timer.stop();
+      _changeFeedController.sink.add(ChangeFeedItem(
+          changeType: "insert",
+          value: 1,
+          query: qStr,
+          executionTime: timer.elapsedMicroseconds));
       if (verbose == true) {
         String msg = "$q  in ${timer.elapsedMilliseconds} ms";
         print(msg);
@@ -252,8 +256,12 @@ class Db {
         String q = 'UPDATE $table SET $pairs WHERE $where';
         updated = await this.database.rawUpdate(q, datapoint);
         String qStr = "$q $datapoint";
-        _changeFeedController.sink.add(ChangeFeedItem("update", updated, qStr));
         timer.stop();
+        _changeFeedController.sink.add(ChangeFeedItem(
+            changeType: "update",
+            value: updated,
+            query: qStr,
+            executionTime: timer.elapsedMicroseconds));
         if (verbose == true) {
           String msg = "$q  in ${timer.elapsedMilliseconds} ms";
           print(msg);
@@ -281,8 +289,12 @@ class Db {
         Stopwatch timer = Stopwatch()..start();
         String q = 'DELETE FROM $table WHERE $where';
         int deleted = await this.database.rawDelete(q);
-        _changeFeedController.sink.add(ChangeFeedItem("delete", deleted, q));
         timer.stop();
+        _changeFeedController.sink.add(ChangeFeedItem(
+            changeType: "delete",
+            value: deleted,
+            query: q,
+            executionTime: timer.elapsedMicroseconds));
         if (verbose == true) {
           String msg = "$q  in ${timer.elapsedMilliseconds} ms";
           print(msg);
@@ -306,6 +318,7 @@ class Db {
       Stopwatch timer = Stopwatch()..start();
       String q = 'SELECT COUNT(*) FROM $table WHERE $where';
       int count = Sqflite.firstIntValue(await database.rawQuery(q));
+      timer.stop();
       if (verbose == true) {
         String msg = "$q  in ${timer.elapsedMilliseconds} ms";
         print(msg);
@@ -333,12 +346,13 @@ class Db {
         w = " WHERE $where";
       }
       String q = 'SELECT COUNT(*) FROM $table$w';
-      final num = Sqflite.firstIntValue(await this.database.rawQuery(q));
+      final num c = Sqflite.firstIntValue(await this.database.rawQuery(q));
+      timer.stop();
       if (verbose == true) {
         String msg = "$q  in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
-      return num;
+      return c;
     } catch (e) {
       throw (e);
     }
