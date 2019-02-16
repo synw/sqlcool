@@ -35,7 +35,7 @@ insertItemDialog(BuildContext context) {
   );
 }
 
-deleteItemDialog(BuildContext context, String itemName) {
+deleteItemDialog(BuildContext context, String itemName, int itemId) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -52,7 +52,7 @@ deleteItemDialog(BuildContext context, String itemName) {
             child: Text("Delete"),
             color: Colors.red,
             onPressed: () {
-              deleteItem(itemName).catchError((e) {
+              deleteItem(itemId).catchError((e) {
                 throw (e);
               });
               Navigator.of(context).pop(true);

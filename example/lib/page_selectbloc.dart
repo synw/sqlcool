@@ -1,15 +1,30 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sqlcool/sqlcool.dart';
 import 'dialogs.dart';
 
 class _PageSelectBlocState extends State<PageSelectBloc> {
   SelectBloc bloc;
+  StreamSubscription _changefeed;
 
   @override
   void initState() {
+    // declare the query
+    this.bloc = SelectBloc(table: "items", orderBy: 'name', reactive: true);
+    // listen for changes in the database
+    _changefeed = db.changefeed.listen((change) {
+      print("CHANGE IN THE DATABASE:");
+      print("Change type: ${change.changeType}");
+      print("Number of items impacted: ${change.value}");
+      print("Query: ${change.query}");
+    });
     super.initState();
-    this.bloc = SelectBloc(
-        table: "items", orderBy: 'name', reactive: true, verbose: true);
+  }
+
+  @override
+  void dispose() {
+    _changefeed.cancel();
+    super.dispose();
   }
 
   @override
@@ -49,7 +64,7 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
                         icon: Icon(Icons.delete),
                         color: Colors.grey,
                         onPressed: () =>
-                            deleteItemDialog(context, item["name"]),
+                            deleteItemDialog(context, item["name"], item["id"]),
                       ),
                     );
                   });

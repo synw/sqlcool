@@ -8,10 +8,10 @@ saveItem(String itemName) async {
   });
 }
 
-deleteItem(String itemName) async {
+deleteItem(int itemId) async {
   String table = "items";
   await db
-      .delete(table: table, where: 'name="$itemName"', verbose: true)
+      .delete(table: table, where: 'id="$itemId"', verbose: true)
       .catchError((e) {
     throw (e);
   });
