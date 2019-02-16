@@ -1,28 +1,51 @@
 Reactivity
 ==========
 
+Changefeed
+----------
+
 A changefeed is available (inspired by `Rethinkdb
 <https://www.rethinkdb.com/>`_).
 It's a stream that will notify about any change in 
 the database.
 
-Changefeed
-----------
-
 .. highlight:: dart
 
 ::
 
-   StreamSubscription _changefeed;
+   import 'dart:async';
+   import 'package:flutter/material.dart';
+   import 'package:sqlcool/sqlcool.dart';
+   import 'dialogs.dart';
 
-   _changefeed = database.changefeed.listen((change) {
-      _getItems();
-      if (verbose) {
-         print("CHANGE IN THE DATABASE: $change");
-         print("Change type: ${change.type}");
-         print("Number of items that changed: ${change.value}");
-      }
-   });
+   class _PageState extends State<Page> {
+     StreamSubscription _changefeed;
+
+     @override
+     void initState() {
+        _changefeed = db.changefeed.listen((change) {
+         print("CHANGE IN THE DATABASE:");
+         print("Change type: ${change.changeType}");
+         print("Number of items impacted: ${change.value}");
+         print("Query: ${change.query}");
+       });
+       super.initState();
+     }
+
+     @override
+     void dispose() {
+       _changefeed.cancel();
+       super.dispose();
+     }
+
+     // ...
+   }
+
+   class Page extends StatefulWidget {
+     @override
+     _PageState createState() => _PageState();
+   }
+
 
 Reactive select bloc
 --------------------
