@@ -74,10 +74,12 @@ class Db {
               onCreate: (Database _db, int version) async {
             if (queries.length > 0) {
               for (String q in queries) {
-                if (verbose == true) {
-                  print(q);
-                }
+                Stopwatch timer = Stopwatch()..start();
                 await _db.execute(q);
+                if (verbose == true) {
+                  String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+                  print(msg);
+                }
               }
             }
           });
@@ -106,6 +108,7 @@ class Db {
     /// [verbose] print the query
     /// returns the selected data
     try {
+      Stopwatch timer = Stopwatch()..start();
       String q = "SELECT $columns FROM $table";
       if (where != null) {
         q += " WHERE $where";
@@ -119,10 +122,12 @@ class Db {
       if (offset != null) {
         q += " OFFSET $offset";
       }
-      if (verbose == true) {
-        print(q);
-      }
       final List<Map<String, dynamic>> res = await this.database.rawQuery(q);
+      timer.stop();
+      if (verbose == true) {
+        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+        print(msg);
+      }
       return res.toList();
     } catch (e) {
       throw (e);
@@ -151,6 +156,7 @@ class Db {
     /// [verbose] print the query
     /// returns the selected data
     try {
+      Stopwatch timer = Stopwatch()..start();
       String q = "SELECT $columns FROM $table";
       q = "$q INNER JOIN $joinTable ON $joinOn";
       if (where != null) {
@@ -165,10 +171,12 @@ class Db {
       if (offset != null) {
         q += " OFFSET $offset";
       }
-      if (verbose == true) {
-        print(q);
-      }
       final List<Map<String, dynamic>> res = await this.database.rawQuery(q);
+      timer.stop();
+      if (verbose == true) {
+        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+        print(msg);
+      }
       return res.toList();
     } catch (e) {
       throw (e);
@@ -184,6 +192,7 @@ class Db {
     /// [row] the data to insert
     /// [verbose] print the query
     await _mutex.synchronized(() async {
+      Stopwatch timer = Stopwatch()..start();
       String fields = "";
       String values = "";
       int n = row.length;
@@ -200,14 +209,16 @@ class Db {
         i++;
       }
       String q = "INSERT INTO $table ($fields) VALUES($values)";
-      String qStr = "$q $row";
-      if (verbose == true) {
-        print(qStr);
-      }
       this.database.rawInsert(q, datapoint).catchError((e) {
         throw (e);
       });
+      String qStr = "$q $row";
       _changeFeedController.sink.add(ChangeFeedItem("insert", 1, qStr));
+      timer.stop();
+      if (verbose == true) {
+        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+        print(msg);
+      }
     });
   }
 
@@ -224,6 +235,7 @@ class Db {
     /// returns a count of the updated rows
     int updated = 0;
     await _mutex.synchronized(() async {
+      Stopwatch timer = Stopwatch()..start();
       try {
         String pairs = "";
         int n = row.length - 1;
@@ -238,12 +250,14 @@ class Db {
           i++;
         }
         String q = 'UPDATE $table SET $pairs WHERE $where';
-        String qStr = "$q $datapoint";
-        if (verbose == true) {
-          print("$qStr");
-        }
         updated = await this.database.rawUpdate(q, datapoint);
+        String qStr = "$q $datapoint";
         _changeFeedController.sink.add(ChangeFeedItem("update", updated, qStr));
+        timer.stop();
+        if (verbose == true) {
+          String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+          print(msg);
+        }
         return updated;
       } catch (e) {
         throw (e);
@@ -264,12 +278,15 @@ class Db {
     int deleted = 0;
     await _mutex.synchronized(() async {
       try {
+        Stopwatch timer = Stopwatch()..start();
         String q = 'DELETE FROM $table WHERE $where';
-        if (verbose == true) {
-          print(q);
-        }
         int deleted = await this.database.rawDelete(q);
         _changeFeedController.sink.add(ChangeFeedItem("delete", deleted, q));
+        timer.stop();
+        if (verbose == true) {
+          String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+          print(msg);
+        }
         return deleted;
       } catch (e) {
         throw (e);
@@ -285,13 +302,19 @@ class Db {
     /// [where] the where sql clause
     /// [verbose] print the query
     /// returns true if exists
-    String q = 'SELECT COUNT(*) FROM $table WHERE $where';
-    if (verbose == true) {
-      print(q);
-    }
-    int count = Sqflite.firstIntValue(await database.rawQuery(q));
-    if (count > 0) {
-      return true;
+    try {
+      Stopwatch timer = Stopwatch()..start();
+      String q = 'SELECT COUNT(*) FROM $table WHERE $where';
+      int count = Sqflite.firstIntValue(await database.rawQuery(q));
+      if (verbose == true) {
+        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+        print(msg);
+      }
+      if (count > 0) {
+        return true;
+      }
+    } catch (e) {
+      throw (e);
     }
     return false;
   }
@@ -304,15 +327,17 @@ class Db {
     /// [verbose] print the query
     /// returns a count of the rows
     try {
+      Stopwatch timer = Stopwatch()..start();
       String w = "";
       if (where != null) {
         w = " WHERE $where";
       }
       String q = 'SELECT COUNT(*) FROM $table$w';
-      if (verbose == true) {
-        print(q);
-      }
       final num = Sqflite.firstIntValue(await this.database.rawQuery(q));
+      if (verbose == true) {
+        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+        print(msg);
+      }
       return num;
     } catch (e) {
       throw (e);
