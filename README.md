@@ -1,6 +1,10 @@
 # Sqlcool
 
-A database helper class for [Sqflite](https://github.com/tekartik/sqflite): forget about implementation details and focus on the business logic
+A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Forget about implementation details and focus on the business logic. Features:
+
+- **Simple api** for crud operations
+- **Changefeed**: a stream to monitor database changes
+- **Select bloc**: a ready to use bloc for select operations
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
@@ -10,9 +14,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
      sqlcool: ^1.1.2
    ```
 
-## Quick example
-
-### Simple crud
+## Simple crud
 
    ```dart
    import 'package:sqlcool/sqlcool.dart';
@@ -53,9 +55,30 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
    }
    ```
 
-### Reactive select bloc
+## Changefeed
 
-The bloc will rebuild itself on any database change.
+A stream of database change events is available
+
+   ```dart
+   import 'dart:async';
+   import 'package:sqlcool/sqlcool.dart';
+
+   StreamSubscription _changefeed;
+
+   _changefeed = db.changefeed.listen((change) {
+      print("CHANGE IN THE DATABASE:");
+      print("Change type: ${change.changeType}");
+      print("Number of items impacted: ${change.value}");
+      print("Query: ${change.query}");
+    });
+
+   // _changefeed.cancel();
+   ```
+
+## Reactive select bloc
+
+The bloc will rebuild itself on any database change because of the `reactive`
+parameter set to `true`:
 
    ```dart
    import 'package:flutter/material.dart';
