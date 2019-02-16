@@ -1,6 +1,6 @@
 name: sqlcool
 author: synw <synwe@yahoo.com>
-description: A Flutter library to work with Sqflite. Provide helpers for crud operations.
+description: A library to work with Sqflite providing a simple api for crud operations and reactivity bindings
 homepage: https://github.com/synw/sqlcool
 
 # The following defines the version and build number for your application.
@@ -9,7 +9,7 @@ homepage: https://github.com/synw/sqlcool
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.1.2
+version: 1.2.0
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
