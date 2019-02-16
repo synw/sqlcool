@@ -200,13 +200,14 @@ class Db {
         i++;
       }
       String q = "INSERT INTO $table ($fields) VALUES($values)";
+      String qStr = "$q $row";
       if (verbose == true) {
-        print("$q $row");
+        print(qStr);
       }
       this.database.rawInsert(q, datapoint).catchError((e) {
         throw (e);
       });
-      _changeFeedController.sink.add(ChangeFeedItem("insert", 1, q));
+      _changeFeedController.sink.add(ChangeFeedItem("insert", 1, qStr));
     });
   }
 
@@ -237,11 +238,12 @@ class Db {
           i++;
         }
         String q = 'UPDATE $table SET $pairs WHERE $where';
+        String qStr = "$q $datapoint";
         if (verbose == true) {
-          print("$q $datapoint");
+          print("$qStr");
         }
         updated = await this.database.rawUpdate(q, datapoint);
-        _changeFeedController.sink.add(ChangeFeedItem("update", updated, q));
+        _changeFeedController.sink.add(ChangeFeedItem("update", updated, qStr));
         return updated;
       } catch (e) {
         throw (e);
