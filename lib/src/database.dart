@@ -8,15 +8,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'models.dart';
 
-/// the default database instance
+/// the default _db instance
 Db db = Db();
 
-/// A class to handle database operations
+/// A class to handle _db operations
 class Db {
   Db();
 
-  // A Sqflite database
-  Database database;
+  Database _db;
 
   final _mutex = new Lock();
   final StreamController<ChangeFeedItem> _changeFeedController =
@@ -25,6 +24,8 @@ class Db {
 
   Stream<ChangeFeedItem> get changefeed => _changeFeedController.stream;
   File get file => _dbFile;
+  // A Sqflite _db
+  Database get database => _db;
 
   dispose() {
     _changeFeedController.close();
@@ -36,8 +37,7 @@ class Db {
       bool verbose: false,
       String fromAsset: ""}) async {
     /// initialize the database
-    /// [path] the database file path relative to the
-    /// documents directory
+    /// [path] the database file path relative to the documents directory
     /// [queries] list of queries to run at initialization
     /// [fromAsset] copy the database from an asset file
     /// [verbose] print info
@@ -66,14 +66,14 @@ class Db {
         }
       }
     }
-    if (this.database == null) {
+    if (this._db == null) {
       await _mutex.synchronized(() async {
-        if (this.database == null) {
+        if (this._db == null) {
           // open
           if (verbose == true) {
-            print("OPENING DATABASE");
+            print("OPENING database");
           }
-          this.database = await openDatabase(dbpath, version: 1,
+          this._db = await openDatabase(dbpath, version: 1,
               onCreate: (Database _db, int version) async {
             if (queries.length > 0) {
               for (String q in queries) {
@@ -125,7 +125,7 @@ class Db {
       if (offset != null) {
         q += " OFFSET $offset";
       }
-      final List<Map<String, dynamic>> res = await this.database.rawQuery(q);
+      final List<Map<String, dynamic>> res = await this._db.rawQuery(q);
       timer.stop();
       if (verbose == true) {
         String msg = "$q  in ${timer.elapsedMilliseconds} ms";
@@ -174,7 +174,7 @@ class Db {
       if (offset != null) {
         q += " OFFSET $offset";
       }
-      final List<Map<String, dynamic>> res = await this.database.rawQuery(q);
+      final List<Map<String, dynamic>> res = await this._db.rawQuery(q);
       timer.stop();
       if (verbose == true) {
         String msg = "$q  in ${timer.elapsedMilliseconds} ms";
@@ -212,7 +212,7 @@ class Db {
         i++;
       }
       String q = "INSERT INTO $table ($fields) VALUES($values)";
-      this.database.rawInsert(q, datapoint).catchError((e) {
+      this._db.rawInsert(q, datapoint).catchError((e) {
         throw (e);
       });
       String qStr = "$q $row";
@@ -257,7 +257,7 @@ class Db {
           i++;
         }
         String q = 'UPDATE $table SET $pairs WHERE $where';
-        updated = await this.database.rawUpdate(q, datapoint);
+        updated = await this._db.rawUpdate(q, datapoint);
         String qStr = "$q $datapoint";
         timer.stop();
         _changeFeedController.sink.add(ChangeFeedItem(
@@ -291,7 +291,7 @@ class Db {
       try {
         Stopwatch timer = Stopwatch()..start();
         String q = 'DELETE FROM $table WHERE $where';
-        int deleted = await this.database.rawDelete(q);
+        int deleted = await this._db.rawDelete(q);
         timer.stop();
         _changeFeedController.sink.add(ChangeFeedItem(
             changeType: "delete",
@@ -320,7 +320,7 @@ class Db {
     try {
       Stopwatch timer = Stopwatch()..start();
       String q = 'SELECT COUNT(*) FROM $table WHERE $where';
-      int count = Sqflite.firstIntValue(await database.rawQuery(q));
+      int count = Sqflite.firstIntValue(await _db.rawQuery(q));
       timer.stop();
       if (verbose == true) {
         String msg = "$q  in ${timer.elapsedMilliseconds} ms";
@@ -349,7 +349,7 @@ class Db {
         w = " WHERE $where";
       }
       String q = 'SELECT COUNT(*) FROM $table$w';
-      final num c = Sqflite.firstIntValue(await this.database.rawQuery(q));
+      final num c = Sqflite.firstIntValue(await this._db.rawQuery(q));
       timer.stop();
       if (verbose == true) {
         String msg = "$q  in ${timer.elapsedMilliseconds} ms";
