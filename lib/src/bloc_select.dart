@@ -5,7 +5,7 @@ import 'database.dart';
 class SelectBloc {
   SelectBloc(
       {@required this.table,
-      this.database,
+      @required this.database,
       this.offset,
       this.limit,
       this.where,
@@ -17,7 +17,6 @@ class SelectBloc {
       this.verbose: false})
       : assert(database != null),
         assert(table != null) {
-    database = database ?? db;
     _getItems();
     if (reactive) {
       _changefeed = database.changefeed.listen((change) {

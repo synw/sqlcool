@@ -10,7 +10,8 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
   @override
   void initState() {
     // declare the query
-    this.bloc = SelectBloc(table: "items", orderBy: 'name', reactive: true);
+    this.bloc = SelectBloc(
+        database: db, table: "items", orderBy: 'name', reactive: true);
     // listen for changes in the database
     _changefeed = db.changefeed.listen((change) {
       print("CHANGE IN THE DATABASE:");
