@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sqlcool/sqlcool.dart';
 import 'dialogs.dart';
+import 'conf.dart';
 
 class _PageSelectBlocState extends State<PageSelectBloc> {
   SelectBloc bloc;

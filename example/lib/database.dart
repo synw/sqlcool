@@ -1,4 +1,4 @@
-import 'package:sqlcool/sqlcool.dart';
+import 'conf.dart';
 
 saveItem(String itemName) async {
   String table = "items";

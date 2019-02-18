@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:sqlcool/sqlcool.dart';
 import 'page_selectbloc.dart';
+import 'conf.dart';
 
 void main() {
   initDb().then((_) {
