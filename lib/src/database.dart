@@ -35,12 +35,15 @@ class Db {
       {@required String path,
       List<String> queries: const <String>[],
       bool verbose: false,
-      String fromAsset: ""}) async {
+      String fromAsset: "",
+      bool debug: false}) async {
     /// initialize the database
     /// [path] the database file path relative to the documents directory
     /// [queries] list of queries to run at initialization
     /// [fromAsset] copy the database from an asset file
     /// [verbose] print info
+    /// [debug] set Sqflite debug mode on
+    if (debug) Sqflite.setDebugModeOn(true);
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String dbpath = documentsDirectory.path + "/" + path;
     if (verbose) {

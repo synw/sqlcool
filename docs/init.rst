@@ -69,3 +69,14 @@ Multiple databases
       db2 = Db();
       // ...
    }
+
+Verbosity
+---------
+
+The ``Db`` methods have a ``verbose`` option that will print the query. To get more
+detailled information and queries results you can activate the Sqflite debug mode:
+
+
+::
+
+   db.init(path: dbpath, queries: [q], debug: true);
