@@ -60,7 +60,7 @@ Update
        slug: "my-item-new",
        name: "My item new",
    }
-   int updated = await db.update(table: category, row: row, where: "id=1", verbose: true);
+   int updated = await db.update(table: "category", row: row, where: "id=1", verbose: true);
 
 Required parameters:
 
@@ -99,7 +99,7 @@ Join
    import 'package:sqlcool/sqlcool.dart';
 
    List<Map<String, dynamic>> rows = await db.join(
-                   table: product, offset: 10, limit: 20,
+                   table: "product", offset: 10, limit: 20,
                    columns: "id, name, price, category.name as category_name",
                    joinTable: "category",
                    joinOn: "product.category=category.id");
