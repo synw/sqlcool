@@ -10,7 +10,9 @@ Initialize an empty database
 
    import 'package:sqlcool/sqlcool.dart';
 
-   void main() {
+   Db db = Db();
+
+   void myInit() {
       String q1 = """CREATE TABLE product (
          id INTEGER PRIMARY KEY,
          name TEXT NOT NULL,
@@ -25,7 +27,7 @@ Initialize an empty database
       List<String> queries = [q1, q2];
       db.init(path: dbpath, queries: queries, verbose: true).catchError((e) {
           print("Error initializing the database: $e");
-      });
+      }).then((_){ print("Database is ready"; });
    }
 
 Required parameters:
@@ -57,10 +59,6 @@ Initialize a database from an Sqlite asset file
 
 Multiple databases
 ------------------
-
-The ``db`` object is an instance of the ``Db`` class. You can instantiate
-it yourself if you want to use multiple databases or to have full
-control over the instance(s):
 
 ::
 
