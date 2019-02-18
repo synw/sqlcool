@@ -20,6 +20,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
    import 'package:sqlcool/sqlcool.dart';
 
    void someFunc() async {
+      Db db = Db();
       String dbpath = "db.sqlite"; // relative to the documents directory
       await db.init(path: dbpath, fromAsset: "assets/db.sqlite", verbose: true).catchError((e) {
           print("Error initializing the database: ${e.message}");
@@ -29,7 +30,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
        slug: "my-item",
        name: "My item",
       };
-      db.insert(table: "category", row: row, verbose: true).catchError((e) {
+      await db.insert(table: "category", row: row, verbose: true).catchError((e) {
           print("Error inserting data: ${e.message}");
       });
       // select
