@@ -13,16 +13,20 @@ Initialize an empty database
    Db db = Db();
 
    void myInit() {
-      String q1 = """CREATE TABLE product (
+      String q1 = """CREATE TABLE category (
+         id INTEGER PRIMARY KEY,
+         name TEXT NOT NULL
+      )""";
+      String q2 = """CREATE TABLE product (
          id INTEGER PRIMARY KEY,
          name TEXT NOT NULL,
          price REAL NOT NULL,
-         category INTEGER FOREIGN KEY (category) REFERENCES category(id)
-         )""";
-      String q2 = """CREATE TABLE category (
-         id INTEGER PRIMARY KEY,
-         name TEXT NOT NULL
-         )""";
+         category_id INTEGER,
+         CONSTRAINT category_name
+            FOREIGN KEY (category_id) 
+            REFERENCES category(id) 
+            ON DELETE CASCADE
+      )""";
       String dbpath = "data.sqlite";
       List<String> queries = [q1, q2];
       db.init(path: dbpath, queries: queries, verbose: true).catchError((e) {
