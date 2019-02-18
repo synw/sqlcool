@@ -226,9 +226,7 @@ class Db {
           i++;
         }
         String q = "INSERT INTO $table ($fields) VALUES($values)";
-        this._db.rawInsert(q, datapoint).catchError((e) {
-          throw (e);
-        });
+        await _db.rawInsert(q, datapoint);
         String qStr = "$q $row";
         timer.stop();
         _changeFeedController.sink.add(ChangeFeedItem(

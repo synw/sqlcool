@@ -12,7 +12,7 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
   void initState() {
     // declare the query
     this.bloc = SelectBloc(
-        database: db, table: "items", orderBy: 'name', reactive: true);
+        database: db, table: "product", orderBy: 'name ASC', reactive: true);
     // listen for changes in the database
     _changefeed = db.changefeed.listen((change) {
       print("CHANGE IN THE DATABASE:");
@@ -32,15 +32,6 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Sqlcool"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () => insertItemDialog(context),
-          ),
-        ],
-      ),
       body: StreamBuilder<List<Map>>(
           stream: bloc.items,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -48,8 +39,7 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
               // the select query has not found anything
               if (snapshot.data.length == 0) {
                 return Center(
-                  child: Text(
-                      "No data. Use the + in the appbar to insert an item"),
+                  child: Text("No data. Use the + button to insert an item"),
                 );
               }
               // the select query has results
@@ -75,6 +65,12 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
               return CircularProgressIndicator();
             }
           }),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        backgroundColor: Colors.yellow,
+        foregroundColor: Colors.white,
+        onPressed: () => insertItemDialog(context),
+      ),
     );
   }
 }
