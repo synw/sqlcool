@@ -16,7 +16,8 @@ class SelectBloc {
       this.reactive: false,
       this.verbose: false})
       : assert(database != null),
-        assert(table != null) {
+        assert(table != null),
+        assert(database.isReady) {
     _getItems();
     if (reactive) {
       _changefeed = database.changefeed.listen((change) {

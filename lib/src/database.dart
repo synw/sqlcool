@@ -7,6 +7,7 @@ import 'package:synchronized/synchronized.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'models.dart';
+import 'exceptions.dart';
 
 /// A class to handle database operations
 class Db {
@@ -18,11 +19,13 @@ class Db {
   final StreamController<ChangeFeedItem> _changeFeedController =
       StreamController<ChangeFeedItem>.broadcast();
   File _dbFile;
+  bool _isReady = false;
 
   Stream<ChangeFeedItem> get changefeed => _changeFeedController.stream;
   File get file => _dbFile;
   // A Sqflite _db
   Database get database => _db;
+  bool get isReady => _isReady;
 
   dispose() {
     _changeFeedController.close();
@@ -40,14 +43,14 @@ class Db {
     /// [verbose] print info
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String dbpath = documentsDirectory.path + "/" + path;
-    if (verbose == true) {
+    if (verbose) {
       print("INITIALIZING DATABASE at " + dbpath);
     }
     // copy the database from an asset if necessary
     if (fromAsset != "") {
       bool exists = await File(dbpath).exists();
       if (exists == false) {
-        if (verbose == true) {
+        if (verbose) {
           print("Copying the database from asset $fromAsset");
         }
         try {
@@ -67,7 +70,7 @@ class Db {
       await _mutex.synchronized(() async {
         if (this._db == null) {
           // open
-          if (verbose == true) {
+          if (verbose) {
             print("OPENING database");
           }
           this._db = await openDatabase(dbpath, version: 1,
@@ -76,8 +79,8 @@ class Db {
               for (String q in queries) {
                 Stopwatch timer = Stopwatch()..start();
                 await _db.execute(q);
-                if (verbose == true) {
-                  String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+                if (verbose) {
+                  String msg = "$q in ${timer.elapsedMilliseconds} ms";
                   print(msg);
                 }
               }
@@ -86,8 +89,11 @@ class Db {
         }
       });
     }
-    // file
+    if (verbose) {
+      print("DATABASE INITIALIZED");
+    }
     _dbFile = File(dbpath);
+    _isReady = true;
   }
 
   Future<List<Map<String, dynamic>>> select(
@@ -108,6 +114,7 @@ class Db {
     /// [verbose] print the query
     /// returns the selected data
     try {
+      if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
       String q = "SELECT $columns FROM $table";
       if (where != null) {
@@ -124,11 +131,13 @@ class Db {
       }
       final List<Map<String, dynamic>> res = await this._db.rawQuery(q);
       timer.stop();
-      if (verbose == true) {
-        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+      if (verbose) {
+        String msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
       return res.toList();
+    } on DatabaseNotReady catch (e) {
+      throw ("${e.message}");
     } catch (e) {
       throw (e);
     }
@@ -156,6 +165,7 @@ class Db {
     /// [verbose] print the query
     /// returns the selected data
     try {
+      if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
       String q = "SELECT $columns FROM $table";
       q = "$q INNER JOIN $joinTable ON $joinOn";
@@ -173,11 +183,13 @@ class Db {
       }
       final List<Map<String, dynamic>> res = await this._db.rawQuery(q);
       timer.stop();
-      if (verbose == true) {
-        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+      if (verbose) {
+        String msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
       return res.toList();
+    } on DatabaseNotReady catch (e) {
+      throw ("${e.message}");
     } catch (e) {
       throw (e);
     }
@@ -192,36 +204,43 @@ class Db {
     /// [row] the data to insert
     /// [verbose] print the query
     await _mutex.synchronized(() async {
-      Stopwatch timer = Stopwatch()..start();
-      String fields = "";
-      String values = "";
-      int n = row.length;
-      int i = 1;
-      List<String> datapoint = [];
-      for (var k in row.keys) {
-        fields = "$fields$k";
-        values = "$values?";
-        datapoint.add(row[k]);
-        if (i < n) {
-          fields = "$fields,";
-          values = "$values,";
+      try {
+        if (!_isReady) throw DatabaseNotReady();
+        Stopwatch timer = Stopwatch()..start();
+        String fields = "";
+        String values = "";
+        int n = row.length;
+        int i = 1;
+        List<String> datapoint = [];
+        for (var k in row.keys) {
+          fields = "$fields$k";
+          values = "$values?";
+          datapoint.add(row[k]);
+          if (i < n) {
+            fields = "$fields,";
+            values = "$values,";
+          }
+          i++;
         }
-        i++;
-      }
-      String q = "INSERT INTO $table ($fields) VALUES($values)";
-      this._db.rawInsert(q, datapoint).catchError((e) {
+        String q = "INSERT INTO $table ($fields) VALUES($values)";
+        this._db.rawInsert(q, datapoint).catchError((e) {
+          throw (e);
+        });
+        String qStr = "$q $row";
+        timer.stop();
+        _changeFeedController.sink.add(ChangeFeedItem(
+            changeType: "insert",
+            value: 1,
+            query: qStr,
+            executionTime: timer.elapsedMicroseconds));
+        if (verbose) {
+          String msg = "$q in ${timer.elapsedMilliseconds} ms";
+          print(msg);
+        }
+      } on DatabaseNotReady catch (e) {
+        throw ("${e.message}");
+      } catch (e) {
         throw (e);
-      });
-      String qStr = "$q $row";
-      timer.stop();
-      _changeFeedController.sink.add(ChangeFeedItem(
-          changeType: "insert",
-          value: 1,
-          query: qStr,
-          executionTime: timer.elapsedMicroseconds));
-      if (verbose == true) {
-        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
-        print(msg);
       }
     });
   }
@@ -239,6 +258,7 @@ class Db {
     /// returns a count of the updated rows
     int updated = 0;
     await _mutex.synchronized(() async {
+      if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
       try {
         String pairs = "";
@@ -262,11 +282,13 @@ class Db {
             value: updated,
             query: qStr,
             executionTime: timer.elapsedMicroseconds));
-        if (verbose == true) {
-          String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+        if (verbose) {
+          String msg = "$q in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
         return updated;
+      } on DatabaseNotReady catch (e) {
+        throw ("${e.message}");
       } catch (e) {
         throw (e);
       }
@@ -285,6 +307,7 @@ class Db {
     /// returns a count of the deleted rows
     int deleted = 0;
     await _mutex.synchronized(() async {
+      if (!_isReady) throw DatabaseNotReady();
       try {
         Stopwatch timer = Stopwatch()..start();
         String q = 'DELETE FROM $table WHERE $where';
@@ -295,11 +318,13 @@ class Db {
             value: deleted,
             query: q,
             executionTime: timer.elapsedMicroseconds));
-        if (verbose == true) {
-          String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+        if (verbose) {
+          String msg = "$q in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
         return deleted;
+      } on DatabaseNotReady catch (e) {
+        throw ("${e.message}");
       } catch (e) {
         throw (e);
       }
@@ -315,17 +340,20 @@ class Db {
     /// [verbose] print the query
     /// returns true if exists
     try {
+      if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
       String q = 'SELECT COUNT(*) FROM $table WHERE $where';
       int count = Sqflite.firstIntValue(await _db.rawQuery(q));
       timer.stop();
-      if (verbose == true) {
-        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+      if (verbose) {
+        String msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
       if (count > 0) {
         return true;
       }
+    } on DatabaseNotReady catch (e) {
+      throw ("${e.message}");
     } catch (e) {
       throw (e);
     }
@@ -340,6 +368,7 @@ class Db {
     /// [verbose] print the query
     /// returns a count of the rows
     try {
+      if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
       String w = "";
       if (where != null) {
@@ -348,11 +377,13 @@ class Db {
       String q = 'SELECT COUNT(*) FROM $table$w';
       final num c = Sqflite.firstIntValue(await this._db.rawQuery(q));
       timer.stop();
-      if (verbose == true) {
-        String msg = "$q  in ${timer.elapsedMilliseconds} ms";
+      if (verbose) {
+        String msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
       return c;
+    } on DatabaseNotReady catch (e) {
+      throw ("${e.message}");
     } catch (e) {
       throw (e);
     }
