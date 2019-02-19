@@ -198,7 +198,7 @@ class Db {
     }
   }
 
-  Future<void> insert(
+  Future<int> insert(
       {@required String table,
       @required Map<String, String> row,
       bool verbose: false}) async {
@@ -206,6 +206,8 @@ class Db {
     /// [table] the table to insert into
     /// [row] the data to insert
     /// [verbose] print the query
+    /// Returns the last inserted id
+    int id;
     await _mutex.synchronized(() async {
       try {
         if (!_isReady) throw DatabaseNotReady();
@@ -226,7 +228,7 @@ class Db {
           i++;
         }
         String q = "INSERT INTO $table ($fields) VALUES($values)";
-        await _db.rawInsert(q, datapoint);
+        id = await _db.rawInsert(q, datapoint);
         String qStr = "$q $row";
         timer.stop();
         _changeFeedController.sink.add(ChangeFeedItem(
@@ -244,6 +246,7 @@ class Db {
         throw (e);
       }
     });
+    return id;
   }
 
   Future<int> update(
