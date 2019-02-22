@@ -133,3 +133,17 @@ Required parameters:
 
 :table: *String* name of the table, required
 :where: *String* the where sql clause
+
+Raw query
+---------
+
+::
+
+   import 'package:sqlcool/sqlcool.dart';
+
+   List<Map<String, dynamic>> result = await db.query("SELECT * FROM mytable");
+
+Required parameters:
+
+:query: *String* the sql query, required
+:verbose: *bool* ``true`` or ``false``

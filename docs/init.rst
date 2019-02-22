@@ -22,7 +22,7 @@ Initialize an empty database
          name TEXT NOT NULL,
          price REAL NOT NULL,
          category_id INTEGER,
-         CONSTRAINT category_name
+         CONSTRAINT category
             FOREIGN KEY (category_id) 
             REFERENCES category(id) 
             ON DELETE CASCADE
