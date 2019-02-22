@@ -16,9 +16,12 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
     // listen for changes in the database
     _changefeed = db.changefeed.listen((change) {
       print("CHANGE IN THE DATABASE:");
-      print("Change type: ${change.changeType}");
+      print("Change type: ${change.type}");
       print("Number of items impacted: ${change.value}");
       print("Query: ${change.query}");
+      if (change.type == DatabaseChangeType.update) {
+        print("${change.value} items updated");
+      }
     });
     super.initState();
   }
