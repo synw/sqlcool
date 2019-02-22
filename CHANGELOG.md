@@ -6,7 +6,7 @@
 
 - The default `Db` instance has been removed
 - The `database` parameter is now required for `SelectBloc`
-- The `changeType` parameter in `changefeed` has been renamed `type` and now uses the `DatabaseChangeType` data type
+- The `changeType` parameter in `changefeed` has been renamed `type` and now uses the `DatabaseChange` data type
 
 New features:
 

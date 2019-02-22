@@ -1,15 +1,15 @@
 import 'package:flutter/foundation.dart';
 
-enum DatabaseChangeType { insert, update, delete }
+enum DatabaseChange { insert, update, delete }
 
-class DatabaseChange {
-  DatabaseChange(
+class DatabaseChangeEvent {
+  DatabaseChangeEvent(
       {@required this.type,
       @required this.value,
       @required this.query,
       @required this.executionTime});
 
-  DatabaseChangeType type;
+  DatabaseChange type;
   int value;
   String query;
   num executionTime;
@@ -21,11 +21,11 @@ class DatabaseChange {
       s = "s";
     }
     String msg = "";
-    if (type == DatabaseChangeType.delete) {
+    if (type == DatabaseChange.delete) {
       msg += "$value item$s deleted";
-    } else if (type == DatabaseChangeType.update) {
+    } else if (type == DatabaseChange.update) {
       msg += "$value item$s updated";
-    } else if (type == DatabaseChangeType.insert) {
+    } else if (type == DatabaseChange.insert) {
       msg += "$value item$s inserted";
     }
     msg += "\n$type : $value";

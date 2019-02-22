@@ -28,7 +28,7 @@ the database.
          print("Change type: ${change.type}");
          print("Number of items impacted: ${change.value}");
          print("Query: ${change.query}");
-         if (change.type == DatabaseChangeType.update) {
+         if (change.type == DatabaseChange.update) {
            print("${change.value} items updated");
          }
        });

@@ -16,13 +16,13 @@ class Db {
   Database _db;
 
   final _mutex = new Lock();
-  final StreamController<DatabaseChange> _changeFeedController =
-      StreamController<DatabaseChange>.broadcast();
+  final StreamController<DatabaseChangeEvent> _changeFeedController =
+      StreamController<DatabaseChangeEvent>.broadcast();
   File _dbFile;
   bool _isReady = false;
 
-  /// A stream of [DatabaseChange] with all the changes that occur in the database
-  Stream<DatabaseChange> get changefeed => _changeFeedController.stream;
+  /// A stream of [DatabaseChangeEvent] with all the changes that occur in the database
+  Stream<DatabaseChangeEvent> get changefeed => _changeFeedController.stream;
 
   /// the Sqlite file
   File get file => _dbFile;
@@ -259,8 +259,8 @@ class Db {
         id = await _db.rawInsert(q, datapoint);
         String qStr = "$q $row";
         timer.stop();
-        _changeFeedController.sink.add(DatabaseChange(
-            type: DatabaseChangeType.insert,
+        _changeFeedController.sink.add(DatabaseChangeEvent(
+            type: DatabaseChange.insert,
             value: 1,
             query: qStr,
             executionTime: timer.elapsedMicroseconds));
@@ -309,8 +309,8 @@ class Db {
         updated = await this._db.rawUpdate(q, datapoint);
         String qStr = "$q $datapoint";
         timer.stop();
-        _changeFeedController.sink.add(DatabaseChange(
-            type: DatabaseChangeType.update,
+        _changeFeedController.sink.add(DatabaseChangeEvent(
+            type: DatabaseChange.update,
             value: updated,
             query: qStr,
             executionTime: timer.elapsedMicroseconds));
@@ -345,8 +345,8 @@ class Db {
         String q = 'DELETE FROM $table WHERE $where';
         int deleted = await this._db.rawDelete(q);
         timer.stop();
-        _changeFeedController.sink.add(DatabaseChange(
-            type: DatabaseChangeType.delete,
+        _changeFeedController.sink.add(DatabaseChangeEvent(
+            type: DatabaseChange.delete,
             value: deleted,
             query: q,
             executionTime: timer.elapsedMicroseconds));
