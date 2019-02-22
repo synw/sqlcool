@@ -11,12 +11,13 @@ New features:
 
 - Add support for the Sqflite debug mode
 - Add a query timer
+- Add the `query` method
 
 Changes and fixes:
 
 - Add a check to make sure the database is ready before running any query
-- Fix in `insert`
 - Better examples
+- Various minor fixes
 
 
 ## 1.2.0
