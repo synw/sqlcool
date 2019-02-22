@@ -1,15 +1,19 @@
 import 'conf.dart';
 
 saveItem(String itemName) async {
-  String table = "items";
-  Map<String, String> row = {"name": itemName};
+  String table = "product";
+  Map<String, String> row = {
+    "name": itemName,
+    "category_id": "1",
+    "price": "50",
+  };
   await db.insert(table: table, row: row, verbose: true).catchError((e) {
     throw (e);
   });
 }
 
 deleteItem(int itemId) async {
-  String table = "items";
+  String table = "product";
   await db
       .delete(table: table, where: 'id="$itemId"', verbose: true)
       .catchError((e) {
@@ -18,7 +22,7 @@ deleteItem(int itemId) async {
 }
 
 updateItem(String oldItemName, String newItemName) async {
-  String table = "items";
+  String table = "product";
   Map<String, String> row = {"name": newItemName};
   await db
       .update(

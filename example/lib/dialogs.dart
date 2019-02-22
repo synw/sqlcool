@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'database.dart';
 
 insertItemDialog(BuildContext context) {
-  final controller = TextEditingController();
+  final nameController = TextEditingController();
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -18,7 +18,7 @@ insertItemDialog(BuildContext context) {
           FlatButton(
             child: Text("Save"),
             onPressed: () {
-              String txt = controller.text;
+              String txt = nameController.text;
               saveItem(txt).catchError((e) {
                 throw ("Can not save item ${e.message}");
               });
@@ -27,7 +27,7 @@ insertItemDialog(BuildContext context) {
           ),
         ],
         content: TextField(
-          controller: controller,
+          controller: nameController,
           autofocus: true,
         ),
       );
@@ -65,14 +65,15 @@ deleteItemDialog(BuildContext context, String itemName, int itemId) {
 }
 
 updateItemDialog(BuildContext context, String itemName) {
-  final controller = TextEditingController(text: itemName);
+  final nameController = TextEditingController(text: itemName);
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text("Update item"),
         content: TextField(
-          controller: controller,
+          controller: nameController,
           autofocus: true,
         ),
         actions: <Widget>[
@@ -85,7 +86,7 @@ updateItemDialog(BuildContext context, String itemName) {
           FlatButton(
             child: Text("Save"),
             onPressed: () {
-              String txt = controller.text;
+              String txt = nameController.text;
               updateItem(itemName, txt).catchError((e) {
                 throw ("Can not update category $e");
               });

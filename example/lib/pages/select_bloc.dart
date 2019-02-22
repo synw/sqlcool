@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sqlcool/sqlcool.dart';
-import 'dialogs.dart';
-import 'conf.dart';
+import '../dialogs.dart';
+import '../conf.dart';
 
 class _PageSelectBlocState extends State<PageSelectBloc> {
   SelectBloc bloc;
@@ -67,8 +67,6 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
           }),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        backgroundColor: Colors.yellow,
-        foregroundColor: Colors.white,
         onPressed: () => insertItemDialog(context),
       ),
     );
