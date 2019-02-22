@@ -1,13 +1,15 @@
 import 'package:flutter/foundation.dart';
 
-class ChangeFeedItem {
-  ChangeFeedItem(
-      {@required this.changeType,
+enum DatabaseChangeType { insert, update, delete }
+
+class DatabaseChange {
+  DatabaseChange(
+      {@required this.type,
       @required this.value,
       @required this.query,
       @required this.executionTime});
 
-  String changeType;
+  DatabaseChangeType type;
   int value;
   String query;
   num executionTime;
@@ -19,14 +21,14 @@ class ChangeFeedItem {
       s = "s";
     }
     String msg = "";
-    if (changeType == "delete") {
+    if (type == DatabaseChangeType.delete) {
       msg += "$value item$s deleted";
-    } else if (changeType == "update") {
+    } else if (type == DatabaseChangeType.update) {
       msg += "$value item$s updated";
-    } else if (changeType == "insert") {
+    } else if (type == DatabaseChangeType.insert) {
       msg += "$value item$s inserted";
     }
-    msg += "\n$changeType : $value";
+    msg += "\n$type : $value";
     msg += "\n$query in $executionTime ms";
     return msg;
   }
