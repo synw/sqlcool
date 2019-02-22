@@ -1,5 +1,7 @@
 # Sqlcool
 
+[![pub package](https://img.shields.io/pub/v/sqlcool.svg)](https://pub.dartlang.org/packages/sqlcool)
+
 A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Forget about implementation details and focus on the business logic. Features:
 
 - **Simple api** for crud operations
@@ -7,12 +9,6 @@ A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Fo
 - **Select bloc**: a ready to use bloc for select operations
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
-
-   ```yaml
-
-   dependencies:
-     sqlcool: ^1.2.0
-   ```
 
 ## Simple crud
 
@@ -68,11 +64,12 @@ A stream of database change events is available
 
    _changefeed = db.changefeed.listen((change) {
       print("CHANGE IN THE DATABASE:");
-      print("Change type: ${change.changeType}");
-      print("Number of items impacted: ${change.value}");
       print("Query: ${change.query}");
     });
-
+    if (change.type == DatabaseChange.update) {
+      print("${change.value} items updated");
+      print("Number of items impacted: ${change.value}");
+    }
    // _changefeed.cancel();
    ```
 
