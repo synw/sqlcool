@@ -160,7 +160,7 @@ class Db {
         String msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
-      return res.toList();
+      return res;
     } on DatabaseNotReady catch (e) {
       throw ("${e.message}");
     } catch (e) {
@@ -212,7 +212,7 @@ class Db {
         String msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
-      return res.toList();
+      return res;
     } on DatabaseNotReady catch (e) {
       throw ("${e.message}");
     } catch (e) {
