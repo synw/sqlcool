@@ -21,10 +21,16 @@ class Db {
   File _dbFile;
   bool _isReady = false;
 
+  /// A stream of [ChangeFeedItem] with all the changes that occur in the database
   Stream<ChangeFeedItem> get changefeed => _changeFeedController.stream;
+
+  /// the Sqlite file
   File get file => _dbFile;
-  // A Sqflite _db
+
+  /// A Sqflite database
   Database get database => _db;
+
+  /// The database state
   bool get isReady => _isReady;
 
   dispose() {
