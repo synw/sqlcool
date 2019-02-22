@@ -16,6 +16,7 @@ Changes and fixes:
 
 - Add a check to make sure the database is ready before running any query
 - Fix in `insert`
+- Better examples
 
 
 ## 1.2.0

@@ -99,6 +99,28 @@ class Db {
     _isReady = true;
   }
 
+  Future<List<Map<String, dynamic>>> query(String q,
+      {bool verbose: false}) async {
+    /// execute a query
+    /// [q] the query to execute
+    /// [verbose] print the query
+    try {
+      if (!_isReady) throw DatabaseNotReady();
+      Stopwatch timer = Stopwatch()..start();
+      final List<Map<String, dynamic>> res = await this._db.rawQuery(q);
+      timer.stop();
+      if (verbose) {
+        String msg = "$q in ${timer.elapsedMilliseconds} ms";
+        print(msg);
+      }
+      return res;
+    } on DatabaseNotReady catch (e) {
+      throw ("${e.message}");
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   Future<List<Map<String, dynamic>>> select(
       {@required String table,
       String columns = "*",
