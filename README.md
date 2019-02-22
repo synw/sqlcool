@@ -65,11 +65,11 @@ A stream of database change events is available
    _changefeed = db.changefeed.listen((change) {
       print("CHANGE IN THE DATABASE:");
       print("Query: ${change.query}");
+      if (change.type == DatabaseChange.update) {
+        print("${change.value} items updated");
+        print("Number of items impacted: ${change.value}");
+      }
     });
-    if (change.type == DatabaseChange.update) {
-      print("${change.value} items updated");
-      print("Number of items impacted: ${change.value}");
-    }
    // _changefeed.cancel();
    ```
 
