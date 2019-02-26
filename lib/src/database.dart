@@ -16,10 +16,13 @@ class Db {
   Database _db;
 
   final _mutex = new Lock();
+  Completer<Null> _readyCompleter = Completer<Null>();
   final StreamController<DatabaseChangeEvent> _changeFeedController =
       StreamController<DatabaseChangeEvent>.broadcast();
   File _dbFile;
   bool _isReady = false;
+
+  Future<Null> get onReady => _readyCompleter.future;
 
   /// A stream of [DatabaseChangeEvent] with all the changes that occur in the database
   Stream<DatabaseChangeEvent> get changefeed => _changeFeedController.stream;
@@ -102,6 +105,9 @@ class Db {
       print("DATABASE INITIALIZED");
     }
     _dbFile = File(dbpath);
+    if (!_readyCompleter.isCompleted) {
+      _readyCompleter.complete();
+    }
     _isReady = true;
   }
 
