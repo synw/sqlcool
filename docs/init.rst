@@ -27,14 +27,34 @@ Initialize an empty database
             REFERENCES category(id) 
             ON DELETE CASCADE
       )""";
+      // the path is relative to the documents directory
       String dbpath = "data.sqlite";
       List<String> queries = [q1, q2];
       db.init(path: dbpath, queries: queries, verbose: true).catchError((e) {
-          print("Error initializing the database: $e");
-      }).then((_){ print("Database is ready"; });
+          throw("Error initializing the database: $e");
+      });
    }
 
-Required parameters:
+   void main() {
+      /// initialize the database async. Use the [onReady]
+      /// callback later to react to the initialization completed event
+     myInit();
+     runApp(MyApp());
+   }
+
+   // then later check if the database is ready
+
+   @override
+   void initState() {
+      db.onReady.then((_) {
+         setState(() {
+            print("STATE: THE DATABASE IS READY");
+         });
+      });
+   super.initState();
+   }
+
+Required parameters for ``init``:
 
 :path: *String* path where the database file will be stored:
    relative to the documents directory path

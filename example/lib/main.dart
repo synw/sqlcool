@@ -5,14 +5,14 @@ import 'pages/join_query.dart';
 import 'conf.dart';
 
 void main() {
-  // the database must be initialized
-  initDb().then((_) {
-    runApp(MyApp());
-  });
+  /// initialize the database async. We will use the [onReady]
+  /// callback later to react to the initialization completed event
+  initDb();
+  runApp(MyApp());
 }
 
 initDb() async {
-  // these queries will run only once, after the Sqlite file creation
+  /// these queries will run only once, after the Sqlite file creation
   String q1 = """CREATE TABLE product (
       id INTEGER PRIMARY KEY,
       name TEXT NOT NULL,
