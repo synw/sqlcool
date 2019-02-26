@@ -18,7 +18,7 @@ class _PageIndexState extends State<PageIndex> {
   @override
   Widget build(BuildContext context) {
     return !databaseIsReady
-        ? Scaffold(body: Center(child: Text("The datase is initializing ...")))
+        ? Scaffold(body: Center(child: Text("The database is initializing ...")))
         : Container(
             color: Colors.lightBlue,
             child: Column(
