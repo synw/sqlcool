@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.0
+
+- Add the onReady callback
+- Upgrade dependencies
+
 ## 2.0.0
 
 **Breaking changes**:
