@@ -44,6 +44,7 @@ class SelectBloc {
 
   final _itemController =
       StreamController<List<Map<String, dynamic>>>.broadcast();
+  bool _changefeedIsActive = true;
 
   get items => _itemController.stream;
 
@@ -51,6 +52,7 @@ class SelectBloc {
     _itemController.close();
     if (reactive) {
       _changefeed.cancel();
+      _changefeedIsActive = false;
     }
   }
 
@@ -67,7 +69,11 @@ class SelectBloc {
             orderBy: orderBy,
             verbose: verbose);
       } catch (e) {
-        _itemController.sink.addError(e);
+        if (_changefeedIsActive) {
+          _itemController.sink.addError(e);
+        } else {
+          throw(e);
+        }
         return;
       }
     } else {
@@ -83,10 +89,14 @@ class SelectBloc {
             orderBy: orderBy,
             verbose: verbose);
       } catch (e) {
-        _itemController.sink.addError(e);
+        if (_changefeedIsActive) {
+          _itemController.sink.addError(e);
+        } else {
+          throw(e);
+        }
         return;
       }
     }
-    _itemController.sink.add(res);
+    if (_changefeedIsActive) _itemController.sink.add(res);
   }
 }
