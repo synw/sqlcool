@@ -58,7 +58,6 @@ A stream of database change events is available
 
    ```dart
    import 'dart:async';
-   import 'package:sqlcool/sqlcool.dart';
 
    StreamSubscription _changefeed;
 
