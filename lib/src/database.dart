@@ -52,6 +52,7 @@ class Db {
     /// [fromAsset] copy the database from an asset file
     /// [verbose] print info
     /// [debug] set Sqflite debug mode on
+    assert(path != null);
     if (debug) Sqflite.setDebugModeOn(true);
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String dbpath = documentsDirectory.path + "/" + path;
@@ -60,21 +61,29 @@ class Db {
     }
     // copy the database from an asset if necessary
     if (fromAsset != "") {
-      bool exists = await File(dbpath).exists();
-      if (exists == false) {
+      File file = File(dbpath);
+      if (!file.existsSync()) {
         if (verbose) {
           print("Copying the database from asset $fromAsset");
         }
+        List<int> bytes;
         try {
-          // copy asset
           // read
           ByteData data = await rootBundle.load("$fromAsset");
-          List<int> bytes =
+          bytes =
               data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
-          // write
-          await new File(dbpath).writeAsBytes(bytes);
         } catch (e) {
-          throw ("Unable to copy database: $e");
+          throw ("Unable to read database from asset: $e");
+        }
+        try {
+          // create the directories path if necessary
+          if (!file.parent.existsSync()) {
+            file.parent.createSync(recursive: true);
+          }
+          // write
+          await file.writeAsBytes(bytes);
+        } catch (e) {
+          throw ("Unable to write database from asset: $e");
         }
       }
     }
