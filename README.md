@@ -6,7 +6,7 @@ A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Fo
 
 - **Simple api** for crud operations
 - **Changefeed**: a stream to monitor database changes
-- **Select bloc**: a ready to use bloc for select operations
+- **Select bloc**: a ready to use reactive bloc for select operations
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
@@ -89,6 +89,12 @@ parameter set to `true`:
        super.initState();
        this.bloc = SelectBloc(
            table: "items", orderBy: "name", reactive: true, verbose: true);
+     }
+
+     @override
+     void dispose() {
+       bloc.dispose();
+       super.dispose();
      }
 
      @override
