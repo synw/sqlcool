@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.1
+
+- Fix race condition in SelectBloc
+- Fix in the `fromAsset` option of `init`: create the directories path if needed instead of throwing an error
+
 ## 2.1.0
 
 - Add the onReady callback
