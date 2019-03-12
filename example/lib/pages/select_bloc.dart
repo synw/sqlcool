@@ -42,34 +42,36 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
               // the select query has not found anything
               if (snapshot.data.length == 0) {
                 return Center(
-                  child: Text("No data. Use the + button to insert an item"),
+                  child:
+                      const Text("No data. Use the + button to insert an item"),
                 );
               }
               // the select query has results
               return ListView.builder(
-                  itemCount: snapshot.data.length,
+                  itemCount: int.parse("${snapshot.data.length}"),
                   itemBuilder: (BuildContext context, int index) {
-                    var item = snapshot.data[index];
+                    dynamic item = snapshot.data[index];
+                    String name = "${item["name"]}";
+                    int id = int.parse("${item["id"]}");
                     return ListTile(
                       title: GestureDetector(
-                        child: Text(item["name"]),
-                        onTap: () => updateItemDialog(context, item["name"]),
+                        child: Text(name),
+                        onTap: () => updateItemDialog(context, name),
                       ),
                       trailing: IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: const Icon(Icons.delete),
                         color: Colors.grey,
-                        onPressed: () =>
-                            deleteItemDialog(context, item["name"], item["id"]),
+                        onPressed: () => deleteItemDialog(context, name, id),
                       ),
                     );
                   });
             } else {
               // the select query is still running
-              return CircularProgressIndicator();
+              return const CircularProgressIndicator();
             }
           }),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         onPressed: () => insertItemDialog(context),
       ),
     );

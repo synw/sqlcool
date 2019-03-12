@@ -18,7 +18,8 @@ class _PageIndexState extends State<PageIndex> {
   @override
   Widget build(BuildContext context) {
     return !databaseIsReady
-        ? Scaffold(body: Center(child: Text("The database is initializing ...")))
+        ? Scaffold(
+            body: Center(child: const Text("The database is initializing ...")))
         : Container(
             color: Colors.lightBlue,
             child: Column(
@@ -27,12 +28,12 @@ class _PageIndexState extends State<PageIndex> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 RaisedButton(
-                  child: Text("Select bloc"),
+                  child: const Text("Select bloc"),
                   onPressed: () =>
                       Navigator.of(context).pushNamed("/select_bloc"),
                 ),
                 RaisedButton(
-                  child: Text("Join query"),
+                  child: const Text("Join query"),
                   onPressed: () => Navigator.of(context).pushNamed("/join"),
                 ),
               ],

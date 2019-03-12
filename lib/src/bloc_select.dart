@@ -9,12 +9,12 @@ class SelectBloc {
       this.offset,
       this.limit,
       this.where,
-      this.columns: "*",
+      this.columns = "*",
       this.joinTable,
       this.joinOn,
       this.orderBy,
-      this.reactive: false,
-      this.verbose: false})
+      this.reactive = false,
+      this.verbose = false})
       : assert(database != null),
         assert(table != null),
         assert(database.isReady) {
@@ -46,9 +46,9 @@ class SelectBloc {
       StreamController<List<Map<String, dynamic>>>.broadcast();
   bool _changefeedIsActive = true;
 
-  get items => _itemController.stream;
+  Stream<List<Map<String, dynamic>>> get items => _itemController.stream;
 
-  dispose() {
+  void dispose() {
     _itemController.close();
     if (reactive) {
       _changefeed.cancel();
@@ -56,7 +56,7 @@ class SelectBloc {
     }
   }
 
-  _getItems() async {
+  Future<void> _getItems() async {
     List<Map<String, dynamic>> res;
     if (joinTable == null) {
       try {
@@ -72,7 +72,7 @@ class SelectBloc {
         if (_changefeedIsActive) {
           _itemController.sink.addError(e);
         } else {
-          throw(e);
+          throw (e);
         }
         return;
       }
@@ -92,7 +92,7 @@ class SelectBloc {
         if (_changefeedIsActive) {
           _itemController.sink.addError(e);
         } else {
-          throw(e);
+          throw (e);
         }
         return;
       }

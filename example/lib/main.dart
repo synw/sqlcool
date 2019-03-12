@@ -11,7 +11,7 @@ void main() {
   runApp(MyApp());
 }
 
-initDb() async {
+Future<void> initDb() async {
   /// these queries will run only once, after the Sqlite file creation
   String q1 = """CREATE TABLE product (
       id INTEGER PRIMARY KEY,
@@ -43,7 +43,7 @@ initDb() async {
           path: dbpath,
           queries: [q1, q2, q3, q4, q5, q6, q7, q8],
           verbose: true)
-      .catchError((e) {
+      .catchError((dynamic e) {
     throw ("Error initializing the database: ${e.message}");
   });
 }

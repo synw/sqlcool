@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'database.dart';
 
-insertItemDialog(BuildContext context) {
+void insertItemDialog(BuildContext context) {
   final nameController = TextEditingController();
-  showDialog(
+  showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Add an item"),
+        title: const Text("Add an item"),
         actions: <Widget>[
           FlatButton(
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
             onPressed: () {
               Navigator.of(context).pop(true);
             },
           ),
           FlatButton(
-            child: Text("Save"),
+            child: const Text("Save"),
             onPressed: () {
               String txt = nameController.text;
-              saveItem(txt).catchError((e) {
+              saveItem(txt).catchError((dynamic e) {
                 throw ("Can not save item ${e.message}");
               });
               Navigator.of(context).pop(true);
@@ -35,24 +35,24 @@ insertItemDialog(BuildContext context) {
   );
 }
 
-deleteItemDialog(BuildContext context, String itemName, int itemId) {
-  showDialog(
+void deleteItemDialog(BuildContext context, String itemName, int itemId) {
+  showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: Text("Delete $itemName?"),
         actions: <Widget>[
           FlatButton(
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
             onPressed: () {
               Navigator.of(context).pop();
             },
           ),
           RaisedButton(
-            child: Text("Delete"),
+            child: const Text("Delete"),
             color: Colors.red,
             onPressed: () {
-              deleteItem(itemId).catchError((e) {
+              deleteItem(itemId).catchError((dynamic e) {
                 throw (e);
               });
               Navigator.of(context).pop(true);
@@ -64,30 +64,30 @@ deleteItemDialog(BuildContext context, String itemName, int itemId) {
   );
 }
 
-updateItemDialog(BuildContext context, String itemName) {
+void updateItemDialog(BuildContext context, String itemName) {
   final nameController = TextEditingController(text: itemName);
 
-  showDialog(
+  showDialog<void>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-        title: Text("Update item"),
+        title: const Text("Update item"),
         content: TextField(
           controller: nameController,
           autofocus: true,
         ),
         actions: <Widget>[
           FlatButton(
-            child: Text("Cancel"),
+            child: const Text("Cancel"),
             onPressed: () {
               Navigator.of(context).pop(true);
             },
           ),
           FlatButton(
-            child: Text("Save"),
+            child: const Text("Save"),
             onPressed: () {
               String txt = nameController.text;
-              updateItem(itemName, txt).catchError((e) {
+              updateItem(itemName, txt).catchError((dynamic e) {
                 throw ("Can not update category $e");
               });
               Navigator.of(context).pop(true);

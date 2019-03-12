@@ -16,7 +16,7 @@ class Db {
   Database _db;
 
   final _mutex = new Lock();
-  Completer<Null> _readyCompleter = Completer<Null>();
+  final Completer<Null> _readyCompleter = Completer<Null>();
   final StreamController<DatabaseChangeEvent> _changeFeedController =
       StreamController<DatabaseChangeEvent>.broadcast();
   File _dbFile;
@@ -24,7 +24,8 @@ class Db {
 
   Future<Null> get onReady => _readyCompleter.future;
 
-  /// A stream of [DatabaseChangeEvent] with all the changes that occur in the database
+  /// A stream of [DatabaseChangeEvent] with all the changes
+  /// that occur in the database
   Stream<DatabaseChangeEvent> get changefeed => _changeFeedController.stream;
 
   /// the Sqlite file
@@ -36,16 +37,16 @@ class Db {
   /// The database state
   bool get isReady => _isReady;
 
-  dispose() {
+  void dispose() {
     _changeFeedController.close();
   }
 
   Future<void> init(
       {@required String path,
-      List<String> queries: const <String>[],
-      bool verbose: false,
-      String fromAsset: "",
-      bool debug: false}) async {
+      List<String> queries = const <String>[],
+      bool verbose = false,
+      String fromAsset = "",
+      bool debug = false}) async {
     /// initialize the database
     /// [path] the database file path relative to the documents directory
     /// [queries] list of queries to run at initialization
@@ -96,7 +97,7 @@ class Db {
           }
           this._db = await openDatabase(dbpath, version: 1,
               onCreate: (Database _db, int version) async {
-            if (queries.length > 0) {
+            if (queries.isNotEmpty) {
               for (String q in queries) {
                 Stopwatch timer = Stopwatch()..start();
                 await _db.execute(q);
@@ -121,7 +122,7 @@ class Db {
   }
 
   Future<List<Map<String, dynamic>>> query(String q,
-      {bool verbose: false}) async {
+      {bool verbose = false}) async {
     /// execute a query
     /// [q] the query to execute
     /// [verbose] print the query
@@ -149,7 +150,7 @@ class Db {
       String orderBy,
       int limit,
       int offset,
-      bool verbose: false}) async {
+      bool verbose = false}) async {
     /// select query
     /// [table] the table to select from
     /// [columns] the columns to return
@@ -244,7 +245,7 @@ class Db {
   Future<int> insert(
       {@required String table,
       @required Map<String, String> row,
-      bool verbose: false}) async {
+      bool verbose = false}) async {
     /// an insert query
     /// [table] the table to insert into
     /// [row] the data to insert
@@ -346,7 +347,7 @@ class Db {
   Future<int> delete(
       {@required String table,
       @required String where,
-      bool verbose: false}) async {
+      bool verbose = false}) async {
     /// delete some datapoints from the database
     /// [table] the table to use
     /// [where] the sql where clause
@@ -380,7 +381,9 @@ class Db {
   }
 
   Future<bool> exists(
-      {@required String table, @required String where, verbose: false}) async {
+      {@required String table,
+      @required String where,
+      bool verbose = false}) async {
     /// check if a value exists in the table
     /// [table] the table to use
     /// [where] the where sql clause
@@ -408,7 +411,7 @@ class Db {
   }
 
   Future<int> count(
-      {@required String table, String where, bool verbose: false}) async {
+      {@required String table, String where, bool verbose = false}) async {
     /// count rows in a table
     /// [table] the table to use
     /// [where] the sql where clause
@@ -422,7 +425,7 @@ class Db {
         w = " WHERE $where";
       }
       String q = 'SELECT COUNT(*) FROM $table$w';
-      final num c = Sqflite.firstIntValue(await this._db.rawQuery(q));
+      final int c = Sqflite.firstIntValue(await this._db.rawQuery(q));
       timer.stop();
       if (verbose) {
         String msg = "$q in ${timer.elapsedMilliseconds} ms";

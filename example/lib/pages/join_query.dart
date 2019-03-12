@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../conf.dart';
 
 class _PageJoinQueryState extends State<PageJoinQuery> {
-  var _streamController = StreamController<List<Map<String, dynamic>>>();
+  final _streamController = StreamController<List<Map<String, dynamic>>>();
 
   @override
   void initState() {
@@ -40,16 +40,16 @@ class _PageJoinQueryState extends State<PageJoinQuery> {
               itemBuilder: (BuildContext context, int index) {
                 var item = snapshot.data[index];
                 return ListTile(
-                  title: Text(item["name"]),
-                  subtitle: Text(item["category_name"]),
+                  title: Text("${item["name"]}"),
+                  subtitle: Text("${item["category_name"]}"),
                   trailing: (item["price"] != null)
                       ? Text("${item["price"]}")
-                      : Text(""),
+                      : const Text(""),
                 );
               },
             );
           } else {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
         },
       ),
