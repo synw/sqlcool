@@ -1,0 +1,30 @@
+include: package:flutter/analysis_options_user.yaml
+
+analyzer:
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  errors:
+    missing_return: error
+    missing_required_param: error
+    invalid_use_of_protected_member: error
+    dead_code: info
+    sdk_version_async_exported_from_core: ignore
+linter:
+  rules:
+    - always_declare_return_types
+    - annotate_overrides
+    - constant_identifier_names
+    - one_member_abstracts
+    - sort_constructors_first
+    - recursive_getters
+    - null_closures
+    - lines_longer_than_80_chars
+    - prefer_conditional_assignment
+    - prefer_const_constructors
+    - prefer_equal_for_default_values
+    - prefer_final_fields
+    - prefer_is_empty
+    - prefer_is_not_empty
+    - prefer_null_aware_operators
+    - public_member_api_docs
