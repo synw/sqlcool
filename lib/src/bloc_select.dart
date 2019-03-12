@@ -2,7 +2,16 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'database.dart';
 
+/// A ready to use select bloc
+///
+/// Provides a stream with the rows corresponding to the query. This
+/// stream, accssible via [items], will send new data if something changes
+/// in the database if the [reactive] parameter is true
+///
+/// Join queries are possible.
 class SelectBloc {
+  /// Create a select bloc with the specified options. The select
+  /// bloc will fire a query on creation
   SelectBloc(
       {@required this.table,
       @required this.database,
@@ -29,25 +38,51 @@ class SelectBloc {
     }
   }
 
-  Db database;
-  final String table;
-  int offset;
-  int limit;
-  String orderBy;
-  String columns;
-  String where;
-  String joinTable;
-  String joinOn;
-  bool reactive;
-  bool verbose;
-  StreamSubscription _changefeed;
+  /// The database
+  final Db database;
 
+  /// The table name
+  final String table;
+
+  /// Offset sql statement
+  int offset;
+
+  /// Limit sql statement
+  int limit;
+
+  /// Order by sql statement
+  String orderBy;
+
+  /// Select sql statement
+  String columns;
+
+  /// Where sql statement
+  String where;
+
+  /// The join sql statement
+  String joinTable;
+
+  /// The on sql statement
+  String joinOn;
+
+  /// The reactivity of the bloc. Will send new values in [items] if
+  /// when something changes in the database if set to true
+  bool reactive;
+
+  /// The verbosity
+  bool verbose;
+
+  StreamSubscription _changefeed;
   final _itemController =
       StreamController<List<Map<String, dynamic>>>.broadcast();
   bool _changefeedIsActive = true;
 
+  /// A stream of rows returned by the query. Will return new items
+  /// if something changes in the database when the [reactive] parameter
+  /// is true
   Stream<List<Map<String, dynamic>>> get items => _itemController.stream;
 
+  /// Cancel the changefeed subscription
   void dispose() {
     _itemController.close();
     if (reactive) {

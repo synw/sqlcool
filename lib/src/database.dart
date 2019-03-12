@@ -11,6 +11,7 @@ import 'exceptions.dart';
 
 /// A class to handle database operations
 class Db {
+  /// An empty database. Has to be initialized with [init]
   Db();
 
   Database _db;
@@ -22,6 +23,8 @@ class Db {
   File _dbFile;
   bool _isReady = false;
 
+  /// The on ready callback: fired when the database
+  /// is ready to operate
   Future<Null> get onReady => _readyCompleter.future;
 
   /// A stream of [DatabaseChangeEvent] with all the changes
@@ -37,17 +40,22 @@ class Db {
   /// The database state
   bool get isReady => _isReady;
 
+  /// Dispose the changefeed stream
   void dispose() {
     _changeFeedController.close();
   }
 
+  /// Initialize the database
+  ///
+  /// The database can be initialized either from an asset file
+  /// with the [fromAsset] parameter or from some create table queries
+  /// with the [queries] parameter
   Future<void> init(
       {@required String path,
       List<String> queries = const <String>[],
       bool verbose = false,
       String fromAsset = "",
       bool debug = false}) async {
-    /// initialize the database
     /// [path] the database file path relative to the documents directory
     /// [queries] list of queries to run at initialization
     /// [fromAsset] copy the database from an asset file
@@ -121,11 +129,10 @@ class Db {
     _isReady = true;
   }
 
+  /// Execute a query
   Future<List<Map<String, dynamic>>> query(String q,
       {bool verbose = false}) async {
-    /// execute a query
     /// [q] the query to execute
-    /// [verbose] print the query
     try {
       if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
@@ -143,6 +150,7 @@ class Db {
     }
   }
 
+  /// A select query
   Future<List<Map<String, dynamic>>> select(
       {@required String table,
       String columns = "*",
@@ -151,7 +159,6 @@ class Db {
       int limit,
       int offset,
       bool verbose = false}) async {
-    /// select query
     /// [table] the table to select from
     /// [columns] the columns to return
     /// [where] the sql where clause
@@ -190,6 +197,7 @@ class Db {
     }
   }
 
+  /// A select query with a join
   Future<List<Map<String, dynamic>>> join(
       {@required String table,
       @required String joinTable,
@@ -200,7 +208,6 @@ class Db {
       String orderBy,
       String where,
       bool verbose}) async {
-    /// select query with a join table
     /// [table] the table to select from
     /// [joinTable] the table to join from
     /// [joinOn] the columns to join
@@ -242,15 +249,15 @@ class Db {
     }
   }
 
+  /// Insert a row in a table
   Future<int> insert(
       {@required String table,
       @required Map<String, String> row,
       bool verbose = false}) async {
-    /// an insert query
-    /// [table] the table to insert into
-    /// [row] the data to insert
-    /// [verbose] print the query
-    /// Returns the last inserted id
+    /// [table] the table to insert into. [row] is a map of the data
+    /// to insert
+    ///
+    /// Returns a future with the last inserted id
     int id;
     await _mutex.synchronized(() async {
       try {
@@ -293,17 +300,16 @@ class Db {
     return id;
   }
 
+  /// Update some datapoints in the database
   Future<int> update(
       {@required String table,
       @required Map<String, String> row,
       @required String where,
       bool verbose = false}) async {
-    /// update some datapoints in the database
-    /// [table] the table to use
-    /// [row] the data to update
-    /// [where] the sql where clause
-    /// [verbose] print the query
-    /// returns a count of the updated rows
+    /// [table] is the table to use, [row] is a map of the data to update
+    /// and [where] the sql where clause
+    ///
+    /// Returns a future with a count of the updated rows
     int updated = 0;
     await _mutex.synchronized(() async {
       if (!_isReady) throw DatabaseNotReady();
@@ -344,15 +350,14 @@ class Db {
     return updated;
   }
 
+  /// Delete some datapoints from the database
   Future<int> delete(
       {@required String table,
       @required String where,
       bool verbose = false}) async {
-    /// delete some datapoints from the database
-    /// [table] the table to use
-    /// [where] the sql where clause
-    /// [verbose] print the query
-    /// returns a count of the deleted rows
+    /// [table] is the table to use and [where] the sql where clause
+    ///
+    /// Returns a future with a count of the deleted rows
     int deleted = 0;
     await _mutex.synchronized(() async {
       if (!_isReady) throw DatabaseNotReady();
@@ -380,15 +385,14 @@ class Db {
     return deleted;
   }
 
+  /// Check if a value exists in the table
   Future<bool> exists(
       {@required String table,
       @required String where,
       bool verbose = false}) async {
-    /// check if a value exists in the table
-    /// [table] the table to use
-    /// [where] the where sql clause
-    /// [verbose] print the query
-    /// returns true if exists
+    /// [table] is the table to use and [where] the sql where clause
+    ///
+    /// Returns a future with true if the data exists
     try {
       if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
@@ -410,13 +414,12 @@ class Db {
     return false;
   }
 
+  /// count rows in a table
   Future<int> count(
       {@required String table, String where, bool verbose = false}) async {
-    /// count rows in a table
-    /// [table] the table to use
-    /// [where] the sql where clause
-    /// [verbose] print the query
-    /// returns a count of the rows
+    /// [table] is the table to use and [where] the sql where clause
+    ///
+    /// Returns a future with the count of the rows
     try {
       if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
