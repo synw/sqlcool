@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.2.0
+
+- Add the `absolutePath` parameter to the `init` method
+- Use more strict linting rules
+- Improve docstrings
+
 ## 2.1.1
 
 - Fix race condition in SelectBloc
