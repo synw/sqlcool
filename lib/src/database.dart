@@ -52,6 +52,7 @@ class Db {
   /// with the [queries] parameter
   Future<void> init(
       {@required String path,
+      bool absolutePath = false,
       List<String> queries = const <String>[],
       bool verbose = false,
       String fromAsset = "",
@@ -63,8 +64,11 @@ class Db {
     /// [debug] set Sqflite debug mode on
     assert(path != null);
     if (debug) Sqflite.setDebugModeOn(true);
-    Directory documentsDirectory = await getApplicationDocumentsDirectory();
-    String dbpath = documentsDirectory.path + "/" + path;
+    String dbpath = path;
+    if (!absolutePath) {
+      Directory documentsDirectory = await getApplicationDocumentsDirectory();
+      dbpath = documentsDirectory.path + "/" + path;
+    }
     if (verbose) {
       print("INITIALIZING DATABASE at " + dbpath);
     }
