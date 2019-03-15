@@ -49,7 +49,7 @@ class Db {
   ///
   /// The database can be initialized either from an asset file
   /// with the [fromAsset] parameter or from some create table queries
-  /// with the [queries] parameter
+  /// with the [queries] parameter.
   Future<void> init(
       {@required String path,
       bool absolutePath = false,
@@ -57,11 +57,11 @@ class Db {
       bool verbose = false,
       String fromAsset = "",
       bool debug = false}) async {
-    /// [path] the database file path relative to the documents directory
-    /// [queries] list of queries to run at initialization
-    /// [fromAsset] copy the database from an asset file
-    /// [verbose] print info
-    /// [debug] set Sqflite debug mode on
+    /// The [path] is where the database file will be stored. It is by
+    /// default relative to the documents directory unless [absolutePath]
+    /// is true.
+    /// [queries] is a list of queries to run at initialization
+    /// and [debug] set Sqflite debug mode on
     assert(path != null);
     if (debug) Sqflite.setDebugModeOn(true);
     String dbpath = path;

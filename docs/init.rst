@@ -64,6 +64,8 @@ Optional parameter:
 :queries: *List<String>* queries to run at database creation
 :fromAsset: *String* path to the Sqlite asset file, relative to the
    documents directory
+:absolutePath: *bool* if `true` the provided path will not be relative to the 
+documents directory and taken as absolute
 :verbose: *bool* ``true`` or ``false``
 
 The database is created in the documents directory.
