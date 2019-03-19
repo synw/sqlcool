@@ -65,7 +65,7 @@ class SelectBloc {
   /// The on sql statement
   String joinOn;
 
-  /// The reactivity of the bloc. Will send new values in [items] if
+  /// The reactivity of the bloc. Will send new values in [items]
   /// when something changes in the database if set to true
   bool reactive;
 
@@ -81,6 +81,12 @@ class SelectBloc {
   /// if something changes in the database when the [reactive] parameter
   /// is true
   Stream<List<Map<String, dynamic>>> get items => _itemController.stream;
+
+  /// A convenience method to update the bloc items if needed
+  /// by adding to the sink
+  void update(List<Map<String, dynamic>> _items) {
+    _itemController.sink.add(_items);
+  }
 
   /// Cancel the changefeed subscription
   void dispose() {
