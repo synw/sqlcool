@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.0
+
+- Update dependencies
+- Add the `update` method to `SelectBloc`
+
 ## 2.2.0
 
 - Add the `absolutePath` parameter to the `init` method
@@ -64,3 +69,4 @@ Add changefeed and reactive select bloc
 ## 1.0.0
 
 Initial release
+
