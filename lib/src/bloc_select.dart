@@ -30,10 +30,8 @@ class SelectBloc {
     _getItems();
     if (reactive) {
       _changefeed = database.changefeed.listen((change) {
-        _getItems();
-        if (verbose) {
-          print("CHANGE IN THE DATABASE: $change");
-        }
+        if (change.table == table) _getItems();
+        if (verbose) print("CHANGE IN THE DATABASE: $change");
       });
     }
   }
