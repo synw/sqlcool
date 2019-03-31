@@ -290,6 +290,7 @@ class Db {
             type: DatabaseChange.insert,
             value: 1,
             query: qStr,
+            table: table,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
           String msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -339,6 +340,7 @@ class Db {
             type: DatabaseChange.update,
             value: updated,
             query: qStr,
+            table: table,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
           String msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -374,6 +376,7 @@ class Db {
             type: DatabaseChange.delete,
             value: deleted,
             query: q,
+            table: table,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
           String msg = "$q in ${timer.elapsedMilliseconds} ms";

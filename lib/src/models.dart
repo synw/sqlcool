@@ -1,7 +1,16 @@
 import 'package:flutter/foundation.dart';
 
 /// Types of database changes
-enum DatabaseChange { insert, update, delete }
+enum DatabaseChange {
+  /// An insert operation in the database
+  insert,
+
+  /// An update operation in the database
+  update,
+
+  /// A delete operation in the database
+  delete
+}
 
 /// A database change event. Used by the changefeed
 class DatabaseChangeEvent {
@@ -10,6 +19,7 @@ class DatabaseChangeEvent {
       {@required this.type,
       @required this.value,
       @required this.query,
+      @required this.table,
       @required this.executionTime});
 
   /// Type of the change
@@ -23,6 +33,9 @@ class DatabaseChangeEvent {
 
   /// The query execution time
   num executionTime;
+
+  /// The table where the changes occur
+  String table;
 
   /// Human readable format
   @override
