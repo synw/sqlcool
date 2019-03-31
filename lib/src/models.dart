@@ -23,19 +23,19 @@ class DatabaseChangeEvent {
       @required this.executionTime});
 
   /// Type of the change
-  DatabaseChange type;
+  final DatabaseChange type;
 
   /// Change value: number of items affected
-  int value;
+  final int value;
 
   /// The query that made the changes
-  String query;
+  final String query;
 
   /// The query execution time
-  num executionTime;
+  final num executionTime;
 
   /// The table where the changes occur
-  String table;
+  final String table;
 
   /// Human readable format
   @override
