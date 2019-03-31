@@ -73,5 +73,5 @@ build/
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
-# Sphinx documentation
-docs/_build/
+# Coverage report
+coverage/output/
