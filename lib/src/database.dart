@@ -12,7 +12,20 @@ import 'exceptions.dart';
 /// A class to handle database operations
 class Db {
   /// An empty database. Has to be initialized with [init]
-  Db();
+  Db({this.sqfliteDatabase}) {
+    if (sqfliteDatabase != null) {
+      _db = sqfliteDatabase;
+      _dbFile = File(sqfliteDatabase.path);
+      _isReady = true;
+      _readyCompleter.complete();
+    }
+  }
+
+  /// An Sqlite database:
+  ///
+  /// Use this parameter if you want to work with an existing
+  /// Sqflite database
+  final Database sqfliteDatabase;
 
   Database _db;
 

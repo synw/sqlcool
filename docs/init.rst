@@ -61,6 +61,7 @@ Required parameters for ``init``:
 
 Optional parameter:
 
+:sqfliteDatabase: *Database* an optional existing Sqflite database
 :queries: *List<String>* queries to run at database creation
 :fromAsset: *String* path to the Sqlite asset file, relative to the
    documents directory
