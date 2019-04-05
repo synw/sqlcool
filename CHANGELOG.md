@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.4.0
+
+- Add the ability to use an existing Sqflite database
+- Make all the DatabaseChangeEvent parameters final
+- Add a table parameter to DatabaseChangeEvent
+- Update SelectBloc to use the table parameter of DatabaseChangeEvent
+- Use travis-ci builds
+- Start adding tests 
+
 ## 2.3.0
 
 - Update dependencies
