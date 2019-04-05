@@ -123,14 +123,17 @@ class Db {
           this._db = await openDatabase(dbpath, version: 1,
               onCreate: (Database _db, int version) async {
             if (queries.isNotEmpty) {
-              for (String q in queries) {
-                Stopwatch timer = Stopwatch()..start();
-                await _db.execute(q);
-                if (verbose) {
-                  String msg = "$q in ${timer.elapsedMilliseconds} ms";
-                  print(msg);
+              await _db.transaction((txn) async {
+                for (String q in queries) {
+                  Stopwatch timer = Stopwatch()..start();
+                  await txn.execute(q);
+                  timer.stop();
+                  if (verbose) {
+                    String msg = "$q in ${timer.elapsedMilliseconds} ms";
+                    print(msg);
+                  }
                 }
-              }
+              });
             }
           });
         }
