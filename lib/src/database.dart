@@ -147,7 +147,7 @@ class Db {
       Stopwatch timer = Stopwatch()..start();
       List<Map<String, dynamic>> res;
       await _db.transaction((txn) async {
-        res = await this._db.rawQuery(q);
+        res = await txn.rawQuery(q);
       });
       timer.stop();
       if (verbose) {
@@ -286,7 +286,7 @@ class Db {
         }
         String q = "INSERT INTO $table ($fields) VALUES($values)";
         await _db.transaction((txn) async {
-          id = await _db.rawInsert(q, datapoint);
+          id = await txn.rawInsert(q, datapoint);
         });
         String qStr = "$q $row";
         timer.stop();
@@ -338,7 +338,7 @@ class Db {
         }
         String q = 'UPDATE $table SET $pairs WHERE $where';
         await _db.transaction((txn) async {
-          updated = await this._db.rawUpdate(q, datapoint);
+          updated = await txn.rawUpdate(q, datapoint);
         });
         String qStr = "$q $datapoint";
         timer.stop();
@@ -377,7 +377,7 @@ class Db {
         Stopwatch timer = Stopwatch()..start();
         String q = 'DELETE FROM $table WHERE $where';
         await _db.transaction((txn) async {
-          deleted = await this._db.rawDelete(q);
+          deleted = await txn.rawDelete(q);
         });
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
@@ -414,7 +414,7 @@ class Db {
       String q = 'SELECT COUNT(*) FROM $table WHERE $where';
       int count;
       await _db.transaction((txn) async {
-        count = Sqflite.firstIntValue(await _db.rawQuery(q));
+        count = Sqflite.firstIntValue(await txn.rawQuery(q));
       });
       timer.stop();
       if (verbose) {
@@ -444,7 +444,7 @@ class Db {
       String q = 'SELECT COUNT(*) FROM $table$w';
       int c;
       await _db.transaction((txn) async {
-        c = Sqflite.firstIntValue(await this._db.rawQuery(q));
+        c = Sqflite.firstIntValue(await txn.rawQuery(q));
       });
       timer.stop();
       if (verbose) {
