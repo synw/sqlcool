@@ -82,16 +82,12 @@ class Db {
       Directory documentsDirectory = await getApplicationDocumentsDirectory();
       dbpath = documentsDirectory.path + "/" + path;
     }
-    if (verbose) {
-      print("INITIALIZING DATABASE at " + dbpath);
-    }
+    if (verbose) print("INITIALIZING DATABASE at " + dbpath);
     // copy the database from an asset if necessary
     if (fromAsset != "") {
       File file = File(dbpath);
       if (!file.existsSync()) {
-        if (verbose) {
-          print("Copying the database from asset $fromAsset");
-        }
+        if (verbose) print("Copying the database from asset $fromAsset");
         List<int> bytes;
         try {
           // read
@@ -103,9 +99,8 @@ class Db {
         }
         try {
           // create the directories path if necessary
-          if (!file.parent.existsSync()) {
+          if (!file.parent.existsSync())
             file.parent.createSync(recursive: true);
-          }
           // write
           await file.writeAsBytes(bytes);
         } catch (e) {
@@ -117,9 +112,7 @@ class Db {
       await _mutex.synchronized(() async {
         if (this._db == null) {
           // open
-          if (verbose) {
-            print("OPENING database");
-          }
+          if (verbose) print("OPENING database");
           this._db = await openDatabase(dbpath, version: 1,
               onCreate: (Database _db, int version) async {
             if (queries.isNotEmpty) {
@@ -139,13 +132,9 @@ class Db {
         }
       });
     }
-    if (verbose) {
-      print("DATABASE INITIALIZED");
-    }
+    if (verbose) print("DATABASE INITIALIZED");
     _dbFile = File(dbpath);
-    if (!_readyCompleter.isCompleted) {
-      _readyCompleter.complete();
-    }
+    if (!_readyCompleter.isCompleted) _readyCompleter.complete();
     _isReady = true;
   }
 
@@ -195,21 +184,11 @@ class Db {
       if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
       String q = "SELECT $columns FROM $table";
-      if (where != null) {
-        q += " WHERE $where";
-      }
-      if (groupBy != null) {
-        q += " GROUP BY $groupBy";
-      }
-      if (orderBy != null) {
-        q = "$q ORDER BY $orderBy";
-      }
-      if (limit != null) {
-        q += " LIMIT $limit";
-      }
-      if (offset != null) {
-        q += " OFFSET $offset";
-      }
+      if (where != null) q += " WHERE $where";
+      if (groupBy != null) q += " GROUP BY $groupBy";
+      if (orderBy != null) q += " ORDER BY $orderBy";
+      if (limit != null) q += " LIMIT $limit";
+      if (offset != null) q += " OFFSET $offset";
       List<Map<String, dynamic>> res;
       await _db.transaction((txn) async {
         res = await txn.rawQuery(q);
@@ -254,21 +233,11 @@ class Db {
       Stopwatch timer = Stopwatch()..start();
       String q = "SELECT $columns FROM $table";
       q = "$q INNER JOIN $joinTable ON $joinOn";
-      if (where != null) {
-        q = q + " WHERE $where";
-      }
-      if (groupBy != null) {
-        q += " GROUP BY $groupBy";
-      }
-      if (orderBy != null) {
-        q = "$q ORDER BY $orderBy";
-      }
-      if (limit != null) {
-        q += " LIMIT $limit";
-      }
-      if (offset != null) {
-        q += " OFFSET $offset";
-      }
+      if (where != null) q += " WHERE $where";
+      if (groupBy != null) q += " GROUP BY $groupBy";
+      if (orderBy != null) q += " ORDER BY $orderBy";
+      if (limit != null) q += " LIMIT $limit";
+      if (offset != null) q += " OFFSET $offset";
       List<Map<String, dynamic>> res;
       await _db.transaction((txn) async {
         res = await txn.rawQuery(q);
@@ -452,9 +421,7 @@ class Db {
         String msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
-      if (count > 0) {
-        return true;
-      }
+      if (count > 0) return true;
     } on DatabaseNotReady catch (e) {
       throw ("${e.message}");
     } catch (e) {
@@ -473,9 +440,7 @@ class Db {
       if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
       String w = "";
-      if (where != null) {
-        w = " WHERE $where";
-      }
+      if (where != null) w = " WHERE $where";
       String q = 'SELECT COUNT(*) FROM $table$w';
       int c;
       await _db.transaction((txn) async {
