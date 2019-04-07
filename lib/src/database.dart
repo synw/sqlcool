@@ -156,7 +156,10 @@ class Db {
     try {
       if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
-      final List<Map<String, dynamic>> res = await this._db.rawQuery(q);
+      List<Map<String, dynamic>> res;
+      await _db.transaction((txn) async {
+        res = await this._db.rawQuery(q);
+      });
       timer.stop();
       if (verbose) {
         String msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -207,7 +210,10 @@ class Db {
       if (offset != null) {
         q += " OFFSET $offset";
       }
-      final List<Map<String, dynamic>> res = await this._db.rawQuery(q);
+      List<Map<String, dynamic>> res;
+      await _db.transaction((txn) async {
+        res = await txn.rawQuery(q);
+      });
       timer.stop();
       if (verbose) {
         String msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -263,7 +269,10 @@ class Db {
       if (offset != null) {
         q += " OFFSET $offset";
       }
-      final List<Map<String, dynamic>> res = await this._db.rawQuery(q);
+      List<Map<String, dynamic>> res;
+      await _db.transaction((txn) async {
+        res = await txn.rawQuery(q);
+      });
       timer.stop();
       if (verbose) {
         String msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -307,7 +316,9 @@ class Db {
           i++;
         }
         String q = "INSERT INTO $table ($fields) VALUES($values)";
-        id = await _db.rawInsert(q, datapoint);
+        await _db.transaction((txn) async {
+          id = await _db.rawInsert(q, datapoint);
+        });
         String qStr = "$q $row";
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
@@ -357,7 +368,9 @@ class Db {
           i++;
         }
         String q = 'UPDATE $table SET $pairs WHERE $where';
-        updated = await this._db.rawUpdate(q, datapoint);
+        await _db.transaction((txn) async {
+          updated = await this._db.rawUpdate(q, datapoint);
+        });
         String qStr = "$q $datapoint";
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
@@ -394,7 +407,9 @@ class Db {
       try {
         Stopwatch timer = Stopwatch()..start();
         String q = 'DELETE FROM $table WHERE $where';
-        int deleted = await this._db.rawDelete(q);
+        await _db.transaction((txn) async {
+          deleted = await this._db.rawDelete(q);
+        });
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
             type: DatabaseChange.delete,
@@ -428,7 +443,10 @@ class Db {
       if (!_isReady) throw DatabaseNotReady();
       Stopwatch timer = Stopwatch()..start();
       String q = 'SELECT COUNT(*) FROM $table WHERE $where';
-      int count = Sqflite.firstIntValue(await _db.rawQuery(q));
+      int count;
+      await _db.transaction((txn) async {
+        count = Sqflite.firstIntValue(await _db.rawQuery(q));
+      });
       timer.stop();
       if (verbose) {
         String msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -459,7 +477,10 @@ class Db {
         w = " WHERE $where";
       }
       String q = 'SELECT COUNT(*) FROM $table$w';
-      final int c = Sqflite.firstIntValue(await this._db.rawQuery(q));
+      int c;
+      await _db.transaction((txn) async {
+        c = Sqflite.firstIntValue(await this._db.rawQuery(q));
+      });
       timer.stop();
       if (verbose) {
         String msg = "$q in ${timer.elapsedMilliseconds} ms";
