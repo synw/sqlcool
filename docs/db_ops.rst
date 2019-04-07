@@ -44,7 +44,8 @@ Optional parameters:
 
 :columns: *String* the columns to select: default is `"*"`
 :where: *String* the where sql clause
-:orderBy: *String* the sql order_by clause
+:orderBy: *String* the sql order by clause
+:groupBy: *String* the sql group by clause
 :limit: *int* the sql limit clause
 :offset: *int* the sql offset clause
 :verbose: *bool* ``true`` or ``false``
@@ -115,7 +116,8 @@ Optional parameters:
 :where: *String* the where sql clause
 :joinTable: *String* join table name
 :joinOn: *String* join on sql clause
-:orderBy: *String* the sql order_by clause
+:orderBy: *String* the sql order by clause
+:groupBy: *String* the sql group by clause
 :limit: *int* the sql limit clause
 :offset: *int* the sql offset clause
 :verbose: *bool* ``true`` or ``false``

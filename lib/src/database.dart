@@ -178,6 +178,7 @@ class Db {
       String orderBy,
       int limit,
       int offset,
+      String groupBy,
       bool verbose = false}) async {
     /// [table] the table to select from
     /// [columns] the columns to return
@@ -193,6 +194,9 @@ class Db {
       String q = "SELECT $columns FROM $table";
       if (where != null) {
         q += " WHERE $where";
+      }
+      if (groupBy != null) {
+        q += " GROUP BY $groupBy";
       }
       if (orderBy != null) {
         q = "$q ORDER BY $orderBy";
@@ -227,6 +231,7 @@ class Db {
       int limit = 100,
       String orderBy,
       String where,
+      String groupBy,
       bool verbose}) async {
     /// [table] the table to select from
     /// [joinTable] the table to join from
@@ -245,6 +250,9 @@ class Db {
       q = "$q INNER JOIN $joinTable ON $joinOn";
       if (where != null) {
         q = q + " WHERE $where";
+      }
+      if (groupBy != null) {
+        q += " GROUP BY $groupBy";
       }
       if (orderBy != null) {
         q = "$q ORDER BY $orderBy";
