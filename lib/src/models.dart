@@ -9,7 +9,10 @@ enum DatabaseChange {
   update,
 
   /// A delete operation in the database
-  delete
+  delete,
+
+  /// An upsert operation in the database
+  upsert
 }
 
 /// A database change event. Used by the changefeed

@@ -362,6 +362,77 @@ class Db {
     return updated;
   }
 
+  /// Insert a row if it does not exist or update it
+  ///
+  /// It is highly recommended to use an unique index for the table
+  /// to upsert into
+  Future<void> upsert(
+      {@required String table,
+      @required Map<String, String> row,
+      //@required List<String> columns,
+      List<String> preserveColumns = const [],
+      String indexColumn,
+      bool verbose = false}) async {
+    /// The [preserveColumns] is used to keep the current values
+    /// for some columns. If this parameter is used an [indexColumn]
+    /// must be provided to search for the value of the column to preserve
+    await _mutex.synchronized(() async {
+      if (!_isReady) throw DatabaseNotReady();
+      if (preserveColumns.isNotEmpty) {
+        if (indexColumn == null)
+          throw ArgumentError("Please provide a value for indexColumn " +
+              "if you use preserveColumns");
+      }
+      try {
+        Stopwatch timer = Stopwatch()..start();
+        String fields = "";
+        String values = "";
+        //String pairs = "";
+        preserveColumns.forEach((c) {
+          row[c] = "";
+        });
+        int n = row.length;
+        int i = 1;
+        for (var k in row.keys) {
+          fields += "$k";
+          if (preserveColumns.contains(k)) {
+            values += "(SELECT $k FROM $table WHERE " +
+                "$indexColumn='${row[indexColumn]}')";
+          } else {
+            values += "'${row[k]}'";
+          }
+          //pairs += "$k='${row[k]}'";
+          if (i < n) {
+            fields += ",";
+            values += ",";
+            //pairs += ",";
+          }
+          i++;
+        }
+        // This only works for Sqlite > 3.24
+        /*
+        String q = "INSERT INTO $table ($fields) VALUES($values)";
+        q += " ON CONFLICT($columns) DO UPDATE SET $pairs";*/
+        String q = "INSERT OR REPLACE INTO $table ($fields) VALUES($values)";
+        await _db.transaction((txn) async {
+          await txn.execute(q);
+        });
+        timer.stop();
+        _changeFeedController.sink.add(DatabaseChangeEvent(
+            type: DatabaseChange.upsert,
+            value: i,
+            query: q,
+            table: table,
+            executionTime: timer.elapsedMicroseconds));
+        if (verbose) print("$q in ${timer.elapsedMilliseconds} ms");
+      } on DatabaseNotReady catch (e) {
+        throw ("${e.message}");
+      } catch (e) {
+        throw (e);
+      }
+    });
+  }
+
   /// Delete some datapoints from the database
   Future<int> delete(
       {@required String table,
