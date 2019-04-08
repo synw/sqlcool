@@ -29,6 +29,7 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
   @override
   void dispose() {
     _changefeed.cancel();
+    bloc.dispose();
     super.dispose();
   }
 

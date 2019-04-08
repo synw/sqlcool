@@ -33,6 +33,10 @@ class _PageIndexState extends State<PageIndex> {
                       Navigator.of(context).pushNamed("/select_bloc"),
                 ),
                 RaisedButton(
+                  child: const Text("Upsert"),
+                  onPressed: () => Navigator.of(context).pushNamed("/upsert"),
+                ),
+                RaisedButton(
                   child: const Text("Join query"),
                   onPressed: () => Navigator.of(context).pushNamed("/join"),
                 ),
