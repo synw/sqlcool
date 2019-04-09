@@ -143,5 +143,5 @@ parameter set to `true`:
 
 ## Todo
 
-- [ ] Upsert
+- [x] Upsert
 - [ ] Batch operations
