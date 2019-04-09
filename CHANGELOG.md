@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.5.0
+
+- Add the group by sql clause to select and join methods
+- Add the upsert method
+- Use transactions for all queries
+- Remove the default values for offset and limit in join query
+
 ## 2.4.0
 
 - Add the ability to use an existing Sqflite database
