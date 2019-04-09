@@ -92,6 +92,40 @@ Optional parameter:
 
 :verbose: *bool* ``true`` or ``false``
 
+Upsert
+------
+
+.. highlight:: dart
+
+::
+
+   import 'package:sqlcool/sqlcool.dart';
+
+   Map<String, String> row = {
+       slug: "my-item",
+       name: "My item",
+   }
+   await db.upsert(
+   		table: "product", 
+		row: row, 
+		preserveRow: "category",
+		indexColumn: "id"
+	);
+
+Required parameters:
+
+:table: *String* name of the table, required
+:row: *Map<String, String>* data, required
+
+Optionnal parameters:
+
+:preserveColumns: *List<String>* a list of columns to preserve: the data in 
+these columns will not be updated. Note: the `indexColumn` parameter is required
+when using this method (used to retrieve the existing data).
+:indexColumn: *String* the reference index column use to retrieve existing data 
+in case of preserve
+:verbose: *bool* ``true`` or ``false``
+
 Join
 ----
 
