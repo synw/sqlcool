@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.0
+
+- Add the synchronized map feature
+
 ## 2.5.0
 
 - Add the group by sql clause to select and join methods
