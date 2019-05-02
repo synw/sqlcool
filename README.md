@@ -7,6 +7,7 @@ A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Fo
 - **Simple api** for crud operations
 - **Changefeed**: a stream to monitor database changes
 - **Select bloc**: a ready to use reactive bloc for select operations
+- **Synchronized map**: a reactive map that auto updates a database row
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
