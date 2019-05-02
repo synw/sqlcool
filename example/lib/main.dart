@@ -3,6 +3,7 @@ import 'pages/select_bloc.dart';
 import 'pages/index.dart';
 import 'pages/join_query.dart';
 import 'pages/upsert.dart';
+import 'pages/sync_map.dart';
 import 'conf.dart';
 
 void main() {
@@ -16,7 +17,7 @@ Future<void> initDb() async {
   /// these queries will run only once, after the Sqlite file creation
   String q1 = """CREATE TABLE product (
       id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL,
+      name VARCHAR(60) NOT NULL,
       price REAL NOT NULL,
       category_id INTEGER NOT NULL,
       CONSTRAINT category
@@ -26,7 +27,7 @@ Future<void> initDb() async {
       )""";
   String q2 = """CREATE TABLE category (
       id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL
+      name VARCHAR(60) NOT NULL
       )""";
   String q3 = 'CREATE UNIQUE INDEX idx_product_name ON product (name)';
   // populate the database
@@ -55,6 +56,7 @@ final routes = {
   '/select_bloc': (BuildContext context) => PageSelectBloc(),
   '/join': (BuildContext context) => PageJoinQuery(),
   '/upsert': (BuildContext context) => UpsertPage(),
+  '/sync_map': (BuildContext context) => SyncMapPage(),
 };
 
 class MyApp extends StatelessWidget {
