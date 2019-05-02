@@ -21,6 +21,7 @@ Welcome to Sqlcool's documentation!
    :caption: Reactivity
 
    changefeed.rst
+   sync_map.rst
 
 Indices and tables
 ==================
