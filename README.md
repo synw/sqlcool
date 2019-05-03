@@ -54,14 +54,15 @@ A stream of database change events is available
 
    StreamSubscription _changefeed;
 
-   _changefeed = db.changefeed.listen((change) {
+   changefeed = db.changefeed.listen((change) {
       print("Change in the database:");
       throw("Query: ${change.query}");
       if (change.type == DatabaseChange.update) {
-        throw("${change.value} items updated");
+        print("${change.value} items updated");
       }
     });
-   // _changefeed.cancel();
+   // Dispose the changefeed when finished using
+   changefeed.cancel();
    ```
 
 ## Reactive select bloc
@@ -146,8 +147,7 @@ mostly get updated, like settings
       db: db, // an Sqlcool database
       table: "a_table",
       where: "id=1",
-      columns = "col1,col2,col3",
-      verbose: true
+      columns = "col1,col2,col3"
    );
 
    // Wait until the map is initialized
