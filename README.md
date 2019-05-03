@@ -17,36 +17,29 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
    void someFunc() async {
       Db db = Db();
       String dbpath = "db.sqlite"; // relative to the documents directory
-      await db.init(path: dbpath, fromAsset: "assets/db.sqlite", verbose: true).catchError((e) {
-          print("Error initializing the database: ${e.message}");
+      await db.init(path: dbpath, fromAsset: "assets/db.sqlite").catchError((e) {
+          throw("Error initializing the database: ${e.message}");
       });
       // insert
-      Map<String, String> row = {
-       slug: "my-item",
-       name: "My item",
-      };
-      await db.insert(table: "category", row: row, verbose: true).catchError((e) {
-          print("Error inserting data: ${e.message}");
+      Map<String, String> row = {name: "My item",};
+      await db.insert(table: "category", row: row).catchError((e) {
+          throw("Error inserting data: ${e.message}");
       });
       // select
       List<Map<String, dynamic>> rows = await db.select(
         table: "product", limit: 20, columns: "id,name",
         where: "name LIKE '%something%'",
         orderBy: "name ASC").catchError((e) {
-          print("Error selecting data: ${e.message}");
+          throw("Error selecting data: ${e.message}");
       });
       //update
-      Map<String, String> row = {
-       slug: "my-item-new",
-       name: "My item new",
-      };
       int updated = await db.update(table: "category", 
-          row: row, where: "id=1", verbose: true).catchError((e) {
-             print("Error updating data: ${e.message}");
+          row: row, where: "id=1").catchError((e) {
+             throw("Error updating data: ${e.message}");
       });
       // delete
       db.delete(table: "category", where: "id=3").catchError((e) {
-          print("Error deleting data: ${e.message}");
+          throw("Error deleting data: ${e.message}");
       });
    }
    ```
@@ -62,10 +55,10 @@ A stream of database change events is available
    StreamSubscription _changefeed;
 
    _changefeed = db.changefeed.listen((change) {
-      print("CHANGE IN THE DATABASE:");
-      print("Query: ${change.query}");
+      print("Change in the database:");
+      throw("Query: ${change.query}");
       if (change.type == DatabaseChange.update) {
-        print("${change.value} items updated");
+        throw("${change.value} items updated");
       }
     });
    // _changefeed.cancel();
@@ -87,7 +80,7 @@ parameter set to `true`:
      void initState() {
        super.initState();
        this.bloc = SelectBloc(
-           table: "items", orderBy: "name", reactive: true, verbose: true);
+           table: "items", orderBy: "name", reactive: true);
      }
 
      @override
@@ -121,7 +114,7 @@ parameter set to `true`:
                        return ListTile(
                          title: GestureDetector(
                            child: Text(item["name"]),
-                           onTap: () => print("Action"),
+                           onTap: () => throw("Action"),
                          ),
                        );
                      });
@@ -148,7 +141,7 @@ mostly get updated, like settings
    ```dart
    import 'package:sqlcool/sqlcool.dart';
 
-   // Define the map with initial data
+   // Define the map
    var myMap = SynchronizedMap(
       db: db, // an Sqlcool database
       table: "a_table",
