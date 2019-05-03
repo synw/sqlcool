@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.6.1
+
+- Add the `columns` parameter to `SychronizedMap`
+
 ## 2.6.0
 
 - Add the synchronized map feature
