@@ -52,7 +52,7 @@ A stream of database change events is available
    import 'dart:async';
    import 'package:sqlcool/sqlcool.dart';
 
-   StreamSubscription _changefeed;
+   StreamSubscription changefeed;
 
    changefeed = db.changefeed.listen((change) {
       print("Change in the database:");
@@ -93,19 +93,14 @@ parameter set to `true`:
      @override
      Widget build(BuildContext context) {
        return Scaffold(
-         appBar: AppBar(
-           title: Text("My app"),
-         ),
+         appBar: AppBar(title: Text("My app")),
          body: StreamBuilder<List<Map>>(
              stream: bloc.items,
              builder: (BuildContext context, AsyncSnapshot snapshot) {
                if (snapshot.hasData) {
                  // the select query has not found anything
                  if (snapshot.data.length == 0) {
-                   return Center(
-                     child: Text(
-                         "No data"),
-                   );
+                   return Center(child: const Text("No data"));
                  }
                  // the select query has results
                  return ListView.builder(
@@ -115,8 +110,7 @@ parameter set to `true`:
                        return ListTile(
                          title: GestureDetector(
                            child: Text(item["name"]),
-                           onTap: () => throw("Action"),
-                         ),
+                           onTap: () => someFunction()),
                        );
                      });
                } else {
@@ -143,7 +137,7 @@ are often updated, like persistant app state
    import 'package:sqlcool/sqlcool.dart';
 
    var myMap = SynchronizedMap(
-      db: db, // an Sqlcool database
+      db: db,
       table: "a_table",
       where: "id=1",
       columns = "col1,col2,col3"
