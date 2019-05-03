@@ -2,12 +2,10 @@
 
 [![pub package](https://img.shields.io/pub/v/sqlcool.svg)](https://pub.dartlang.org/packages/sqlcool) [![Build Status](https://travis-ci.org/synw/sqlcool.svg?branch=master)](https://travis-ci.org/synw/sqlcool)
 
-A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Forget about implementation details and focus on the business logic. Features:
+A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Forget about implementation details and focus on the business logic.
 
-- **Simple api** for crud operations
-- **Changefeed**: a stream to monitor database changes
-- **Select bloc**: a ready to use reactive bloc for select operations
-- **Synchronized map**: a reactive map that auto updates a database row
+- **Simple**: easy api for crud operations
+- **Reactive**: stream of changes, auto updated bloc, synchronized map
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
