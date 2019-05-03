@@ -61,7 +61,7 @@ A stream of database change events is available
         print("${change.value} items updated");
       }
     });
-   // Dispose the changefeed when finished using
+   // Dispose the changefeed when finished using it
    changefeed.cancel();
    ```
 
@@ -136,13 +136,12 @@ parameter set to `true`:
 
 ## Synchronized map
 
-A map that will auto save it's values to the database. Useful for values that
-mostly get updated, like settings
+A map that auto saves it's values to the database. Useful for values that
+are often updated, like persistant app state
 
    ```dart
    import 'package:sqlcool/sqlcool.dart';
 
-   // Define the map
    var myMap = SynchronizedMap(
       db: db, // an Sqlcool database
       table: "a_table",
