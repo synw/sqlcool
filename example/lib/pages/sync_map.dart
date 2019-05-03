@@ -1,31 +1,22 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:observable/observable.dart';
 import 'package:sqlcool/sqlcool.dart';
 import '../conf.dart';
 
 class _SyncMapPageState extends State<SyncMapPage> {
   SynchronizedMap productPrice;
   SelectBloc bloc;
+  bool ready = false;
 
-  void setInitialData() async {
-    // get initial product price
-    num initialPrice;
-    try {
-      var res =
-          await db.select(table: "product", columns: "price", where: "id=1");
-      initialPrice = res[0]["price"];
-    } catch (e) {
-      throw (e);
-    }
-    // set the initial synchronized map data
+  Future<void> setMap() async {
     productPrice = SynchronizedMap(
         db: db,
         table: "product",
-        where: "id=1",
-        data: ObservableMap.from({"price": "$initialPrice"}),
+        where: 'name="Product 1"',
+        columns: "price",
         verbose: true);
+    await productPrice.onReady;
   }
 
   Future<void> changePrice() async {
@@ -40,10 +31,16 @@ class _SyncMapPageState extends State<SyncMapPage> {
         database: db,
         table: "product",
         orderBy: "id",
-        limit: 1,
+        where: 'name="Product 1"',
         reactive: true);
-    setInitialData();
+    setMap().then((_) => setState(() => ready = true));
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    productPrice.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,15 +60,17 @@ class _SyncMapPageState extends State<SyncMapPage> {
                             textScaleFactor: 1.5));
                   });
             } else {
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             }
           }),
-      Positioned(
-          bottom: 30.0,
-          left: 30.0,
-          child: RaisedButton(
-              child: const Text("Change price"),
-              onPressed: () => changePrice())),
+      ready
+          ? Positioned(
+              bottom: 30.0,
+              left: 30.0,
+              child: RaisedButton(
+                  child: const Text("Change price"),
+                  onPressed: () => changePrice()))
+          : const Text(""),
     ]));
   }
 }
