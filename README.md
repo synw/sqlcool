@@ -148,7 +148,6 @@ A map that will auto save it's values to the database. Useful for values that
 mostly get updated, like settings
 
    ```dart
-   import 'package:observable/observable.dart';
    import 'package:sqlcool/sqlcool.dart';
 
    // Define the map with initial data
@@ -156,12 +155,18 @@ mostly get updated, like settings
       db: db, // an Sqlcool database
       table: "a_table",
       where: "id=1",
-      data: ObservableMap.from({"k": "v"}),
+      columns = "col1,col2,col3",
       verbose: true
    );
 
+   // Wait until the map is initialized
+   await myMap.onReady;
+
    // Changing the map will auto update the data in the database:
-   myMap.data["k"] = "v2";
+   myMap.data["col1"] = "value";
+
+   // Dispose the map when finished using
+   myMap.dispose();
    ```
 
 ## Todo
