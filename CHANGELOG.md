@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.7.0
+
+- Add the database schema constructor
+
 ## 2.6.1
 
 - Add the `columns` parameter to `SychronizedMap`
