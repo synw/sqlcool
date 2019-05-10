@@ -1,6 +1,30 @@
 Initialize database
 ===================
 
+Schema definition
+-----------------
+
+.. highlight:: dart
+
+::
+
+   DbTable category = DbTable("category")..varchar("name", unique: true);
+   DbTable product = DbTable("product")
+      ..varchar("name", unique: true)
+      ..integer("price")
+      ..foreignKey("category", onDelete: OnDelete.cascade)
+      ..index("name");
+
+Parameters for the column constructors:
+
+:name: *String* the name of the column
+
+Optional parameters:
+
+:unique: *bool* if the column must be unique
+:nullable: *bool* if the column can be null
+:defaultValue: *String* the default value of a column
+
 Initialize an empty database
 ----------------------------
 
@@ -12,6 +36,8 @@ Initialize an empty database
 
    Db db = Db();
 
+   // either use the schema definition constructor
+   // or define the tables by hand
    void myInit() {
       String q1 = """CREATE TABLE category (
          id INTEGER PRIMARY KEY,
