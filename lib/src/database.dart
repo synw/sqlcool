@@ -529,4 +529,36 @@ class Db {
       throw (e);
     }
   }
+
+  /// Insert rows in a table
+  Future<void> batchInsert(
+      {@required String table,
+      @required List<Map<String, String>> rows,
+      ConflictAlgorithm confligAlgoritm = ConflictAlgorithm.rollback,
+      bool verbose = false}) async {
+    await _mutex.synchronized(() async {
+      try {
+        if (!_isReady) throw DatabaseNotReady();
+        Stopwatch timer = Stopwatch()..start();
+        await _db.transaction((txn) async {
+          var batch = txn.batch();
+          rows.forEach((row) {
+            batch.insert(table, row,
+                conflictAlgorithm: confligAlgoritm);
+          });
+          await batch.commit();
+        });
+        timer.stop();
+        if (verbose) {
+          String msg = "Inserted ${rows.length} records " +
+              "in ${timer.elapsedMilliseconds} ms";
+          print(msg);
+        }
+      } on DatabaseNotReady catch (e) {
+        throw ("${e.message}");
+      } catch (e) {
+        throw (e);
+      }
+    });
+  }
 }
