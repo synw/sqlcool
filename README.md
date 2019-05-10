@@ -20,6 +20,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
    DbTable product = DbTable("product")
       ..varchar("name", unique: true)
       ..integer("price")
+      ..text("descripton", nullable: true)
       ..foreignKey("category", onDelete: OnDelete.cascade)
       ..index("name");
    List<String> initQueries = category.queries..addAll(product.queries);
