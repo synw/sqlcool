@@ -14,34 +14,41 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
    ```dart
    import 'package:sqlcool/sqlcool.dart';
 
-   void someFunc() async {
-      Db db = Db();
-      String dbpath = "db.sqlite"; // relative to the documents directory
-      await db.init(path: dbpath, fromAsset: "assets/db.sqlite").catchError((e) {
-          throw("Error initializing the database: ${e.message}");
-      });
-      // insert
-      Map<String, String> row = {name: "My item",};
-      await db.insert(table: "category", row: row).catchError((e) {
-          throw("Error inserting data: ${e.message}");
-      });
-      // select
-      List<Map<String, dynamic>> rows = await db.select(
-        table: "product", limit: 20, columns: "id,name",
-        where: "name LIKE '%something%'",
-        orderBy: "name ASC").catchError((e) {
-          throw("Error selecting data: ${e.message}");
-      });
-      //update
-      int updated = await db.update(table: "category", 
-          row: row, where: "id=1").catchError((e) {
-             throw("Error updating data: ${e.message}");
-      });
-      // delete
-      db.delete(table: "category", where: "id=3").catchError((e) {
-          throw("Error deleting data: ${e.message}");
-      });
-   }
+   Db db = Db();
+   // define the database schema
+   DbTable category = DbTable("category")..varchar("name", unique: true);
+   DbTable product = DbTable("product")
+      ..varchar("name", unique: true)
+      ..integer("price")
+      ..foreignKey("category", onDelete: OnDelete.cascade)
+      ..index("name");
+   List<String> initQueries = category.queries..addAll(product.queries);
+   // initialize the database
+   String dbpath = "db.sqlite"; // relative to the documents directory
+   await db.init(path: dbpath, queries: initQueries).catchError((e) {
+     throw("Error initializing the database: ${e.message}");
+   });
+   // insert
+   Map<String, String> row = {name: "My item",};
+   await db.insert(table: "category", row: row).catchError((e) {
+     throw("Error inserting data: ${e.message}");
+   });
+   // select
+   List<Map<String, dynamic>> rows = await db.select(
+      table: "product", limit: 20, columns: "id,name",
+      where: "name LIKE '%something%'",
+      orderBy: "name ASC").catchError((e) {
+       throw("Error selecting data: ${e.message}");
+   });
+   //update
+   int updated = await db.update(table: "category", 
+      row: row, where: "id=1").catchError((e) {
+         throw("Error updating data: ${e.message}");
+   });
+   // delete
+   db.delete(table: "category", where: "id=3").catchError((e) {
+      throw("Error deleting data: ${e.message}");
+   });
    ```
 
 ## Changefeed
