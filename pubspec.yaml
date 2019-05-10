@@ -1,5 +1,5 @@
 name: sqlcool
-author: synw <synwe@yahoo.com>
+author: synw <ansterj@gmail.com>
 description: A library to work with Sqflite providing a simple api for crud operations and reactivity bindings
 homepage: https://github.com/synw/sqlcool
 
