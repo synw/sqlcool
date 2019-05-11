@@ -516,7 +516,10 @@ class Db {
 
   /// count rows in a table
   Future<int> count(
-      {@required String table, String where, bool verbose = false}) async {
+      {@required String table,
+      String where,
+      String columns = "id",
+      bool verbose = false}) async {
     /// [table] is the table to use and [where] the sql where clause
     ///
     /// Returns a future with the count of the rows
@@ -525,7 +528,7 @@ class Db {
       Stopwatch timer = Stopwatch()..start();
       String w = "";
       if (where != null) w = " WHERE $where";
-      String q = 'SELECT COUNT(*) FROM $table$w';
+      String q = 'SELECT COUNT($columns) FROM $table$w';
       int c;
       await _db.transaction((txn) async {
         c = Sqflite.firstIntValue(await txn.rawQuery(q));
