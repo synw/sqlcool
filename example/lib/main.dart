@@ -23,7 +23,6 @@ Future<void> initDb() async {
     ..foreignKey("category", onDelete: OnDelete.cascade)
     ..index("name");
   // prepare the queries
-  List<String> schemaQueries = category.queries..addAll(product.queries);
   List<String> populateQueries = <String>[
     'INSERT INTO category(name) VALUES("Category 1")',
     'INSERT INTO category(name) VALUES("Category 2")',
@@ -32,11 +31,14 @@ Future<void> initDb() async {
     'INSERT INTO product(name,price,category_id) VALUES("Product 2", 30, 1)',
     'INSERT INTO product(name,price,category_id) VALUES("Product 3", 20, 2)'
   ];
-  List<String> queries = schemaQueries..addAll(populateQueries);
   // initialize the database
   String dbpath = "items.sqlite";
   await db
-      .init(path: dbpath, queries: queries, verbose: true)
+      .init(
+          path: dbpath,
+          schema: [category, product],
+          queries: populateQueries,
+          verbose: true)
       .catchError((dynamic e) {
     throw ("Error initializing the database: ${e.message}");
   });
