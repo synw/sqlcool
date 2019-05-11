@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'models.dart';
 import 'exceptions.dart';
+import 'create_table.dart';
 
 /// A class to handle database operations
 class Db {
@@ -67,6 +68,7 @@ class Db {
       {@required String path,
       bool absolutePath = false,
       List<String> queries = const <String>[],
+      List<DbTable> schema = const <DbTable>[],
       bool verbose = false,
       String fromAsset = "",
       bool debug = false}) async {
@@ -74,8 +76,12 @@ class Db {
     /// default relative to the documents directory unless [absolutePath]
     /// is true.
     /// [queries] is a list of queries to run at initialization
-    /// and [debug] set Sqflite debug mode on
+    /// and [debug] set Sqflite debug mode on.
+    ///
+    /// Either a [queries] or a [schema] must be provided
     assert(path != null);
+    if (queries.isEmpty && schema.isEmpty)
+      throw ArgumentError("Either a [queries] or a [schema] must be provided");
     if (debug) Sqflite.setDebugModeOn(true);
     String dbpath = path;
     if (!absolutePath) {
@@ -115,6 +121,13 @@ class Db {
           if (verbose) print("OPENING database");
           this._db = await openDatabase(dbpath, version: 1,
               onCreate: (Database _db, int version) async {
+            if (schema.isNotEmpty) {
+              var schemaQueries = <String>[];
+              schema.forEach(
+                  (tableSchema) => schemaQueries.addAll(tableSchema.queries));
+              schemaQueries.addAll(queries);
+              queries = schemaQueries;
+            }
             if (queries.isNotEmpty) {
               await _db.transaction((txn) async {
                 for (String q in queries) {
@@ -543,8 +556,7 @@ class Db {
         await _db.transaction((txn) async {
           var batch = txn.batch();
           rows.forEach((row) {
-            batch.insert(table, row,
-                conflictAlgorithm: confligAlgoritm);
+            batch.insert(table, row, conflictAlgorithm: confligAlgoritm);
           });
           await batch.commit();
         });
