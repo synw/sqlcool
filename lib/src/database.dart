@@ -560,6 +560,12 @@ class Db {
           var batch = txn.batch();
           rows.forEach((row) {
             batch.insert(table, row, conflictAlgorithm: confligAlgoritm);
+            _changeFeedController.sink.add(DatabaseChangeEvent(
+                type: DatabaseChange.insert,
+                value: 1,
+                query: "",
+                table: table,
+                executionTime: timer.elapsedMicroseconds));
           });
           await batch.commit();
         });
