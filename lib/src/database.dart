@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'models.dart';
 import 'exceptions.dart';
-import 'create_table.dart';
+import 'schema.dart';
 
 /// A class to handle database operations
 class Db {
