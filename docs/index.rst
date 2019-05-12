@@ -9,6 +9,7 @@ Welcome to Sqlcool's documentation!
 
    init.rst
    db_ops.rst
+   batch_ops.rst
 
 .. toctree::
    :maxdepth: 2
