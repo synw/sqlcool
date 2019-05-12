@@ -27,12 +27,11 @@ class DbTable {
       bool nullable = false,
       bool unique = false,
       OnDelete onDelete = OnDelete.restrict}) {
-    String q = "${name}_id INTEGER";
+    String q = "$name INTEGER";
     if (unique) q += " UNIQUE";
     if (!nullable) q += " NOT NULL";
     q += ",\n";
-    q += "CONSTRAINT $name\n";
-    q += "  FOREIGN KEY (${name}_id)\n";
+    q += "  FOREIGN KEY ($name)\n";
     reference ??= name;
     q += "  REFERENCES $reference(id)\n";
     q += "  ON DELETE ";
