@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.8.0
+
+- Add the `batchInsert` method
+- Add the `schema` parameter to `init`
+- Improve the `count` method
+- Update the changefeed from batchInsert
+- Fix nullables in schema constructor
+- Improve `foreignKey` in schema constructor
+
 ## 2.7.0
 
 - Add the database schema constructor
