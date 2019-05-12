@@ -7,7 +7,7 @@ Batch insert
 
    import 'package:sqlcool/sqlcool.dart';
 
-   rows = <Map<String, String>>[{"name": "one"}, {"name": "two"}];
+   var rows = <Map<String, String>>[{"name": "one"}, {"name": "two"}];
 
    await db.batchInsert(
             table: "item",
