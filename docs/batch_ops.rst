@@ -5,6 +5,7 @@ Batch insert
 
 ::
 
+   import 'package:sqflite/sqlflite.dart';
    import 'package:sqlcool/sqlcool.dart';
 
    var rows = <Map<String, String>>[{"name": "one"}, {"name": "two"}];
