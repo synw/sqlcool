@@ -29,7 +29,7 @@ class DbTable {
       OnDelete onDelete = OnDelete.restrict}) {
     String q = "${name}_id INTEGER";
     if (unique) q += " UNIQUE";
-    if (nullable) q += " NOT NULL";
+    if (!nullable) q += " NOT NULL";
     q += ",\n";
     q += "CONSTRAINT $name\n";
     q += "  FOREIGN KEY (${name}_id)\n";
@@ -61,7 +61,7 @@ class DbTable {
     String q = "$name VARCHAR";
     if (maxLength != null) q += "($maxLength)";
     if (unique) q += " UNIQUE";
-    if (nullable) q += " NOT NULL";
+    if (!nullable) q += " NOT NULL";
     if (defaultValue != null) q += " DEFAULT ($defaultValue)";
     _columns.add(q);
   }
@@ -71,7 +71,7 @@ class DbTable {
       {bool nullable = false, bool unique = false, String defaultValue}) {
     String q = "$name TEXT";
     if (unique) q += " UNIQUE";
-    if (nullable) q += " NOT NULL";
+    if (!nullable) q += " NOT NULL";
     if (defaultValue != null) q += " DEFAULT ($defaultValue)";
     _columns.add(q);
   }
@@ -81,7 +81,7 @@ class DbTable {
       {bool nullable = false, bool unique = false, String defaultValue}) {
     String q = "$name REAL";
     if (unique) q += " UNIQUE";
-    if (nullable) q += " NOT NULL";
+    if (!nullable) q += " NOT NULL";
     if (defaultValue != null) q += " DEFAULT ($defaultValue)";
     _columns.add(q);
   }
@@ -91,7 +91,7 @@ class DbTable {
       {bool nullable = false, bool unique = false, String defaultValue}) {
     String q = "$name INTEGER";
     if (unique) q += " UNIQUE";
-    if (nullable) q += " NOT NULL";
+    if (!nullable) q += " NOT NULL";
     if (defaultValue != null) q += " DEFAULT ($defaultValue)";
     _columns.add(q);
   }
