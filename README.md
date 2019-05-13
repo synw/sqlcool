@@ -5,7 +5,7 @@
 A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Forget about implementation details and focus on the business logic.
 
 - **Simple**: easy api for crud operations
-- **Reactive**: stream of changes, auto updated bloc, synchronized map
+- **Reactive**: stream of changes, select bloc, synchronized map
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
 
