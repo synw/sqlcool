@@ -1,15 +1,17 @@
 # Sqlcool
 
-[![pub package](https://img.shields.io/pub/v/sqlcool.svg)](https://pub.dartlang.org/packages/sqlcool) [![Build Status](https://travis-ci.org/synw/sqlcool.svg?branch=master)](https://travis-ci.org/synw/sqlcool)
+[![pub package](https://img.shields.io/pub/v/sqlcool.svg)](https://pub.dartlang.org/packages/sqlcool) [![Build Status](https://travis-ci.org/synw/sqlcool.svg?branch=master)](https://travis-ci.org/synw/sqlcool) [![Api doc](https://img.shields.io/badge/api-doc-orange.svg)](https://pub.dev/documentation/sqlcool/latest/sqlcool/sqlcool-library.html)
 
 A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Forget about implementation details and focus on the business logic.
 
 - **Simple**: easy api for crud operations
 - **Reactive**: stream of changes, select bloc, synchronized map
 
-Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage instructions
+Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api doc](https://pub.dev/documentation/sqlcool/latest/sqlcool/sqlcool-library.html) for usage instructions
 
 ## Simple crud
+
+### Define database schema
 
    ```dart
    import 'package:sqlcool/sqlcool.dart';
@@ -23,17 +25,32 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
       ..text("descripton", nullable: true)
       ..foreignKey("category", onDelete: OnDelete.cascade)
       ..index("name");
-   List<String> initQueries = category.queries..addAll(product.queries);
+   List<DbTable> schema = [category, product];
+   ```
+
+### Initialize database
+
+   ```dart
    // initialize the database
    String dbpath = "db.sqlite"; // relative to the documents directory
-   await db.init(path: dbpath, queries: initQueries).catchError((e) {
+   await db.init(path: dbpath, schema: schema).catchError((e) {
      throw("Error initializing the database: ${e.message}");
    });
+   ```
+
+### Insert
+
+   ```dart
    // insert
    Map<String, String> row = {name: "My item",};
    await db.insert(table: "category", row: row).catchError((e) {
      throw("Error inserting data: ${e.message}");
    });
+   ```
+
+### Select
+
+   ```dart
    // select
    List<Map<String, dynamic>> rows = await db.select(
       table: "product", limit: 20, columns: "id,name",
@@ -41,11 +58,21 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) for usage i
       orderBy: "name ASC").catchError((e) {
        throw("Error selecting data: ${e.message}");
    });
+   ```
+
+### Update
+
+   ```dart
    //update
    int updated = await db.update(table: "category", 
       row: row, where: "id=1").catchError((e) {
          throw("Error updating data: ${e.message}");
    });
+   ```
+
+### Delete
+
+   ```dart
    // delete
    db.delete(table: "category", where: "id=3").catchError((e) {
       throw("Error deleting data: ${e.message}");
