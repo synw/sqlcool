@@ -36,6 +36,7 @@ class Db {
       StreamController<DatabaseChangeEvent>.broadcast();
   File _dbFile;
   bool _isReady = false;
+  DbSchema _schema;
 
   /// The on ready callback: fired when the database
   /// is ready to operate
@@ -45,16 +46,19 @@ class Db {
   /// that occur in the database
   Stream<DatabaseChangeEvent> get changefeed => _changeFeedController.stream;
 
-  /// the Sqlite file
+  /// This Sqlite file
   File get file => _dbFile;
 
-  /// A Sqflite database
+  /// This Sqflite [Database]
   Database get database => _db;
 
-  /// The database state
+  /// This database state
   bool get isReady => _isReady;
 
-  /// Dispose the changefeed stream
+  /// This database schema
+  DbSchema get schema => _schema;
+
+  /// Dispose the changefeed stream when finished using
   void dispose() {
     _changeFeedController.close();
   }
@@ -62,13 +66,14 @@ class Db {
   /// Initialize the database
   ///
   /// The database can be initialized either from an asset file
-  /// with the [fromAsset] parameter or from some create table queries
-  /// with the [queries] parameter.
+  /// with the [fromAsset] parameter or from a [schema] or from
+  /// create table and other [queries]. Either a [schema] or [query]
+  /// parameter must be provided.
   Future<void> init(
       {@required String path,
       bool absolutePath = false,
       List<String> queries = const <String>[],
-      List<DbTable> schema = const <DbTable>[],
+      List<DbTable> schema,
       bool verbose = false,
       String fromAsset = "",
       bool debug = false}) async {
@@ -116,34 +121,35 @@ class Db {
     }
     if (this._db == null) {
       await _mutex.synchronized(() async {
-        if (this._db == null) {
-          // open
-          if (verbose) print("OPENING database");
-          this._db = await openDatabase(dbpath, version: 1,
-              onCreate: (Database _db, int version) async {
-            if (schema.isNotEmpty) {
-              var schemaQueries = <String>[];
-              schema.forEach(
-                  (tableSchema) => schemaQueries.addAll(tableSchema.queries));
-              schemaQueries.addAll(queries);
-              queries = schemaQueries;
-            }
-            if (queries.isNotEmpty) {
-              await _db.transaction((txn) async {
-                for (String q in queries) {
-                  Stopwatch timer = Stopwatch()..start();
-                  await txn.execute(q);
-                  timer.stop();
-                  if (verbose) {
-                    String msg = "$q in ${timer.elapsedMilliseconds} ms";
-                    print(msg);
-                  }
+        // open
+        if (verbose) print("OPENING database");
+        this._db = await openDatabase(dbpath, version: 1,
+            onCreate: (Database _db, int version) async {
+          if (schema != null) {
+            var schemaQueries = <String>[];
+            schema.forEach(
+                (tableSchema) => schemaQueries.addAll(tableSchema.queries));
+            schemaQueries.addAll(queries);
+            queries = schemaQueries;
+          }
+          if (queries.isNotEmpty) {
+            await _db.transaction((txn) async {
+              for (String q in queries) {
+                Stopwatch timer = Stopwatch()..start();
+                await txn.execute(q);
+                timer.stop();
+                if (verbose) {
+                  String msg = "$q in ${timer.elapsedMilliseconds} ms";
+                  print(msg);
                 }
-              });
-            }
-          });
-        }
+              }
+            });
+          }
+        });
       });
+      if (schema != null)
+        // save the schema in memory
+        _schema = DbSchema(schema.toSet());
     }
     if (verbose) print("DATABASE INITIALIZED");
     _dbFile = File(dbpath);
@@ -362,7 +368,7 @@ class Db {
             table: table,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
-          String msg = "$q in ${timer.elapsedMilliseconds} ms";
+          String msg = "$q $row in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
         return updated;

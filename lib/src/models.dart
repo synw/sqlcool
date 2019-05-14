@@ -1,5 +1,53 @@
 import 'package:flutter/foundation.dart';
 
+/// The type of a database column
+enum DatabaseColumnType {
+  /// A varchar column
+  varchar,
+
+  /// An integer column
+  integer,
+
+  /// A double column
+  real,
+
+  /// A text column
+  text,
+
+  /// A boolean colum
+  boolean
+}
+
+/// A database column representation
+class DatabaseColumn {
+  /// Provide a name and a type
+  const DatabaseColumn(
+      {@required this.name,
+      @required this.type,
+      this.unique = false,
+      this.nullable = false,
+      this.check,
+      this.defaultValue});
+
+  /// The column name
+  final String name;
+
+  /// The data type of the column
+  final DatabaseColumnType type;
+
+  /// Is the column unique
+  final bool unique;
+
+  /// Is the column nullable
+  final bool nullable;
+
+  /// The column-s default value
+  final String defaultValue;
+
+  /// A check constraint
+  final String check;
+}
+
 /// Types of database changes
 enum DatabaseChange {
   /// An insert operation in the database

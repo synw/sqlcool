@@ -64,8 +64,8 @@ class SynchronizedMap {
   Future<ObservableMap<String, String>> _initMap() async {
     Map<String, String> m = {};
     try {
-      List<Map<String, dynamic>> res =
-          await db.select(table: table, where: where, columns: columns);
+      List<Map<String, dynamic>> res = await db.select(
+          table: table, where: where, columns: columns, verbose: verbose);
       if (res.isEmpty) throw ("Can not find map data");
       res[0].forEach((String k, dynamic v) {
         m[k] = v.toString();
