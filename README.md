@@ -79,7 +79,9 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
    });
    ```
 
-## Changefeed
+## Reactivity
+
+### Changefeed
 
 A stream of database change events is available
 
@@ -100,7 +102,7 @@ A stream of database change events is available
    changefeed.cancel();
    ```
 
-## Reactive select bloc
+### Reactive select bloc
 
 The bloc will rebuild itself on any database change because of the `reactive`
 parameter set to `true`:
@@ -163,7 +165,7 @@ parameter set to `true`:
    }
    ```
 
-## Synchronized map
+### Synchronized map
 
 A map that auto saves it's values to the database. Useful for values that
 are often updated, like persistant app state
