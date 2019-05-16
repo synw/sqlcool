@@ -58,6 +58,9 @@ class Db {
   /// This database schema
   DbSchema get schema => _schema;
 
+  /// Check the existence of a schema
+  bool get hasSchema => (_schema != null);
+
   /// Dispose the changefeed stream when finished using
   void dispose() {
     _changeFeedController.close();
@@ -147,10 +150,10 @@ class Db {
           }
         });
       });
-      if (schema != null)
-        // save the schema in memory
-        _schema = DbSchema(schema.toSet());
     }
+    if (schema != null)
+      // save the schema in memory
+      _schema = DbSchema(schema.toSet());
     if (verbose) print("DATABASE INITIALIZED");
     _dbFile = File(dbpath);
     if (!_readyCompleter.isCompleted) _readyCompleter.complete();
