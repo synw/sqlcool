@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.8.1
+
+- Update dependencies
+- Improve schema management
+- Minor fix in `SynchronizedMap`
+- Add the `hasSchema` getter
+
 ## 2.8.0
 
 - Add the `batchInsert` method
