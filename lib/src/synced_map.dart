@@ -20,16 +20,16 @@ class SynchronizedMap {
             .where((r) => r is MapChangeRecord && !r.isInsert && !r.isRemove)
             .toList();
         if (_changes.isEmpty) return;
-        Map<String, String> _data = data.map((dynamic k, dynamic v) =>
+        Map<String, String> _data = data.map((String k, String v) =>
             MapEntry<String, String>(k.toString(), v.toString()));
-        _changeFeed.sink.add(_data);
+        _changefeed.sink.add(_data);
       });
       _readyCompleter.complete();
     });
   }
 
   /// The map containing the data to synchronize
-  ObservableMap data;
+  ObservableMap<String, String> data;
 
   /// The database to use
   Db db;
@@ -50,15 +50,18 @@ class SynchronizedMap {
   /// is ready to operate
   Future<Null> get onReady => _readyCompleter.future;
 
+  // The changes made to the map
+  // Stream<Map<String, String>> get changefeed => _changefeed.stream;
+
   StreamSubscription _sub;
-  final _changeFeed = StreamController<Map<String, String>>();
+  final _changefeed = StreamController<Map<String, String>>();
   bool _isLocked = false;
   final Completer<Null> _readyCompleter = Completer<Null>();
 
   /// Use dispose when finished to avoid memory leaks
   void dispose() {
     _sub.cancel();
-    _changeFeed.close();
+    _changefeed.close();
   }
 
   Future<ObservableMap<String, String>> _initMap() async {
@@ -88,7 +91,7 @@ class SynchronizedMap {
   }
 
   Future<void> _runQueue() async {
-    await for (var _data in _changeFeed.stream) {
+    await for (var _data in _changefeed.stream) {
       await _runQuery(_data);
     }
   }
