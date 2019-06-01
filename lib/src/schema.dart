@@ -53,7 +53,7 @@ class DbTable {
 
   /// Add an index to a column
   void index(String column) {
-    String q = "CREATE INDEX idx_$column ON $name ($column)";
+    String q = "CREATE INDEX idx_${name}_$column ON $name($column)";
     _queries.add(q);
   }
 
