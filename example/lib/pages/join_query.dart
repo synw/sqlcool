@@ -12,7 +12,7 @@ class _PageJoinQueryState extends State<PageJoinQuery> {
       table: "product",
       columns: "product.name, price, category.name as category_name",
       joinTable: "category",
-      joinOn: "product.category_id = category.id",
+      joinOn: "product.category = category.id",
       verbose: true,
     )
         .then((items) {

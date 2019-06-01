@@ -4,7 +4,7 @@ Future<void> saveItem(String itemName) async {
   String table = "product";
   Map<String, String> row = {
     "name": itemName,
-    "category_id": "1",
+    "category": "1",
     "price": "50",
   };
   await db

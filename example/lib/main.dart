@@ -27,9 +27,9 @@ Future<void> initDb() async {
     'INSERT INTO category(name) VALUES("Category 1")',
     'INSERT INTO category(name) VALUES("Category 2")',
     'INSERT INTO category(name) VALUES("Category 3")',
-    'INSERT INTO product(name,price,category_id) VALUES("Product 1", 50, 1)',
-    'INSERT INTO product(name,price,category_id) VALUES("Product 2", 30, 1)',
-    'INSERT INTO product(name,price,category_id) VALUES("Product 3", 20, 2)'
+    'INSERT INTO product(name,price,category) VALUES("Product 1", 50, 1)',
+    'INSERT INTO product(name,price,category) VALUES("Product 2", 30, 1)',
+    'INSERT INTO product(name,price,category) VALUES("Product 3", 20, 2)'
   ];
   // initialize the database
   String dbpath = "items.sqlite";

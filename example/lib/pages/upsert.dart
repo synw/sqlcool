@@ -31,7 +31,7 @@ class _UpsertPageState extends State<UpsertPage> {
         row: {
           "name": "Product ${numProducts + 1}",
           "price": "30",
-          "category_id": "1"
+          "category": "1"
         },
         verbose: true);
     db.count(table: "product").then((n) => numProducts = n);
@@ -43,7 +43,7 @@ class _UpsertPageState extends State<UpsertPage> {
     db.upsert(
         table: "product",
         row: {"name": "Product 1", "price": "$n"},
-        preserveColumns: ["category_id"],
+        preserveColumns: ["category"],
         indexColumn: "name",
         verbose: true);
   }
