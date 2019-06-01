@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.2
+
+- Add the columns getter for `DbSchema`
+- Fix `defaultValue` for the`real` method of `DbSchema`
+- Fix the example
+
 ## 2.8.1
 
 - Update dependencies
