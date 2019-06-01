@@ -12,7 +12,10 @@ Schema definition
    DbTable product = DbTable("product")
       ..varchar("name", unique: true)
       ..integer("price")
+	  ..real("number")
+	  ..text("description")
       ..foreignKey("category", onDelete: OnDelete.cascade)
+	  ..uniqueTogether("name", "number")
       ..index("name");
 
 Parameters for the column constructors:
@@ -23,7 +26,10 @@ Optional parameters:
 
 :unique: *bool* if the column must be unique
 :nullable: *bool* if the column can be null
-:defaultValue: *String* the default value of a column
+:defaultValue: *dynamic* (depending on the row type: integer if
+ the row is integer for example) the default value of a column
+
+ Note: the foreignKey must be placed after the other fields definitions
 
 Initialize an empty database
 ----------------------------
