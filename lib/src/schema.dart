@@ -42,6 +42,10 @@ class DbTable {
   final List<DatabaseColumn> _columnsData = <DatabaseColumn>[];
 
   /// The columns info
+  List<DatabaseColumn> get columns => _columnsData;
+
+  /// The columns info
+  @deprecated
   List<DatabaseColumn> get schema => _columnsData;
 
   /// Get the list of queries to perform for database initialization
