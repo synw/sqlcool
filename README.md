@@ -28,7 +28,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
    List<DbTable> schema = [category, product];
    ```
 
-### Initialize database
+### Initialize the database
 
    ```dart
    String dbpath = "db.sqlite"; // relative to the documents directory
