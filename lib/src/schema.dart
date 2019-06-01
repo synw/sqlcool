@@ -143,7 +143,7 @@ class DbTable {
   void real(String name,
       {bool nullable = false,
       bool unique = false,
-      String defaultValue,
+      double defaultValue,
       String check}) {
     String q = "$name REAL";
     if (unique) q += " UNIQUE";
@@ -155,7 +155,7 @@ class DbTable {
         name: name,
         unique: unique,
         nullable: nullable,
-        defaultValue: defaultValue,
+        defaultValue: "$defaultValue",
         check: check,
         type: DatabaseColumnType.real));
   }
