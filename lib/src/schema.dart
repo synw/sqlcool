@@ -57,6 +57,12 @@ class DbTable {
     _queries.add(q);
   }
 
+  /// Add a unique constraint for combined values from two columns
+  void uniqueTogether(String column1, String column2) {
+    String q = "UNIQUE($column1, $column2)";
+    _queries.add(q);
+  }
+
   /// Add a foreign key to a column
   void foreignKey(String name,
       {String reference,
