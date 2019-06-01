@@ -11,7 +11,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
 
 ## Simple crud
 
-### Define database schema
+### Define the database schema
 
    ```dart
    import 'package:sqlcool/sqlcool.dart';
@@ -31,7 +31,6 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
 ### Initialize database
 
    ```dart
-   // initialize the database
    String dbpath = "db.sqlite"; // relative to the documents directory
    await db.init(path: dbpath, schema: schema).catchError((e) {
      throw("Error initializing the database: ${e.message}");
@@ -41,7 +40,6 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
 ### Insert
 
    ```dart
-   // insert
    Map<String, String> row = {name: "My item",};
    await db.insert(table: "category", row: row).catchError((e) {
      throw("Error inserting data: ${e.message}");
@@ -51,7 +49,6 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
 ### Select
 
    ```dart
-   // select
    List<Map<String, dynamic>> rows = await db.select(
       table: "product", limit: 20, columns: "id,name",
       where: "name LIKE '%something%'",
@@ -63,7 +60,6 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
 ### Update
 
    ```dart
-   //update
    int updated = await db.update(table: "category", 
       row: row, where: "id=1").catchError((e) {
          throw("Error updating data: ${e.message}");
@@ -73,7 +69,6 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
 ### Delete
 
    ```dart
-   // delete
    db.delete(table: "category", where: "id=3").catchError((e) {
       throw("Error deleting data: ${e.message}");
    });
