@@ -200,6 +200,14 @@ class DbTable {
         type: DatabaseColumnType.boolean));
   }
 
+  /// Add an automatic timestamp
+  void timestamp([String name = "timestamp"]) {
+    String q = "$name INTEGER DEFAULT (cast(strftime('%s','now') as int))";
+    _columns.add(q);
+    _columnsData
+        .add(DatabaseColumn(name: name, type: DatabaseColumnType.integer));
+  }
+
   /// Print the queries to perform for database initialization
   void printQueries() {
     queries.forEach((q) {
