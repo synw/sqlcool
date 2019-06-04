@@ -40,6 +40,7 @@ class DbTable {
   final List<String> _columns = <String>["id INTEGER PRIMARY KEY"];
   final List<String> _queries = <String>[];
   final List<DatabaseColumn> _columnsData = <DatabaseColumn>[];
+  final List<String> _fkConstraints = <String>[];
 
   /// The columns info
   List<DatabaseColumn> get columns => _columnsData;
@@ -50,6 +51,9 @@ class DbTable {
 
   /// Get the list of queries to perform for database initialization
   List<String> get queries => _getQueries();
+
+  /// Get the table constraints
+  List<String> get constraints => _fkConstraints;
 
   /// Add an index to a column
   void index(String column) {
@@ -74,25 +78,27 @@ class DbTable {
     if (unique) q += " UNIQUE";
     if (!nullable) q += " NOT NULL";
     if (defaultValue != null) q += " DEFAULT $defaultValue";
-    q += ",\n";
-    q += "  FOREIGN KEY ($name)\n";
+    //q += ",\n";
+    String fk;
+    fk = "  FOREIGN KEY ($name)\n";
     reference ??= name;
-    q += "  REFERENCES $reference(id)\n";
-    q += "  ON DELETE ";
+    fk += "  REFERENCES $reference(id)\n";
+    fk += "  ON DELETE ";
     switch (onDelete) {
       case OnDelete.cascade:
-        q += "CASCADE";
+        fk += "CASCADE";
         break;
       case OnDelete.setNull:
-        q += "SET NULL";
+        fk += "SET NULL";
         break;
       case OnDelete.setDefault:
-        q += "SET DEFAULT";
+        fk += "SET DEFAULT";
         break;
       default:
-        q += "RESTRICT";
+        fk += "RESTRICT";
     }
     _columns.add(q);
+    _fkConstraints.add(fk);
     _columnsData.add(DatabaseColumn(
         name: name,
         unique: unique,
@@ -220,6 +226,10 @@ class DbTable {
   String toString() {
     String q = "CREATE TABLE $name (\n";
     q += _columns.join(",\n");
+    if (_fkConstraints.isNotEmpty) {
+      q += ",\n";
+      q += _fkConstraints.join(",\n");
+    }
     q += "\n)";
     return q;
   }
