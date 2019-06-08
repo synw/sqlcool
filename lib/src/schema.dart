@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/foundation.dart';
 import 'models.dart';
 
@@ -204,6 +206,29 @@ class DbTable {
         name: name,
         defaultValue: "$defaultValue",
         type: DatabaseColumnType.boolean));
+  }
+
+  /// Add a blob column
+  void blob(
+    String name, {
+    bool nullable = false,
+    bool unique = false,
+    Uint8List defaultValue,
+    String check,
+  }) {
+    String q = "$name BLOB";
+    if (unique) q += " UNIQUE";
+    if (!nullable) q += " NOT NULL";
+    if (defaultValue != null) q += " DEFAULT $defaultValue";
+    if (check != null) q += " CHECK($check)";
+    _columns.add(q);
+    _columnsData.add(DatabaseColumn(
+        name: name,
+        unique: unique,
+        nullable: nullable,
+        defaultValue: "$defaultValue",
+        check: check,
+        type: DatabaseColumnType.blob));
   }
 
   /// Add an automatic timestamp

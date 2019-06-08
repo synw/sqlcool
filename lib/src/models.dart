@@ -15,7 +15,10 @@ enum DatabaseColumnType {
   text,
 
   /// A boolean colum
-  boolean
+  boolean,
+
+  /// A blob value
+  blob
 }
 
 /// A database column representation
