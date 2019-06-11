@@ -76,9 +76,9 @@ class Db {
       {@required String path,
       bool absolutePath = false,
       List<String> queries = const <String>[],
-      List<DbTable> schema,
+      List<DbTable> schema = const <DbTable>[],
       bool verbose = false,
-      String fromAsset = "",
+      String fromAsset,
       bool debug = false}) async {
     /// The [path] is where the database file will be stored. It is by
     /// default relative to the documents directory unless [absolutePath]
@@ -86,9 +86,10 @@ class Db {
     /// [queries] is a list of queries to run at initialization
     /// and [debug] set Sqflite debug mode on.
     ///
-    /// Either a [queries] or a [schema] must be provided
+    /// Either a [queries] or a [schema] must be provided if the
+    /// database is not initialized from an asset
     assert(path != null);
-    if (queries.isEmpty && schema.isEmpty)
+    if (fromAsset == null && queries.isEmpty && schema.isEmpty)
       throw ArgumentError("Either a [queries] or a [schema] must be provided");
     if (debug) Sqflite.setDebugModeOn(true);
     String dbpath = path;
@@ -98,7 +99,7 @@ class Db {
     }
     if (verbose) print("INITIALIZING DATABASE at " + dbpath);
     // copy the database from an asset if necessary
-    if (fromAsset != "") {
+    if (fromAsset != null) {
       File file = File(dbpath);
       if (!file.existsSync()) {
         if (verbose) print("Copying the database from asset $fromAsset");
