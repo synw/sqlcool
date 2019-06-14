@@ -1,6 +1,6 @@
 name: sqlcool
 author: synw <ansterj@gmail.com>
-description: Easy api for Sqlite with reactivity bingings. Stream of changes, select bloc, synchronized map
+description: Easy api for Sqlite with reactivity bingings. Stream of changes, select bloc
 homepage: https://github.com/synw/sqlcool
 
 # The following defines the version and build number for your application.
@@ -9,7 +9,7 @@ homepage: https://github.com/synw/sqlcool
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 2.8.2
+version: 3.0.0
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -20,7 +20,6 @@ dependencies:
   synchronized: ^2.1.0
   path_provider: ^1.1.0
   sqflite: ^1.1.5
-  observable: ^0.22.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

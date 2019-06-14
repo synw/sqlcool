@@ -40,10 +40,6 @@ class _PageIndexState extends State<PageIndex> {
                   child: const Text("Join query"),
                   onPressed: () => Navigator.of(context).pushNamed("/join"),
                 ),
-                RaisedButton(
-                  child: const Text("Synchronized map"),
-                  onPressed: () => Navigator.of(context).pushNamed("/sync_map"),
-                ),
               ],
             ));
   }

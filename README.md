@@ -5,7 +5,7 @@
 A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Forget about implementation details and focus on the business logic.
 
 - **Simple**: easy api for crud operations
-- **Reactive**: stream of changes, select bloc, synchronized map
+- **Reactive**: stream of changes, select bloc
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api doc](https://pub.dev/documentation/sqlcool/latest/sqlcool/sqlcool-library.html) for usage instructions
 
@@ -158,31 +158,6 @@ parameter set to `true`:
      @override
      _PageSelectBlocState createState() => _PageSelectBlocState();
    }
-   ```
-
-### Synchronized map
-
-A map that auto saves it's values to the database. Useful for values that
-are often updated, like persistant app state
-
-   ```dart
-   import 'package:sqlcool/sqlcool.dart';
-
-   var myMap = SynchronizedMap(
-      db: db,
-      table: "a_table",
-      where: "id=1",
-      columns = "col1,col2,col3"
-   );
-
-   // Wait until the map is initialized
-   await myMap.onReady;
-
-   // Changing the map will auto update the data in the database:
-   myMap.data["col1"] = "value";
-
-   // Dispose the map when finished using
-   myMap.dispose();
    ```
 
 ## Todo

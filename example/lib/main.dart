@@ -4,7 +4,6 @@ import 'pages/select_bloc.dart';
 import 'pages/index.dart';
 import 'pages/join_query.dart';
 import 'pages/upsert.dart';
-import 'pages/sync_map.dart';
 import 'conf.dart';
 
 void main() {
@@ -49,7 +48,6 @@ final routes = {
   '/select_bloc': (BuildContext context) => PageSelectBloc(),
   '/join': (BuildContext context) => PageJoinQuery(),
   '/upsert': (BuildContext context) => UpsertPage(),
-  '/sync_map': (BuildContext context) => SyncMapPage(),
 };
 
 class MyApp extends StatelessWidget {

@@ -1,5 +1,19 @@
 # Changelog
 
+## 3.0.0
+
+**Breaking change**: the `SynchronizedMap` feature was removed due to broken dependencies after the Dart Sdk 2.4.0 upgrade
+
+## 2.9.0
+
+- Fix index in `DbTable` in case of same row name for different tables
+- Fix the initialization when the `fromAsset` parameter is used
+- Fix schema constructor in case of multiple foreign keys
+- Add the `timestamp` method to `DbTable`
+- Add a `uniqueTogether` method to `DbTable`
+- Add a blob method to schema constructor
+- Improve the docs for schema definition
+
 ## 2.8.2
 
 - Add the columns getter for `DbSchema`
