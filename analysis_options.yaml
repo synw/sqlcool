@@ -16,7 +16,6 @@ linter:
     - annotate_overrides
     - constant_identifier_names
     - one_member_abstracts
-    - sort_constructors_first
     - recursive_getters
     - null_closures
     - lines_longer_than_80_chars
@@ -24,6 +23,9 @@ linter:
     - prefer_const_constructors
     - prefer_equal_for_default_values
     - prefer_final_fields
+    - prefer_final_in_for_each
+    - prefer_final_locals
+    - unnecessary_new
     - prefer_is_empty
     - prefer_is_not_empty
     - prefer_null_aware_operators
