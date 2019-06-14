@@ -22,17 +22,17 @@ void main() async {
   });
   group("init", () {
     test("Init db", () async {
-      String schema = """CREATE TABLE item
+      final String schema = """CREATE TABLE item
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL
     )""";
-      var q = <String>[
+      final q = <String>[
         schema,
         'INSERT INTO item(name) values("Name 1")',
         'INSERT INTO item(name) values("Name 2")',
         'INSERT INTO item(name) values("Name 3")',
       ];
-      var db = Db();
+      final db = Db();
       await db.init(
           path: "testdb.sqlite", absolutePath: true, queries: q, verbose: true);
       expect(db.isReady, true);

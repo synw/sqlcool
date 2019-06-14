@@ -16,7 +16,7 @@ class DbSchema {
   /// Get a [DbTable] in the schema from it's name
   DbTable table(String name) {
     DbTable t;
-    for (DbTable dbt in tables) {
+    for (final DbTable dbt in tables) {
       if (dbt.name == name) t = dbt;
     }
     return t;
@@ -24,7 +24,7 @@ class DbSchema {
 
   /// Check if a [DbTable] is present in the schema from it's name
   bool hasTable(String name) {
-    for (DbTable dbt in tables) {
+    for (final DbTable dbt in tables) {
       if (dbt.name == name) return true;
     }
     return false;
@@ -59,13 +59,13 @@ class DbTable {
 
   /// Add an index to a column
   void index(String column) {
-    String q = "CREATE INDEX idx_${name}_$column ON $name($column)";
+    final String q = "CREATE INDEX idx_${name}_$column ON $name($column)";
     _queries.add(q);
   }
 
   /// Add a unique constraint for combined values from two columns
   void uniqueTogether(String column1, String column2) {
-    String q = "UNIQUE($column1, $column2)";
+    final String q = "UNIQUE($column1, $column2)";
     _queries.add(q);
   }
 
@@ -233,7 +233,8 @@ class DbTable {
 
   /// Add an automatic timestamp
   void timestamp([String name = "timestamp"]) {
-    String q = "$name INTEGER DEFAULT (cast(strftime('%s','now') as int))";
+    final String q =
+        "$name INTEGER DEFAULT (cast(strftime('%s','now') as int))";
     _columns.add(q);
     _columnsData
         .add(DatabaseColumn(name: name, type: DatabaseColumnType.integer));
@@ -260,7 +261,7 @@ class DbTable {
   }
 
   List<String> _getQueries() {
-    var qs = <String>[this.toString()]..addAll(_queries);
+    final qs = <String>[this.toString()]..addAll(_queries);
     return qs;
   }
 }
