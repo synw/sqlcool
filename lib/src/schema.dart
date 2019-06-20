@@ -234,10 +234,10 @@ class DbTable {
   /// Add an automatic timestamp
   void timestamp([String name = "timestamp"]) {
     final String q =
-        "$name INTEGER DEFAULT (cast(strftime('%s','now') as int))";
+        "$name INTEGER DEFAULT (cast(strftime('%s','now') as int)) NOT NULL";
     _columns.add(q);
     _columnsData
-        .add(DatabaseColumn(name: name, type: DatabaseColumnType.integer));
+        .add(DatabaseColumn(name: name, type: DatabaseColumnType.timestamp));
   }
 
   /// Print the queries to perform for database initialization

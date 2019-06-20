@@ -18,7 +18,10 @@ enum DatabaseColumnType {
   boolean,
 
   /// A blob value
-  blob
+  blob,
+
+  /// An automatic timestamp
+  timestamp
 }
 
 /// A database column representation
