@@ -77,6 +77,7 @@ class DatabaseChangeEvent {
       @required this.value,
       @required this.query,
       @required this.table,
+      this.data,
       @required this.executionTime});
 
   /// Type of the change
@@ -93,6 +94,9 @@ class DatabaseChangeEvent {
 
   /// The table where the changes occur
   final String table;
+
+  /// The data manipulated by the query
+  final Map<String, String> data;
 
   /// Human readable format
   @override

@@ -317,6 +317,7 @@ class Db {
         _changeFeedController.sink.add(DatabaseChangeEvent(
             type: DatabaseChange.insert,
             value: 1,
+            data: row,
             query: qStr,
             table: table,
             executionTime: timer.elapsedMicroseconds));
@@ -371,6 +372,7 @@ class Db {
             value: updated,
             query: qStr,
             table: table,
+            data: row,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
           final String msg = "$q $row in ${timer.elapsedMilliseconds} ms";
@@ -448,6 +450,7 @@ class Db {
             value: i,
             query: q,
             table: table,
+            data: row,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) print("$q in ${timer.elapsedMilliseconds} ms");
       } on DatabaseNotReady catch (e) {
@@ -577,6 +580,7 @@ class Db {
                 value: 1,
                 query: "",
                 table: table,
+                data: row,
                 executionTime: timer.elapsedMicroseconds));
           });
           await batch.commit();
