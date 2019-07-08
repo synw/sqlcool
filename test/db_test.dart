@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqlcool/sqlcool.dart';
 
 void main() async {
@@ -12,17 +13,38 @@ void main() async {
   channel.setMockMethodCallHandler((MethodCall methodCall) async {
     //print("METHOD CALL: $methodCall");
     log.add(methodCall);
-    if (methodCall.method == 'getDatabasesPath') {
-      return directory.path;
-    } else if (methodCall.method == "insert") {
-      return 1;
-    } else if (methodCall.method == "update") {
-      return 1;
-    } else if (methodCall.method == "query") {
-      final res = <Map<String, dynamic>>[
-        <String, dynamic>{"k": "v"}
-      ];
-      return res;
+    switch (methodCall.method) {
+      case "getDatabasesPath":
+        return directory.path;
+        break;
+      case "insert":
+        return 1;
+        break;
+      case "update":
+        return 1;
+        break;
+      case "query":
+        // count query
+        if (methodCall.arguments["sql"] ==
+            "SELECT COUNT(id) FROM test WHERE id=1") {
+          final res = <Map<String, dynamic>>[
+            <String, dynamic>{"count": 1}
+          ];
+          return res;
+        }
+        // exists query
+        else if (methodCall.arguments["sql"] ==
+            "SELECT COUNT(*) FROM test WHERE id=1") {
+          final res = <Map<String, dynamic>>[
+            <String, dynamic>{"count": 1}
+          ];
+          return res;
+        } else {
+          final res = <Map<String, dynamic>>[
+            <String, dynamic>{"k": "v"}
+          ];
+          return res;
+        }
     }
     return response;
   });
@@ -59,8 +81,6 @@ void main() async {
         return res;
       }
 
-      final dynamic res = await insert();
-      print("RES $res / ${res.runtimeType}");
       return insert().then((int r) => expect(r, 1));
     });
 
@@ -134,6 +154,25 @@ void main() async {
         <String, dynamic>{"k": "v"}
       ];
       return query().then((List<Map<String, dynamic>> r) => expect(r, output));
+    });
+
+    test("Count", () async {
+      Future<int> count() async {
+        final res = await db.count(table: "test", where: "id=1", verbose: true);
+        return res;
+      }
+
+      return count().then((int r) => expect(r, 1));
+    });
+
+    test("Exists", () async {
+      Future<bool> exists() async {
+        final res =
+            await db.exists(table: "test", where: "id=1", verbose: true);
+        return res;
+      }
+
+      return exists().then((bool r) => expect(r, true));
     });
   });
 }
