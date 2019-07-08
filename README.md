@@ -1,6 +1,6 @@
 # Sqlcool
 
-[![pub package](https://img.shields.io/pub/v/sqlcool.svg)](https://pub.dartlang.org/packages/sqlcool)  [![Build Status](https://travis-ci.org/synw/sqlcool.svg?branch=master)](https://travis-ci.org/synw/sqlcool) [![Coverage Status](https://coveralls.io/repos/github/synw/sqlcool/badge.svg?branch=master)](https://coveralls.io/github/synw/sqlcool?branch=master) 
+[![pub package](https://img.shields.io/pub/v/sqlcool.svg)](https://pub.dartlang.org/packages/sqlcool)  [![Build Status](https://travis-ci.org/synw/sqlcool.svg?branch=master)](https://travis-ci.org/synw/sqlcool) [![Coverage Status](https://coveralls.io/repos/github/synw/sqlcool/badge.svg?branch=master&kill_cache=1")](https://coveralls.io/github/synw/sqlcool?branch=master&kill_cache=1") 
 
 A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Forget about implementation details and focus on the business logic.
 
