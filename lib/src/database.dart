@@ -392,7 +392,7 @@ class Db {
   ///
   /// It is highly recommended to use an unique index for the table
   /// to upsert into
-  Future<void> upsert(
+  Future<Null> upsert(
       {@required String table,
       @required Map<String, String> row,
       //@required List<String> columns,
