@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/services.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqlcool/sqlcool.dart';
 
 void main() async {
