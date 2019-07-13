@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.0
+
+- Add a `timestamp` column type to schema
+- Add a `data` property to `DatabaseChangeType`
+- Fix the `upsert` method to be testable
+- Add more tests
+
 ## 3.0.0
 
 **Breaking change**: the `SynchronizedMap` feature was removed due to broken dependencies after the Dart Sdk 2.4.0 upgrade
