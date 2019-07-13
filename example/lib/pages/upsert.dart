@@ -7,6 +7,8 @@ class _UpsertPageState extends State<UpsertPage> {
   SelectBloc bloc;
   int numProducts;
 
+  final r = Random();
+
   @override
   void initState() {
     bloc = SelectBloc(
@@ -26,11 +28,12 @@ class _UpsertPageState extends State<UpsertPage> {
   }
 
   void upsertAdd() async {
+    int price = r.nextInt(100);
     db.upsert(
         table: "product",
         row: {
           "name": "Product ${numProducts + 1}",
-          "price": "30",
+          "price": "$price",
           "category": "1"
         },
         verbose: true);
@@ -38,7 +41,6 @@ class _UpsertPageState extends State<UpsertPage> {
   }
 
   void upsertUpdate() async {
-    var r = Random();
     int n = r.nextInt(100);
     db.upsert(
         table: "product",
