@@ -1,36 +1,6 @@
 Initialize database
 ===================
 
-Schema definition
------------------
-
-.. highlight:: dart
-
-::
-
-   DbTable category = DbTable("category")..varchar("name", unique: true);
-   DbTable product = DbTable("product")
-      ..varchar("name", unique: true)
-      ..integer("price")
-	  ..real("number")
-	  ..text("description")
-      ..foreignKey("category", onDelete: OnDelete.cascade)
-	  ..uniqueTogether("name", "number")
-      ..index("name");
-
-Parameters for the column constructors:
-
-:name: *String* the name of the column
-
-Optional parameters:
-
-:unique: *bool* if the column must be unique
-:nullable: *bool* if the column can be null
-:defaultValue: *dynamic* (depending on the row type: integer if
- the row is integer for example) the default value of a column
-
- Note: the foreignKey must be placed after the other fields definitions
-
 Initialize an empty database
 ----------------------------
 

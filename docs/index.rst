@@ -7,6 +7,7 @@ Welcome to Sqlcool's documentation!
    :maxdepth: 2
    :caption: Crud operations
 
+   schema.rst
    init.rst
    db_ops.rst
    batch_ops.rst
