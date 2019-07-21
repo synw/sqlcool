@@ -89,9 +89,12 @@ class Db {
     /// Either a [queries] or a [schema] must be provided if the
     /// database is not initialized from an asset
     assert(path != null);
-    if (fromAsset == null && queries.isEmpty && schema.isEmpty)
+    if (fromAsset == null && queries.isEmpty && schema.isEmpty) {
       throw ArgumentError("Either a [queries] or a [schema] must be provided");
-    if (debug) Sqflite.setDebugModeOn(true);
+    }
+    if (debug) {
+      await Sqflite.setDebugModeOn(true);
+    }
     String dbpath = path;
     if (!absolutePath) {
       final Directory documentsDirectory =
@@ -115,8 +118,9 @@ class Db {
         }
         try {
           // create the directories path if necessary
-          if (!file.parent.existsSync())
+          if (!file.parent.existsSync()) {
             file.parent.createSync(recursive: true);
+          }
           // write
           await file.writeAsBytes(bytes);
         } catch (e) {
@@ -153,12 +157,17 @@ class Db {
         });
       });
     }
-    if (schema != null)
+    if (schema != null) {
       // save the schema in memory
       _schema = DbSchema(schema.toSet());
-    if (verbose) print("DATABASE INITIALIZED");
+    }
+    if (verbose) {
+      print("DATABASE INITIALIZED");
+    }
     _dbFile = File(dbpath);
-    if (!_readyCompleter.isCompleted) _readyCompleter.complete();
+    if (!_readyCompleter.isCompleted) {
+      _readyCompleter.complete();
+    }
     _isReady = true;
   }
 
@@ -182,7 +191,7 @@ class Db {
     } on DatabaseNotReady catch (e) {
       throw ("${e.message}");
     } catch (e) {
-      throw (e);
+      rethrow;
     }
   }
 
@@ -226,7 +235,7 @@ class Db {
     } on DatabaseNotReady catch (e) {
       throw ("${e.message}");
     } catch (e) {
-      throw (e);
+      rethrow;
     }
   }
 
@@ -275,7 +284,7 @@ class Db {
     } on DatabaseNotReady catch (e) {
       throw ("${e.message}");
     } catch (e) {
-      throw (e);
+      rethrow;
     }
   }
 
@@ -328,7 +337,7 @@ class Db {
       } on DatabaseNotReady catch (e) {
         throw ("${e.message}");
       } catch (e) {
-        throw (e);
+        rethrow;
       }
     });
     return id;
@@ -382,7 +391,7 @@ class Db {
       } on DatabaseNotReady catch (e) {
         throw ("${e.message}");
       } catch (e) {
-        throw (e);
+        rethrow;
       }
     });
     return updated;
@@ -405,9 +414,10 @@ class Db {
     await _mutex.synchronized(() async {
       if (!_isReady) throw DatabaseNotReady();
       if (preserveColumns.isNotEmpty) {
-        if (indexColumn == null)
+        if (indexColumn == null) {
           throw ArgumentError("Please provide a value for indexColumn " +
               "if you use preserveColumns");
+        }
       }
       try {
         final Stopwatch timer = Stopwatch()..start();
@@ -456,7 +466,7 @@ class Db {
       } on DatabaseNotReady catch (e) {
         throw ("${e.message}");
       } catch (e) {
-        throw (e);
+        rethrow;
       }
     });
   }
@@ -493,7 +503,7 @@ class Db {
       } on DatabaseNotReady catch (e) {
         throw ("${e.message}");
       } catch (e) {
-        throw (e);
+        rethrow;
       }
     });
     return deleted;
@@ -524,7 +534,7 @@ class Db {
     } on DatabaseNotReady catch (e) {
       throw ("${e.message}");
     } catch (e) {
-      throw (e);
+      rethrow;
     }
     return false;
   }
@@ -557,7 +567,7 @@ class Db {
     } on DatabaseNotReady catch (e) {
       throw ("${e.message}");
     } catch (e) {
-      throw (e);
+      rethrow;
     }
   }
 
@@ -594,7 +604,7 @@ class Db {
       } on DatabaseNotReady catch (e) {
         throw ("${e.message}");
       } catch (e) {
-        throw (e);
+        rethrow;
       }
     });
   }

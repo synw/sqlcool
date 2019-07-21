@@ -111,7 +111,7 @@ class SelectBloc {
         if (_changefeedIsActive) {
           _itemController.sink.addError(e);
         } else {
-          throw (e);
+          rethrow;
         }
         return;
       }
@@ -131,7 +131,7 @@ class SelectBloc {
         if (_changefeedIsActive) {
           _itemController.sink.addError(e);
         } else {
-          throw (e);
+          rethrow;
         }
         return;
       }
