@@ -1,58 +1,15 @@
-import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/services.dart';
 import 'package:sqlcool/sqlcool.dart';
+import 'base.dart';
 
 void main() async {
-  final directory = await Directory.systemTemp.createTemp();
+  await setup();
 
-  const MethodChannel channel = MethodChannel('com.tekartik.sqflite');
-  final List<MethodCall> log = <MethodCall>[];
-  String response;
-  channel.setMockMethodCallHandler((MethodCall methodCall) async {
-    //print("METHOD CALL: $methodCall");
-    log.add(methodCall);
-    switch (methodCall.method) {
-      case "getDatabasesPath":
-        return directory.path;
-        break;
-      case "insert":
-        return 1;
-        break;
-      case "update":
-        return 1;
-        break;
-      case "query":
-        // count query
-        if (methodCall.arguments["sql"] ==
-            "SELECT COUNT(id) FROM test WHERE id=1") {
-          final res = <Map<String, dynamic>>[
-            <String, dynamic>{"count": 1}
-          ];
-          return res;
-        }
-        // exists query
-        else if (methodCall.arguments["sql"] ==
-            "SELECT COUNT(*) FROM test WHERE id=1") {
-          final res = <Map<String, dynamic>>[
-            <String, dynamic>{"count": 1}
-          ];
-          return res;
-        } else {
-          final res = <Map<String, dynamic>>[
-            <String, dynamic>{"k": "v"}
-          ];
-          return res;
-        }
-    }
-    return response;
-  });
+  final db = Db();
 
   tearDown(() {
     log.clear();
   });
-
-  final db = Db();
 
   group("init", () {
     test("Init db", () async {
