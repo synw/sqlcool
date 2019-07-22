@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.1
+
+- Use pedantic for static analysis
+- Add more tests
+- Improve the docs
+- Linting
+
 ## 3.1.0
 
 - Add a `timestamp` column type to schema
