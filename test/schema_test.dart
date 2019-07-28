@@ -31,8 +31,8 @@ void main() async {
       expect(db.schema.hasTable("table"), true);
     });
 
-    test("Columns", () async {
+    /*test("Columns", () async {
       final cols = table.columns;
-    });
+    });*/
   });
 }
