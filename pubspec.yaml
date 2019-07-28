@@ -12,14 +12,14 @@ homepage: https://github.com/synw/sqlcool
 version: 3.1.1
 
 environment:
-  sdk: ">=2.0.0-dev.68.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  synchronized: ^2.1.0
-  path_provider: ^1.1.2
-  sqflite: ^1.1.6+1
+  synchronized: ^2.1.0+1
+  path_provider: ^1.2.0
+  sqflite: ^1.1.6+2
   pedantic: ^1.6.0
 
   # The following adds the Cupertino Icons font to your application.
