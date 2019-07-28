@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.0
+
+- Update to Dart sdk 2.2.2
+- Update dependencies
+
 ## 3.1.1
 
 - Use pedantic for static analysis
