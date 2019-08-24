@@ -103,6 +103,7 @@ class Db {
     }
     if (verbose) print("INITIALIZING DATABASE at " + dbpath);
     // copy the database from an asset if necessary
+    bool checkCreateQueries = false;
     if (fromAsset != null) {
       final File file = File(dbpath);
       if (!file.existsSync()) {
@@ -123,6 +124,7 @@ class Db {
           }
           // write
           await file.writeAsBytes(bytes);
+          checkCreateQueries = true;
         } catch (e) {
           throw ("Unable to write database from asset: $e");
         }
@@ -132,27 +134,16 @@ class Db {
       await _mutex.synchronized(() async {
         // open
         if (verbose) print("OPENING database");
+
         this._db = await openDatabase(dbpath, version: 1,
-            onCreate: (Database _db, int version) async {
-          if (schema != null) {
-            final schemaQueries = <String>[];
-            schema.forEach(
-                (tableSchema) => schemaQueries.addAll(tableSchema.queries));
-            schemaQueries.addAll(queries);
-            queries = schemaQueries;
-          }
-          if (queries.isNotEmpty) {
-            await _db.transaction((txn) async {
-              for (final String q in queries) {
-                final Stopwatch timer = Stopwatch()..start();
-                await txn.execute(q);
-                timer.stop();
-                if (verbose) {
-                  final String msg = "$q in ${timer.elapsedMilliseconds} ms";
-                  print(msg);
-                }
-              }
-            });
+            onCreate: (Database _sqfliteDb, int version) async {
+          await _initQueries(schema, queries, _sqfliteDb, verbose);
+        }, onOpen: (Database _sqfliteDb) async {
+          // run create queries for file copied from an asset
+          if (fromAsset != null && checkCreateQueries) {
+            if (schema != null || queries.isNotEmpty) {
+              await _initQueries(schema, queries, _sqfliteDb, verbose);
+            }
           }
         });
       });
@@ -169,6 +160,30 @@ class Db {
       _readyCompleter.complete();
     }
     _isReady = true;
+  }
+
+  Future<void> _initQueries(List<DbTable> schema, List<String> queries,
+      Database _sqfliteDb, bool verbose) async {
+    if (schema != null) {
+      final schemaQueries = <String>[];
+      schema
+          .forEach((tableSchema) => schemaQueries.addAll(tableSchema.queries));
+      schemaQueries.addAll(queries);
+      queries = schemaQueries;
+    }
+    if (queries.isNotEmpty) {
+      await _sqfliteDb.transaction((txn) async {
+        for (final String q in queries) {
+          final Stopwatch timer = Stopwatch()..start();
+          await txn.execute(q);
+          timer.stop();
+          if (verbose) {
+            final String msg = "$q in ${timer.elapsedMilliseconds} ms";
+            print(msg);
+          }
+        }
+      });
+    }
   }
 
   /// Execute a query
