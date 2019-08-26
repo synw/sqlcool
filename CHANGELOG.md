@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.2.1
+
+- Run create queries and schema for asset database
+- Use create if not exists in create table query
+
 ## 3.2.0
 
 - Update to Dart sdk 2.2.2
