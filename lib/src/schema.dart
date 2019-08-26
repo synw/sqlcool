@@ -250,7 +250,7 @@ class DbTable {
 
   @override
   String toString() {
-    String q = "CREATE TABLE $name (\n";
+    String q = "CREATE TABLE IF NOT EXISTS $name (\n";
     q += _columns.join(",\n");
     if (_fkConstraints.isNotEmpty) {
       q += ",\n";
