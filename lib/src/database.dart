@@ -841,8 +841,10 @@ class Db {
       final t = DbTable(res[0]["table_name"].toString());
       for (final item in res) {
         item.forEach((k, dynamic v) {
-          final onDeleteStr = item["on_delete"].toString();
-          print("ON DELETE $onDeleteStr");
+          String onDeleteStr;
+          if (item["on_delete"] != null) {
+            onDeleteStr = item["on_delete"].toString();
+          }
           OnDelete onDelete;
           if (onDeleteStr != null) {
             onDelete = stringToOnDelete(onDeleteStr);
