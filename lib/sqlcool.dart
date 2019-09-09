@@ -4,4 +4,6 @@ library sqlcool;
 export "src/database.dart";
 export "src/bloc_select.dart";
 export 'src/models.dart';
-export 'src/schema.dart';
+export 'src/schema/models/schema.dart';
+export 'src/schema/models/table.dart';
+export 'src/schema/models/column.dart';

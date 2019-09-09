@@ -1,38 +1,20 @@
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
-import 'models.dart';
+import 'column.dart';
 
-/// The database schema representation
-class DbSchema {
-  /// Provide a set of [DbTable]
-  DbSchema([this.tables]) {
-    tables ??= Set();
-  }
+/// types of on delete actions for foreign keys
+enum OnDelete {
+  /// delete the children when the foreign key is deleted
+  cascade,
 
-  /// The tables in the database
-  Set<DbTable> tables;
+  /// protect the children when the foreign key is deleted
+  restrict,
 
-  /// Get a [DbTable] in the schema from it's name
-  DbTable table(String name) {
-    DbTable t;
-    for (final DbTable dbt in tables) {
-      if (dbt.name == name) {
-        t = dbt;
-        break;
-      }
-    }
-    return t;
-  }
+  /// set the children to null when the foreign key is deleted
+  setNull,
 
-  /// Check if a [DbTable] is present in the schema from it's name
-  bool hasTable(String name) {
-    for (final DbTable dbt in tables) {
-      if (dbt.name == name) {
-        return true;
-      }
-    }
-    return false;
-  }
+  /// set the children to the default value when the foreign key is deleted
+  setDefault
 }
 
 /// The class used to create tables
@@ -310,19 +292,4 @@ class DbTable {
     final qs = <String>[this.toString()]..addAll(_queries);
     return qs;
   }
-}
-
-/// types of on delete actions for foreign keys
-enum OnDelete {
-  /// delete the children when the foreign key is deleted
-  cascade,
-
-  /// protect the children when the foreign key is deleted
-  restrict,
-
-  /// set the children to null when the foreign key is deleted
-  setNull,
-
-  /// set the children to the default value when the foreign key is deleted
-  setDefault
 }
