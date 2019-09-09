@@ -108,6 +108,28 @@ class DatabaseColumn {
   }
 }
 
+/// Convert a string to an on delete constraint
+OnDelete stringToOnDelete(String value) {
+  OnDelete res;
+  switch (value) {
+    case "restrict":
+      res = OnDelete.restrict;
+      break;
+    case "cascade":
+      res = OnDelete.cascade;
+      break;
+    case "set_null":
+      res = OnDelete.setNull;
+      break;
+    case "set_default":
+      res = OnDelete.setDefault;
+      break;
+    default:
+      throw ("Unknown on delete constraint $value");
+  }
+  return res;
+}
+
 /// Convert an on delete constraint to a string
 String onDeleteToString(OnDelete onDelete) {
   String res;

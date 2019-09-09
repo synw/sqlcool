@@ -837,12 +837,16 @@ class Db {
       for (final item in res) {
         item.forEach((k, dynamic v) {
           final col = DatabaseColumn(
-              name: item["column_name"].toString(),
-              type: columnStringToType(item["type"].toString()),
-              unique: (item["is_unique"].toString() == "true"),
-              nullable: (item["is_nullable"].toString() == "true"),
-              check: item["check_string"].toString(),
-              defaultValue: item["default_value_string"].toString());
+            name: item["column_name"].toString(),
+            type: columnStringToType(item["type"].toString()),
+            unique: (item["is_unique"].toString() == "true"),
+            nullable: (item["is_nullable"].toString() == "true"),
+            check: item["check_string"].toString(),
+            defaultValue: item["default_value_string"].toString(),
+            isForeignKey: (item["is_foreign_key"].toString() == "true"),
+            reference: item["reference"].toString(),
+            onDelete: stringToOnDelete(item["on_delete"].toString()),
+          );
           t.columns.add(col);
         });
       }
