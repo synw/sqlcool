@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:sqlcool/src/schema/models/column.dart';
@@ -98,23 +97,26 @@ class Db {
     if (debug) {
       await Sqflite.setDebugModeOn(true);
     }
-    String dbpath = path;
+    var dbpath = path;
     if (!absolutePath) {
-      final Directory documentsDirectory =
-          await getApplicationDocumentsDirectory();
+      final documentsDirectory = await getApplicationDocumentsDirectory();
       dbpath = documentsDirectory.path + "/" + path;
     }
-    if (verbose) print("INITIALIZING DATABASE at " + dbpath);
+    if (verbose) {
+      print("INITIALIZING DATABASE at " + dbpath);
+    }
     // copy the database from an asset if necessary
-    bool checkCreateQueries = false;
+    var checkCreateQueries = false;
     if (fromAsset != null) {
-      final File file = File(dbpath);
+      final file = File(dbpath);
       if (!file.existsSync()) {
-        if (verbose) print("Copying the database from asset $fromAsset");
+        if (verbose) {
+          print("Copying the database from asset $fromAsset");
+        }
         List<int> bytes;
         try {
           // read
-          final ByteData data = await rootBundle.load("$fromAsset");
+          final data = await rootBundle.load("$fromAsset");
           bytes =
               data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
         } catch (e) {
@@ -136,7 +138,9 @@ class Db {
     if (this._db == null) {
       await _mutex.synchronized(() async {
         // open
-        if (verbose) print("OPENING database");
+        if (verbose) {
+          print("OPENING database");
+        }
         this._db = await openDatabase(dbpath, version: 1,
             onCreate: (Database _sqfliteDb, int version) async {
           await _initQueries(schema, queries, _sqfliteDb, verbose);
@@ -209,12 +213,12 @@ class Db {
     }
     if (queries.isNotEmpty) {
       await _sqfliteDb.transaction((txn) async {
-        for (final String q in queries) {
-          final Stopwatch timer = Stopwatch()..start();
+        for (final q in queries) {
+          final timer = Stopwatch()..start();
           await txn.execute(q);
           timer.stop();
           if (verbose) {
-            final String msg = "$q in ${timer.elapsedMilliseconds} ms";
+            final msg = "$q in ${timer.elapsedMilliseconds} ms";
             print(msg);
           }
         }
@@ -251,15 +255,17 @@ class Db {
       {bool verbose = false}) async {
     /// [q] the query to execute
     try {
-      if (!_isReady) throw DatabaseNotReady();
-      final Stopwatch timer = Stopwatch()..start();
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
+      final timer = Stopwatch()..start();
       List<Map<String, dynamic>> res;
       await _db.transaction((txn) async {
         res = await txn.rawQuery(q);
       });
       timer.stop();
       if (verbose) {
-        final String msg = "$q in ${timer.elapsedMilliseconds} ms";
+        final msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
       return res;
@@ -289,21 +295,33 @@ class Db {
     /// [verbose] print the query
     /// returns the selected data
     try {
-      if (!_isReady) throw DatabaseNotReady();
-      final Stopwatch timer = Stopwatch()..start();
-      String q = "SELECT $columns FROM $table";
-      if (where != null) q += " WHERE $where";
-      if (groupBy != null) q += " GROUP BY $groupBy";
-      if (orderBy != null) q += " ORDER BY $orderBy";
-      if (limit != null) q += " LIMIT $limit";
-      if (offset != null) q += " OFFSET $offset";
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
+      final timer = Stopwatch()..start();
+      var q = "SELECT $columns FROM $table";
+      if (where != null) {
+        q += " WHERE $where";
+      }
+      if (groupBy != null) {
+        q += " GROUP BY $groupBy";
+      }
+      if (orderBy != null) {
+        q += " ORDER BY $orderBy";
+      }
+      if (limit != null) {
+        q += " LIMIT $limit";
+      }
+      if (offset != null) {
+        q += " OFFSET $offset";
+      }
       List<Map<String, dynamic>> res;
       await _db.transaction((txn) async {
         res = await txn.rawQuery(q);
       });
       timer.stop();
       if (verbose) {
-        final String msg = "$q in ${timer.elapsedMilliseconds} ms";
+        final msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
       return res;
@@ -363,14 +381,24 @@ class Db {
     if (!byPassReady && !_isReady) {
       throw DatabaseNotReady();
     }
-    final Stopwatch timer = Stopwatch()..start();
-    String q = "SELECT $columns FROM $table";
+    final timer = Stopwatch()..start();
+    var q = "SELECT $columns FROM $table";
     q = "$q INNER JOIN $joinTable ON $joinOn";
-    if (where != null) q += " WHERE $where";
-    if (groupBy != null) q += " GROUP BY $groupBy";
-    if (orderBy != null) q += " ORDER BY $orderBy";
-    if (limit != null) q += " LIMIT $limit";
-    if (offset != null) q += " OFFSET $offset";
+    if (where != null) {
+      q += " WHERE $where";
+    }
+    if (groupBy != null) {
+      q += " GROUP BY $groupBy";
+    }
+    if (orderBy != null) {
+      q += " ORDER BY $orderBy";
+    }
+    if (limit != null) {
+      q += " LIMIT $limit";
+    }
+    if (offset != null) {
+      q += " OFFSET $offset";
+    }
     List<Map<String, dynamic>> res;
     await _db.transaction((txn) async {
       res = await txn.rawQuery(q).catchError((dynamic e) {
@@ -379,7 +407,7 @@ class Db {
     });
     timer.stop();
     if (verbose) {
-      final String msg = "$q in ${timer.elapsedMilliseconds} ms";
+      final msg = "$q in ${timer.elapsedMilliseconds} ms";
       print(msg);
     }
     return res;
@@ -397,13 +425,15 @@ class Db {
     int id;
     await _mutex.synchronized(() async {
       try {
-        if (!_isReady) throw DatabaseNotReady();
-        final Stopwatch timer = Stopwatch()..start();
-        String fields = "";
-        String values = "";
-        final int n = row.length;
-        int i = 1;
-        final List<String> datapoint = [];
+        if (!_isReady) {
+          throw DatabaseNotReady();
+        }
+        final timer = Stopwatch()..start();
+        var fields = "";
+        var values = "";
+        final n = row.length;
+        var i = 1;
+        final datapoint = <String>[];
         for (final k in row.keys) {
           fields = "$fields$k";
           values = "$values?";
@@ -414,11 +444,11 @@ class Db {
           }
           i++;
         }
-        final String q = "INSERT INTO $table ($fields) VALUES($values)";
+        final q = "INSERT INTO $table ($fields) VALUES($values)";
         await _db.transaction((txn) async {
           id = await txn.rawInsert(q, datapoint);
         });
-        final String qStr = "$q $row";
+        final qStr = "$q $row";
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
             type: DatabaseChange.insert,
@@ -428,7 +458,7 @@ class Db {
             table: table,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
-          final String msg = "$q in ${timer.elapsedMilliseconds} ms";
+          final msg = "$q in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
       } on DatabaseNotReady catch (e) {
@@ -450,15 +480,17 @@ class Db {
     /// and [where] the sql where clause
     ///
     /// Returns a future with a count of the updated rows
-    int updated = 0;
+    var updated = 0;
     await _mutex.synchronized(() async {
-      if (!_isReady) throw DatabaseNotReady();
-      final Stopwatch timer = Stopwatch()..start();
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
+      final timer = Stopwatch()..start();
       try {
-        String pairs = "";
-        final int n = row.length - 1;
-        int i = 0;
-        final List<String> datapoint = [];
+        var pairs = "";
+        final n = row.length - 1;
+        var i = 0;
+        final datapoint = <String>[];
         for (final el in row.keys) {
           pairs = "$pairs$el= ?";
           datapoint.add(row[el]);
@@ -467,11 +499,11 @@ class Db {
           }
           i++;
         }
-        final String q = 'UPDATE $table SET $pairs WHERE $where';
+        final q = 'UPDATE $table SET $pairs WHERE $where';
         await _db.transaction((txn) async {
           updated = await txn.rawUpdate(q, datapoint);
         });
-        final String qStr = "$q $datapoint";
+        final qStr = "$q $datapoint";
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
             type: DatabaseChange.update,
@@ -481,7 +513,7 @@ class Db {
             data: row,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
-          final String msg = "$q $row in ${timer.elapsedMilliseconds} ms";
+          final msg = "$q $row in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
         return updated;
@@ -509,7 +541,9 @@ class Db {
     /// for some columns. If this parameter is used an [indexColumn]
     /// must be provided to search for the value of the column to preserve
     await _mutex.synchronized(() async {
-      if (!_isReady) throw DatabaseNotReady();
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
       if (preserveColumns.isNotEmpty) {
         if (indexColumn == null) {
           throw ArgumentError("Please provide a value for indexColumn " +
@@ -517,15 +551,14 @@ class Db {
         }
       }
       try {
-        final Stopwatch timer = Stopwatch()..start();
-        String fields = "";
-        String values = "";
-        //String pairs = "";
+        final timer = Stopwatch()..start();
+        var fields = "";
+        var values = "";
         preserveColumns.forEach((c) {
           row[c] = "";
         });
-        final int n = row.length;
-        int i = 1;
+        final n = row.length;
+        var i = 1;
         for (final k in row.keys) {
           fields += "$k";
           if (preserveColumns.contains(k)) {
@@ -546,8 +579,7 @@ class Db {
         /*
         String q = "INSERT INTO $table ($fields) VALUES($values)";
         q += " ON CONFLICT($columns) DO UPDATE SET $pairs";*/
-        final String q =
-            "INSERT OR REPLACE INTO $table ($fields) VALUES($values)";
+        final q = "INSERT OR REPLACE INTO $table ($fields) VALUES($values)";
         await _db.transaction((txn) async {
           await txn.execute(q);
         });
@@ -559,7 +591,9 @@ class Db {
             table: table,
             data: row,
             executionTime: timer.elapsedMicroseconds));
-        if (verbose) print("$q in ${timer.elapsedMilliseconds} ms");
+        if (verbose) {
+          print("$q in ${timer.elapsedMilliseconds} ms");
+        }
       } on DatabaseNotReady catch (e) {
         throw ("${e.message}");
       } catch (e) {
@@ -576,12 +610,14 @@ class Db {
     /// [table] is the table to use and [where] the sql where clause
     ///
     /// Returns a future with a count of the deleted rows
-    int deleted = 0;
+    var deleted = 0;
     await _mutex.synchronized(() async {
-      if (!_isReady) throw DatabaseNotReady();
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
       try {
-        final Stopwatch timer = Stopwatch()..start();
-        final String q = 'DELETE FROM $table WHERE $where';
+        final timer = Stopwatch()..start();
+        final q = 'DELETE FROM $table WHERE $where';
         await _db.transaction((txn) async {
           deleted = await txn.rawDelete(q);
         });
@@ -593,7 +629,7 @@ class Db {
             table: table,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
-          final String msg = "$q in ${timer.elapsedMilliseconds} ms";
+          final msg = "$q in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
         return deleted;
@@ -615,19 +651,23 @@ class Db {
     ///
     /// Returns a future with true if the data exists
     try {
-      if (!_isReady) throw DatabaseNotReady();
-      final Stopwatch timer = Stopwatch()..start();
-      final String q = 'SELECT COUNT(*) FROM $table WHERE $where';
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
+      final timer = Stopwatch()..start();
+      final q = 'SELECT COUNT(*) FROM $table WHERE $where';
       int count;
       await _db.transaction((txn) async {
         count = Sqflite.firstIntValue(await txn.rawQuery(q));
       });
       timer.stop();
       if (verbose) {
-        final String msg = "$q in ${timer.elapsedMilliseconds} ms";
+        final msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
-      if (count > 0) return true;
+      if (count > 0) {
+        return true;
+      }
     } on DatabaseNotReady catch (e) {
       throw ("${e.message}");
     } catch (e) {
@@ -646,18 +686,22 @@ class Db {
     ///
     /// Returns a future with the count of the rows
     try {
-      if (!_isReady) throw DatabaseNotReady();
-      final Stopwatch timer = Stopwatch()..start();
-      String w = "";
-      if (where != null) w = " WHERE $where";
-      final String q = 'SELECT COUNT($columns) FROM $table$w';
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
+      final timer = Stopwatch()..start();
+      var w = "";
+      if (where != null) {
+        w = " WHERE $where";
+      }
+      final q = 'SELECT COUNT($columns) FROM $table$w';
       int c;
       await _db.transaction((txn) async {
         c = Sqflite.firstIntValue(await txn.rawQuery(q));
       });
       timer.stop();
       if (verbose) {
-        final String msg = "$q in ${timer.elapsedMilliseconds} ms";
+        final msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
       return c;
@@ -676,8 +720,10 @@ class Db {
       bool verbose = false}) async {
     await _mutex.synchronized(() async {
       try {
-        if (!_isReady) throw DatabaseNotReady();
-        final Stopwatch timer = Stopwatch()..start();
+        if (!_isReady) {
+          throw DatabaseNotReady();
+        }
+        final timer = Stopwatch()..start();
         await _db.transaction((txn) async {
           final batch = txn.batch();
           rows.forEach((row) {
@@ -694,7 +740,7 @@ class Db {
         });
         timer.stop();
         if (verbose) {
-          final String msg = "Inserted ${rows.length} records " +
+          final msg = "Inserted ${rows.length} records " +
               "in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
