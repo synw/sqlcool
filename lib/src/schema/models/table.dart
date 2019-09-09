@@ -278,6 +278,14 @@ class DbTable {
     });
   }
 
+  /// print a description of the schema
+  void describe({String spacer = ""}) {
+    print("${spacer}Table $name:");
+    for (final column in columns) {
+      column.describe(spacer: "  ");
+    }
+  }
+
   @override
   String toString() {
     var q = "CREATE TABLE IF NOT EXISTS $name (\n";

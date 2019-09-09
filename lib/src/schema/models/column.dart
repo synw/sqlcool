@@ -66,6 +66,18 @@ class DatabaseColumn {
   /// The on delete constraint on a foreign key
   final OnDelete onDelete;
 
+  /// print a description of the schema
+  void describe({String spacer = ""}) {
+    print("${spacer}Column $name:");
+    print("$spacer - Type: $type");
+    print("$spacer - Unique: $unique");
+    print("$spacer - Nullable: $nullable");
+    print("$spacer - Default value: $defaultValue");
+    print("$spacer - Is foreign key: $isForeignKey");
+    print("$spacer - Reference: $reference");
+    print("$spacer - On delete: $onDelete");
+  }
+
   /// convert a column type to a string
   String typeToString() {
     String res;

@@ -13,9 +13,9 @@ class DbSchema {
   /// Get a [DbTable] in the schema from it's name
   DbTable table(String name) {
     DbTable t;
-    for (final DbTable dbt in tables) {
-      if (dbt.name == name) {
-        t = dbt;
+    for (final table in tables) {
+      if (table.name == name) {
+        t = table;
         break;
       }
     }
@@ -24,11 +24,19 @@ class DbSchema {
 
   /// Check if a [DbTable] is present in the schema from it's name
   bool hasTable(String name) {
-    for (final DbTable dbt in tables) {
-      if (dbt.name == name) {
+    for (final table in tables) {
+      if (table.name == name) {
         return true;
       }
     }
     return false;
+  }
+
+  /// print a description of the schema
+  void describe() {
+    print("Database schema:");
+    for (final table in tables) {
+      table.describe(spacer: " ");
+    }
   }
 }

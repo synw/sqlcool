@@ -186,6 +186,9 @@ class Db {
           }
         }
         _schema = DbSchema(schema.toSet());
+        if (verbose) {
+          _schema.describe();
+        }
       }
     }
     // the database is ready to use
@@ -234,9 +237,12 @@ class Db {
         throw ("Can not insert table ${schema.name} in internal schema $e");
       }
       if (verbose) {
-        print("Added table ${schema.name}");
-        schema.printQueries();
+        print(q);
       }
+    }
+    if (verbose) {
+      print("Added table ${schema.name}");
+      schema.describe();
     }
   }
 
