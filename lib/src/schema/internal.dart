@@ -14,6 +14,9 @@ final schemaColumn = DbTable("sqlcool_schema_column")
   ..boolean("is_nullable", defaultValue: true)
   ..varchar("default_value_string", nullable: true)
   ..varchar("check_string", nullable: true)
+  ..boolean("is_foreign_key", defaultValue: false)
+  ..varchar("reference", nullable: true)
+  ..varchar("on_delete", nullable: true)
   ..foreignKey("table_id",
       reference: "sqlcool_shema_table", onDelete: OnDelete.cascade);
 

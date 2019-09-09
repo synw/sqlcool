@@ -45,13 +45,13 @@ class DbTable {
 
   /// Add an index to a column
   void index(String column) {
-    final String q = "CREATE INDEX idx_${name}_$column ON $name($column)";
+    final q = "CREATE INDEX idx_${name}_$column ON $name($column)";
     _queries.add(q);
   }
 
   /// Add a unique constraint for combined values from two columns
   void uniqueTogether(String column1, String column2) {
-    final String q = "UNIQUE($column1, $column2)";
+    final q = "UNIQUE($column1, $column2)";
     _queries.add(q);
   }
 
@@ -62,11 +62,10 @@ class DbTable {
       bool unique = false,
       String defaultValue,
       OnDelete onDelete = OnDelete.restrict}) {
-    String q = "$name INTEGER";
+    var q = "$name INTEGER";
     if (unique) q += " UNIQUE";
     if (!nullable) q += " NOT NULL";
     if (defaultValue != null) q += " DEFAULT $defaultValue";
-    //q += ",\n";
     String fk;
     fk = "  FOREIGN KEY ($name)\n";
     reference ??= name;
@@ -92,7 +91,10 @@ class DbTable {
         unique: unique,
         nullable: nullable,
         defaultValue: defaultValue,
-        type: DatabaseColumnType.integer));
+        type: DatabaseColumnType.integer,
+        isForeignKey: true,
+        reference: reference,
+        onDelete: onDelete));
   }
 
   /// Add a varchar column
@@ -102,7 +104,7 @@ class DbTable {
       bool unique = false,
       String defaultValue,
       String check}) {
-    String q = "$name VARCHAR";
+    var q = "$name VARCHAR";
     if (maxLength != null) {
       q += "($maxLength)";
     }
@@ -134,7 +136,7 @@ class DbTable {
       bool unique = false,
       String defaultValue,
       String check}) {
-    String q = "$name TEXT";
+    var q = "$name TEXT";
     if (unique) {
       q += " UNIQUE";
     }
@@ -163,7 +165,7 @@ class DbTable {
       bool unique = false,
       double defaultValue,
       String check}) {
-    String q = "$name REAL";
+    var q = "$name REAL";
     if (unique) {
       q += " UNIQUE";
     }
@@ -194,7 +196,7 @@ class DbTable {
     int defaultValue,
     String check,
   }) {
-    String q = "$name INTEGER";
+    var q = "$name INTEGER";
     if (unique) {
       q += " UNIQUE";
     }
@@ -219,7 +221,7 @@ class DbTable {
 
   /// Add a float column
   void boolean(String name, {@required bool defaultValue}) {
-    String q = "$name REAL";
+    var q = "$name REAL";
     q += " DEFAULT $defaultValue";
     _columns.add(q);
     _columnsData.add(DatabaseColumn(
@@ -236,7 +238,7 @@ class DbTable {
     Uint8List defaultValue,
     String check,
   }) {
-    String q = "$name BLOB";
+    var q = "$name BLOB";
     if (unique) {
       q += " UNIQUE";
     }
@@ -261,7 +263,7 @@ class DbTable {
 
   /// Add an automatic timestamp
   void timestamp([String name = "timestamp"]) {
-    final String q =
+    final q =
         "$name INTEGER DEFAULT (cast(strftime('%s','now') as int)) NOT NULL";
     _columns.add(q);
     _columnsData
@@ -278,7 +280,7 @@ class DbTable {
 
   @override
   String toString() {
-    String q = "CREATE TABLE IF NOT EXISTS $name (\n";
+    var q = "CREATE TABLE IF NOT EXISTS $name (\n";
     q += _columns.join(",\n");
     if (_fkConstraints.isNotEmpty) {
       q += ",\n";

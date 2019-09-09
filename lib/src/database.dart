@@ -731,7 +731,7 @@ class Db {
       if (verbose) {
         print("Creating ${table.name}");
       }
-      final String q = "INSERT INTO sqlcool_schema_table (name) VALUES(?)";
+      final q = "INSERT INTO sqlcool_schema_table (name) VALUES(?)";
       await _db.transaction((txn) async {
         tableId = await txn.rawInsert(q, <dynamic>[table.name]);
       });
@@ -739,21 +739,25 @@ class Db {
       throw ("Can not insert table ${table.name} in schema table $e");
     }
     for (final column in table.columns) {
-      final columnRow = <dynamic>[];
-      columnRow.add(column.name);
-      columnRow.add(column.typeToString());
-      columnRow.add(column.nullable.toString());
-      columnRow.add(column.unique.toString());
-      columnRow.add(column.check ?? "NULL");
-      columnRow.add(column.defaultValue ?? "NULL");
-      columnRow.add("$tableId");
+      final columnRow = <dynamic>[]
+        ..add(column.name)
+        ..add(column.typeToString())
+        ..add(column.nullable.toString())
+        ..add(column.unique.toString())
+        ..add(column.check ?? "NULL")
+        ..add(column.defaultValue ?? "NULL")
+        ..add("$tableId")
+        ..add(column.isForeignKey.toString())
+        ..add(column.reference)
+        ..add(onDeleteToString(column.onDelete));
       try {
         if (verbose) {
           print("Inserting column in table schema: $columnRow");
         }
-        String q = "INSERT INTO sqlcool_schema_column " +
+        final q = "INSERT INTO sqlcool_schema_column " +
             "(name,type,is_nullable,is_unique,check_string," +
-            "default_value_string,table_id) VALUES(?,?,?,?,?,?,?)";
+            "default_value_string,table_id,is_foreign_key,reference,on_delete) " +
+            "VALUES(?,?,?,?,?,?,?,?,?,?)";
         await _db.transaction((txn) async {
           await txn.rawInsert(q, columnRow);
         });

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:sqlcool/sqlcool.dart';
 
 /// The type of a database column
 enum DatabaseColumnType {
@@ -33,7 +34,10 @@ class DatabaseColumn {
       this.unique = false,
       this.nullable = false,
       this.check,
-      this.defaultValue});
+      this.defaultValue,
+      this.isForeignKey = false,
+      this.reference,
+      this.onDelete});
 
   /// The column name
   final String name;
@@ -52,6 +56,15 @@ class DatabaseColumn {
 
   /// A check constraint
   final String check;
+
+  /// If the column is a foreign key
+  final bool isForeignKey;
+
+  /// A foreign key table name reference
+  final String reference;
+
+  /// The on delete constraint on a foreign key
+  final OnDelete onDelete;
 
   /// convert a column type to a string
   String typeToString() {
@@ -81,4 +94,24 @@ class DatabaseColumn {
     }
     return res;
   }
+}
+
+/// Convert an on delete constraint to a string
+String onDeleteToString(OnDelete onDelete) {
+  String res;
+  switch (onDelete) {
+    case OnDelete.cascade:
+      res = "cascade";
+      break;
+    case OnDelete.restrict:
+      res = "restrict";
+      break;
+    case OnDelete.setDefault:
+      res = "set_default";
+      break;
+    case OnDelete.setNull:
+      res = "set_null";
+      break;
+  }
+  return res;
 }
