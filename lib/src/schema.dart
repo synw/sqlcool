@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
 import 'models.dart';
 
@@ -17,7 +16,10 @@ class DbSchema {
   DbTable table(String name) {
     DbTable t;
     for (final DbTable dbt in tables) {
-      if (dbt.name == name) t = dbt;
+      if (dbt.name == name) {
+        t = dbt;
+        break;
+      }
     }
     return t;
   }
@@ -25,7 +27,9 @@ class DbSchema {
   /// Check if a [DbTable] is present in the schema from it's name
   bool hasTable(String name) {
     for (final DbTable dbt in tables) {
-      if (dbt.name == name) return true;
+      if (dbt.name == name) {
+        return true;
+      }
     }
     return false;
   }
@@ -117,11 +121,21 @@ class DbTable {
       String defaultValue,
       String check}) {
     String q = "$name VARCHAR";
-    if (maxLength != null) q += "($maxLength)";
-    if (unique) q += " UNIQUE";
-    if (!nullable) q += " NOT NULL";
-    if (defaultValue != null) q += " DEFAULT $defaultValue";
-    if (check != null) q += " CHECK($check)";
+    if (maxLength != null) {
+      q += "($maxLength)";
+    }
+    if (unique) {
+      q += " UNIQUE";
+    }
+    if (!nullable) {
+      q += " NOT NULL";
+    }
+    if (defaultValue != null) {
+      q += " DEFAULT $defaultValue";
+    }
+    if (check != null) {
+      q += " CHECK($check)";
+    }
     _columns.add(q);
     _columnsData.add(DatabaseColumn(
         name: name,
@@ -139,10 +153,18 @@ class DbTable {
       String defaultValue,
       String check}) {
     String q = "$name TEXT";
-    if (unique) q += " UNIQUE";
-    if (!nullable) q += " NOT NULL";
-    if (defaultValue != null) q += " DEFAULT $defaultValue";
-    if (check != null) q += " CHECK($check)";
+    if (unique) {
+      q += " UNIQUE";
+    }
+    if (!nullable) {
+      q += " NOT NULL";
+    }
+    if (defaultValue != null) {
+      q += " DEFAULT $defaultValue";
+    }
+    if (check != null) {
+      q += " CHECK($check)";
+    }
     _columns.add(q);
     _columnsData.add(DatabaseColumn(
         name: name,
@@ -160,10 +182,18 @@ class DbTable {
       double defaultValue,
       String check}) {
     String q = "$name REAL";
-    if (unique) q += " UNIQUE";
-    if (!nullable) q += " NOT NULL";
-    if (defaultValue != null) q += " DEFAULT $defaultValue";
-    if (check != null) q += " CHECK($check)";
+    if (unique) {
+      q += " UNIQUE";
+    }
+    if (!nullable) {
+      q += " NOT NULL";
+    }
+    if (defaultValue != null) {
+      q += " DEFAULT $defaultValue";
+    }
+    if (check != null) {
+      q += " CHECK($check)";
+    }
     _columns.add(q);
     _columnsData.add(DatabaseColumn(
         name: name,
@@ -183,10 +213,18 @@ class DbTable {
     String check,
   }) {
     String q = "$name INTEGER";
-    if (unique) q += " UNIQUE";
-    if (!nullable) q += " NOT NULL";
-    if (defaultValue != null) q += " DEFAULT $defaultValue";
-    if (check != null) q += " CHECK($check)";
+    if (unique) {
+      q += " UNIQUE";
+    }
+    if (!nullable) {
+      q += " NOT NULL";
+    }
+    if (defaultValue != null) {
+      q += " DEFAULT $defaultValue";
+    }
+    if (check != null) {
+      q += " CHECK($check)";
+    }
     _columns.add(q);
     _columnsData.add(DatabaseColumn(
         name: name,
@@ -217,10 +255,18 @@ class DbTable {
     String check,
   }) {
     String q = "$name BLOB";
-    if (unique) q += " UNIQUE";
-    if (!nullable) q += " NOT NULL";
-    if (defaultValue != null) q += " DEFAULT $defaultValue";
-    if (check != null) q += " CHECK($check)";
+    if (unique) {
+      q += " UNIQUE";
+    }
+    if (!nullable) {
+      q += " NOT NULL";
+    }
+    if (defaultValue != null) {
+      q += " DEFAULT $defaultValue";
+    }
+    if (check != null) {
+      q += " CHECK($check)";
+    }
     _columns.add(q);
     _columnsData.add(DatabaseColumn(
         name: name,
