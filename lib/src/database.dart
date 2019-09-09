@@ -791,17 +791,22 @@ class Db {
       throw ("Can not insert table ${table.name} in schema table $e");
     }
     for (final column in table.columns) {
-      final columnRow = <dynamic>[]
-        ..add(column.name)
-        ..add(column.typeToString())
-        ..add(column.nullable.toString())
-        ..add(column.unique.toString())
-        ..add(column.check ?? "NULL")
-        ..add(column.defaultValue ?? "NULL")
-        ..add("$tableId")
-        ..add(column.isForeignKey.toString())
-        ..add(column.reference)
-        ..add(onDeleteToString(column.onDelete));
+      var onDeleteStr = "NULL";
+      if (column.onDelete != null) {
+        onDeleteStr = onDeleteToString(column.onDelete);
+      }
+      final columnRow = <dynamic>[
+        column.name,
+        column.typeToString(),
+        column.nullable.toString(),
+        column.unique.toString(),
+        column.check ?? "NULL",
+        column.defaultValue ?? "NULL",
+        "$tableId",
+        column.isForeignKey.toString(),
+        column.reference ?? "NULL",
+        onDeleteStr
+      ];
       try {
         if (verbose) {
           print("Inserting column in table schema: $columnRow");
@@ -836,6 +841,12 @@ class Db {
       final t = DbTable(res[0]["table_name"].toString());
       for (final item in res) {
         item.forEach((k, dynamic v) {
+          final onDeleteStr = item["on_delete"].toString();
+          print("ON DELETE $onDeleteStr");
+          OnDelete onDelete;
+          if (onDeleteStr != null) {
+            onDelete = stringToOnDelete(onDeleteStr);
+          }
           final col = DatabaseColumn(
             name: item["column_name"].toString(),
             type: columnStringToType(item["type"].toString()),
@@ -845,7 +856,7 @@ class Db {
             defaultValue: item["default_value_string"].toString(),
             isForeignKey: (item["is_foreign_key"].toString() == "true"),
             reference: item["reference"].toString(),
-            onDelete: stringToOnDelete(item["on_delete"].toString()),
+            onDelete: onDelete,
           );
           t.columns.add(col);
         });
