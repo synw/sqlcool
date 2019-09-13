@@ -78,7 +78,7 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
 
 ### Changefeed
 
-A stream of database change events is available
+A stream of database change events is available. Inspired by [Rethinkdb](https://rethinkdb.com/)
 
    ```dart
    import 'dart:async';
