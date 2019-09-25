@@ -44,8 +44,20 @@ class DbTable {
   List<String> get constraints => _fkConstraints;
 
   /// Add an index to a column
-  void index(String column) {
-    final q = "CREATE INDEX idx_${name}_$column ON $name($column)";
+  ///
+  /// If a [name] is given the index name will
+  /// be set to it, otherwise it is infered from
+  /// the column name
+  void index(String column, {String indexName}) {
+    var idxName = column;
+    switch (indexName != null) {
+      case true:
+        idxName = indexName;
+        break;
+      default:
+        idxName = "idx_$column";
+    }
+    final q = "CREATE UNIQUE INDEX IF NOT EXISTS $idxName ON $name($column)";
     _queries.add(q);
   }
 

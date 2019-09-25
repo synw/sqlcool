@@ -7,3 +7,4 @@ export 'src/models.dart';
 export 'src/schema/models/schema.dart';
 export 'src/schema/models/table.dart';
 export 'src/schema/models/column.dart';
+export 'src/schema/models/dbmodels.dart';

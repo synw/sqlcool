@@ -713,17 +713,19 @@ class Db {
   }
 
   /// Insert rows in a table
-  Future<void> batchInsert(
+  Future<List<dynamic>> batchInsert(
       {@required String table,
       @required List<Map<String, String>> rows,
       ConflictAlgorithm confligAlgoritm = ConflictAlgorithm.rollback,
       bool verbose = false}) async {
+    var res = <dynamic>[];
     await _mutex.synchronized(() async {
       try {
         if (!_isReady) {
           throw DatabaseNotReady();
         }
         final timer = Stopwatch()..start();
+
         await _db.transaction((txn) async {
           final batch = txn.batch();
           rows.forEach((row) {
@@ -736,7 +738,7 @@ class Db {
                 data: row,
                 executionTime: timer.elapsedMicroseconds));
           });
-          await batch.commit();
+          res = await batch.commit();
         });
         timer.stop();
         if (verbose) {
@@ -750,6 +752,7 @@ class Db {
         rethrow;
       }
     });
+    return res;
   }
 
   /// **************************
