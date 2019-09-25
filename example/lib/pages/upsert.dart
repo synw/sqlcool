@@ -82,7 +82,7 @@ class _UpsertPageState extends State<UpsertPage> {
                     itemBuilder: (BuildContext context, int index) {
                       var item = snapshot.data[index];
                       return ListTile(
-                        title: Text(item["name"]),
+                        title: Text(item["name"].toString()),
                         trailing: Text("${item["price"]}"),
                       );
                     },
