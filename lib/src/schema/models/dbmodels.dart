@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'table.dart';
 import '../../database.dart';
 
@@ -82,12 +83,32 @@ class DbModel {
   }
 
   /// Upsert a row in the database table
-  Future<void> upsert() async {
+  Future<void> upsert({bool verbose = false}) async {
     _checkDbIsReady();
     final row = Map<String, String>.from(this.toDb());
     await modelTable.db
-        .upsert(table: modelTable.table.name, row: row)
-        .catchError((dynamic e) => throw ("Can not upsert to database $e"));
+        .upsert(table: modelTable.table.name, row: row, verbose: verbose)
+        .catchError(
+            (dynamic e) => throw ("Can not upsert model into database $e"));
+  }
+
+  /// Insert a row in the database table
+  Future<void> insert({bool verbose = false}) async {
+    _checkDbIsReady();
+    final row = Map<String, String>.from(this.toDb());
+    await modelTable.db
+        .insert(table: modelTable.table.name, row: row, verbose: verbose)
+        .catchError(
+            (dynamic e) => throw ("Can not insert model into database $e"));
+  }
+
+  /// Delete an instance from the database
+  Future<void> delete({@required String where, bool verbose = false}) async {
+    _checkDbIsReady();
+    await modelTable.db
+        .delete(table: modelTable.table.name, where: where, verbose: verbose)
+        .catchError(
+            (dynamic e) => throw ("Can not delete model from database $e"));
   }
 
   void _checkDbIsReady() {
