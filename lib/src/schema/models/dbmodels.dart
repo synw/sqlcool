@@ -42,9 +42,6 @@ class DbModelTable {
 
 /// The database model class to extend
 class DbModel {
-  /// Default consructor
-  DbModel([this.id]);
-
   /// The [DbModelTable] to use
   ///
   /// **Important** : this must be set in all the inherited constructors
