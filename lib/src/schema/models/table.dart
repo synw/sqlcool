@@ -33,6 +33,9 @@ class DbTable {
   /// The columns info
   List<DatabaseColumn> get columns => _columnsData;
 
+  /// The foreign key columns
+  List<DatabaseColumn> get foreignKeys => _foreignKeys();
+
   /// The columns info
   @deprecated
   List<DatabaseColumn> get schema => _columnsData;
@@ -313,5 +316,15 @@ class DbTable {
   List<String> _getQueries() {
     final qs = <String>[this.toString()]..addAll(_queries);
     return qs;
+  }
+
+  List<DatabaseColumn> _foreignKeys() {
+    final fks = <DatabaseColumn>[];
+    _columnsData.forEach((col) {
+      if (col.isForeignKey) {
+        fks.add(col);
+      }
+    });
+    return fks;
   }
 }
