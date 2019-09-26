@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'table.dart';
+//import 'column.dart';
 import '../../database.dart';
 
 /// A table representing a model
@@ -63,6 +64,38 @@ class DbModel {
   ///
   /// **Important** : it must be overriden
   DbModel fromDb(Map<String, dynamic> map) => null;
+
+  /*
+  /// Select rows in the database table with joins on foreign keys
+  Future<List<dynamic>> sqlJoin(
+      {@required List<String> joinsTables,
+      @required List<String> joinsOn,
+      String columns = "*",
+      int offset,
+      int limit,
+      String orderBy,
+      String where,
+      String groupBy,
+      bool verbose}) async {
+    _checkDbIsReady();
+    /*final joinsTables = <String>[];
+    final joinsOn = <String>[];
+    for (final fkCol in dbTable.table.foreignKeys) {
+      joinsTables.add(fkCol.name);
+      joinsOn.add("${dbTable.table.name}.${fkCol.name}=${fkCol.name}.id");
+    }*/
+    final res = await dbTable.db.mJoin(
+        table: dbTable.table.name,
+        joinsTables: joinsTables,
+        joinsOn: joinsOn,
+        columns: columns,
+        offset: offset,
+        limit: limit,
+        where: where,
+        groupBy: groupBy,
+        verbose: verbose);
+    return res;
+  }*/
 
   /// Select rows in the database table
   Future<List<dynamic>> sqlSelect(
