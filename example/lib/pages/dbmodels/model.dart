@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:sqlcool/sqlcool.dart';
 import 'conf.dart';
 
-class DataModel extends DbModel {
+class DataModel with DbModel {
   DataModel(
       {this.id, this.stringVal, this.intVal, this.doubleVal, this.boolVal});
 
