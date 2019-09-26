@@ -5,7 +5,7 @@ import '../../database.dart';
 /// A table representing a model
 class DbModelTable {
   /// Provide a [Db] and a [DbTable]
-  DbModelTable({this.db, this.table});
+  DbModelTable({@required this.db, @required this.table});
 
   /// The [Db] to use
   Db db;
@@ -21,16 +21,19 @@ class DbModelTable {
   /// Initialize the model table
   ///
   /// This has to be done before running queries on the model
-  Future<void> init() async {
+  Future<void> init({bool verbose = false}) async {
     assert(
         db.isReady,
         "The database is not ready. Make sure to initialize it " +
             "with the db.init() method");
     assert(table != null,
         "The table schema is null: please override dbSchema() in your model");
+    if (verbose) {
+      print("Initializing table model ${table.name}");
+    }
     // add the table if it does not exist
     await db
-        .addTable(table)
+        .addTable(table, verbose: verbose)
         .catchError((dynamic e) => throw ("Can not initialize model table $e"));
     _dbIsInitialized = true;
   }
@@ -39,25 +42,30 @@ class DbModelTable {
 /// The database model class to extend
 class DbModel {
   /// Default consructor
-  DbModel();
+  DbModel([this.id]);
 
   /// The [DbModelTable] to use
   ///
   /// **Important** : this must be set in all the inherited constructors
-  DbModelTable modelTable;
+  DbModelTable dbTable;
+
+  /// The database id of the model instance
+  ///
+  /// **Important** : it must be overriden
+  int id;
 
   /// The database row serializer for the model
   ///
-  /// **Important** : it must be overrided
+  /// **Important** : it must be overriden
   Map<String, dynamic> toDb() => <String, dynamic>{};
 
   /// The database row deserializer for the model
   ///
-  /// **Important** : it must be overrided
+  /// **Important** : it must be overriden
   DbModel fromDb(Map<String, dynamic> map) => null;
 
   /// Select rows in the database table
-  Future<List<dynamic>> select(
+  Future<List<dynamic>> sqlSelect(
       {String columns = "*",
       String where,
       String orderBy,
@@ -66,8 +74,8 @@ class DbModel {
       String groupBy,
       bool verbose = false}) async {
     _checkDbIsReady();
-    final res = await modelTable.db.select(
-        table: modelTable.table.name,
+    final res = await dbTable.db.select(
+        table: dbTable.table.name,
         columns: columns,
         where: where,
         orderBy: orderBy,
@@ -83,39 +91,50 @@ class DbModel {
   }
 
   /// Upsert a row in the database table
-  Future<void> upsert({bool verbose = false}) async {
+  Future<void> sqlUpsert({bool verbose = false}) async {
     _checkDbIsReady();
-    final row = Map<String, String>.from(this.toDb());
-    await modelTable.db
-        .upsert(table: modelTable.table.name, row: row, verbose: verbose)
+    final data = this.toDb();
+    final row = _toStringsMap(data);
+    await dbTable.db
+        .upsert(table: dbTable.table.name, row: row, verbose: verbose)
         .catchError(
             (dynamic e) => throw ("Can not upsert model into database $e"));
   }
 
   /// Insert a row in the database table
-  Future<void> insert({bool verbose = false}) async {
+  Future<void> sqlInsert({bool verbose = false}) async {
     _checkDbIsReady();
-    final row = Map<String, String>.from(this.toDb());
-    await modelTable.db
-        .insert(table: modelTable.table.name, row: row, verbose: verbose)
+    final data = this.toDb();
+    final row = _toStringsMap(data);
+    await dbTable.db
+        .insert(table: dbTable.table.name, row: row, verbose: verbose)
         .catchError(
             (dynamic e) => throw ("Can not insert model into database $e"));
   }
 
   /// Delete an instance from the database
-  Future<void> delete({@required String where, bool verbose = false}) async {
+  Future<void> sqlDelete({String where, bool verbose = false}) async {
     _checkDbIsReady();
-    await modelTable.db
-        .delete(table: modelTable.table.name, where: where, verbose: verbose)
+    if (where == null) {
+      where = "id=$id";
+    }
+    await dbTable.db
+        .delete(table: dbTable.table.name, where: where, verbose: verbose)
         .catchError(
             (dynamic e) => throw ("Can not delete model from database $e"));
   }
 
+  Map<String, String> _toStringsMap(Map<String, dynamic> map) {
+    final res = <String, String>{};
+    map.forEach((String k, dynamic v) => res[k] = "$v");
+    return res;
+  }
+
   void _checkDbIsReady() {
-    assert(modelTable != null);
-    assert(modelTable.db != null);
+    assert(dbTable != null);
+    assert(dbTable.db != null);
     assert(
-        modelTable.isInitialized,
+        dbTable.isInitialized,
         "Please intialize your model table schema " +
             "by running myModelSchema.init(db)");
   }
