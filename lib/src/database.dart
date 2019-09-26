@@ -424,7 +424,6 @@ class Db {
       String orderBy,
       String where,
       String groupBy,
-      bool byPassReady = false,
       bool verbose = false}) async {
     /// [table] the table to select from
     /// [joinsTables] the tables to join from
