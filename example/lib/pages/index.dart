@@ -40,6 +40,10 @@ class _PageIndexState extends State<PageIndex> {
                   child: const Text("Join query"),
                   onPressed: () => Navigator.of(context).pushNamed("/join"),
                 ),
+                RaisedButton(
+                  child: const Text("Db model"),
+                  onPressed: () => Navigator.of(context).pushNamed("/dbmodel"),
+                ),
               ],
             ));
   }

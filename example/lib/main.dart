@@ -3,6 +3,7 @@ import 'pages/select_bloc.dart';
 import 'pages/index.dart';
 import 'pages/join_query.dart';
 import 'pages/upsert.dart';
+import 'pages/dbmodels/dbmodels.dart';
 import 'init_db.dart';
 import 'conf.dart';
 
@@ -18,6 +19,7 @@ final routes = {
   '/select_bloc': (BuildContext context) => PageSelectBloc(),
   '/join': (BuildContext context) => PageJoinQuery(),
   '/upsert': (BuildContext context) => UpsertPage(),
+  '/dbmodel': (BuildContext context) => DbModelPage(),
 };
 
 class MyApp extends StatelessWidget {
