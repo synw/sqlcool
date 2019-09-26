@@ -413,6 +413,69 @@ class Db {
     return res;
   }
 
+  /// A select query with a join on multiple tables
+  Future<List<Map<String, dynamic>>> mJoin(
+      {@required String table,
+      @required List<String> joinsTables,
+      @required List<String> joinsOn,
+      String columns = "*",
+      int offset,
+      int limit,
+      String orderBy,
+      String where,
+      String groupBy,
+      bool byPassReady = false,
+      bool verbose = false}) async {
+    /// [table] the table to select from
+    /// [joinsTables] the tables to join from
+    /// [joinsOn] the columns to join
+    /// [columns] the columns to return
+    /// [where] the sql where clause
+    /// [orderBy] the sql order_by clause
+    /// [limit] the sql limit clause
+    /// [offset] the sql offset clause
+    /// [verbose] print the query
+    /// returns the selected data
+    if (!_isReady) {
+      throw DatabaseNotReady();
+    }
+    final timer = Stopwatch()..start();
+    var q = "SELECT $columns FROM $table";
+    var i = 0;
+    joinsTables.forEach((_) {
+      q = "$q INNER JOIN ${joinsTables[i]} ON ${joinsOn[i]}";
+      ++i;
+    });
+
+    if (where != null) {
+      q += " WHERE $where";
+    }
+    if (groupBy != null) {
+      q += " GROUP BY $groupBy";
+    }
+    if (orderBy != null) {
+      q += " ORDER BY $orderBy";
+    }
+    if (limit != null) {
+      q += " LIMIT $limit";
+    }
+    if (offset != null) {
+      q += " OFFSET $offset";
+    }
+    List<Map<String, dynamic>> res;
+    await _db.transaction((txn) async {
+      res = await txn.rawQuery(q).catchError((dynamic e) {
+        throw ("Join query error: $e");
+      });
+    });
+    timer.stop();
+    if (verbose) {
+      final msg = "$q in ${timer.elapsedMilliseconds} ms";
+      print(msg);
+    }
+    return res;
+  }
+
   /// Insert a row in a table
   Future<int> insert(
       {@required String table,
