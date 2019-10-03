@@ -520,7 +520,7 @@ class Db {
             table: table,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
-          final msg = "$q in ${timer.elapsedMilliseconds} ms";
+          final msg = "$q $row in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
       } on DatabaseNotReady catch (e) {
@@ -654,7 +654,7 @@ class Db {
             data: row,
             executionTime: timer.elapsedMicroseconds));
         if (verbose) {
-          print("$q in ${timer.elapsedMilliseconds} ms");
+          print("$q $row in ${timer.elapsedMilliseconds} ms");
         }
       } on DatabaseNotReady catch (e) {
         throw ("${e.message}");
