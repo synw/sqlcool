@@ -34,7 +34,6 @@ class DbSchema {
 
   /// print a description of the schema
   void describe() {
-    print("Database schema:");
     for (final table in tables) {
       table.describe(spacer: " ");
     }

@@ -46,6 +46,18 @@ class DbTable {
   /// Get the table constraints
   List<String> get constraints => _fkConstraints;
 
+  /// Get a column by name
+  DatabaseColumn column(String name) {
+    DatabaseColumn col;
+    for (final c in _columnsData) {
+      if (c.name == name) {
+        col = c;
+        break;
+      }
+    }
+    return col;
+  }
+
   /// Add an index to a column
   ///
   /// If a [name] is given the index name will
@@ -302,7 +314,9 @@ class DbTable {
   }
 
   @override
-  String toString() {
+  String toString() => name;
+
+  String queryString() {
     var q = "CREATE TABLE IF NOT EXISTS $name (\n";
     q += _columns.join(",\n");
     if (_fkConstraints.isNotEmpty) {
@@ -314,7 +328,7 @@ class DbTable {
   }
 
   List<String> _getQueries() {
-    final qs = <String>[this.toString()]..addAll(_queries);
+    final qs = <String>[this.queryString()]..addAll(_queries);
     return qs;
   }
 
