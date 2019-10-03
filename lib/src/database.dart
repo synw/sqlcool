@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:sqlcool/src/schema/models/column.dart';
 import 'package:synchronized/synchronized.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -10,7 +9,6 @@ import 'models.dart';
 import 'exceptions.dart';
 import 'schema/models/schema.dart';
 import 'schema/models/table.dart';
-import 'schema/internal.dart';
 
 /// A class to handle database operations
 class Db {
@@ -38,7 +36,7 @@ class Db {
       StreamController<DatabaseChangeEvent>.broadcast();
   File _dbFile;
   bool _isReady = false;
-  DbSchema _schema = DbSchema();
+  final _schema = DbSchema();
 
   /// The on ready callback: fired when the database
   /// is ready to operate
@@ -159,42 +157,8 @@ class Db {
       print("DATABASE INITIALIZED");
     }
     _dbFile = File(dbpath);
-    // manage internal schema
-    final q = "SELECT count(*) FROM sqlite_master WHERE type='table' " +
-        "AND name='sqlcool_schema_table'";
-    int res;
-    await _db.transaction((txn) async {
-      res = await Sqflite.firstIntValue(await txn.rawQuery(q));
-    });
-    final internalSchemaExists = (res == 1);
-    if (internalSchemaExists) {
-      if (verbose) {
-        print("Loading internal database schema");
-      }
-      _schema = await _loadInternalSchema();
-    } else {
-      if (verbose) {
-        print("Creating internal database schema table");
-      }
-      await _createInternalSchemaTable();
-      if (schema != null) {
-        if (verbose) {
-          print("Saving internal schema tables");
-        }
-        for (final table in schema) {
-          try {
-            await _insertInInternalSchema(table);
-          } catch (e) {
-            throw ("Can not insert in internal " +
-                "schema for ${table.name} $e");
-          }
-        }
-        _schema = DbSchema(schema.toSet());
-        if (verbose) {
-          _schema.describe();
-        }
-      }
-    }
+    // set internal schema
+    _schema.tables = schema.toSet();
     // the database is ready to use
     if (!_readyCompleter.isCompleted) {
       _readyCompleter.complete();
@@ -223,30 +187,6 @@ class Db {
           }
         }
       });
-    }
-  }
-
-  /// Add a table to the database
-  Future<void> addTable(DbTable schema, {bool verbose = false}) async {
-    for (final q in schema.queries) {
-      try {
-        await this.query(q);
-      } catch (e) {
-        throw ("Can not add table $e");
-      }
-      _schema.tables.add(schema);
-      try {
-        await _insertInInternalSchema(schema);
-      } catch (e) {
-        throw ("Can not insert table ${schema.name} in internal schema $e");
-      }
-      if (verbose) {
-        print(q);
-      }
-    }
-    if (verbose) {
-      print("Added table ${schema.name}");
-      schema.describe();
     }
   }
 
@@ -815,123 +755,5 @@ class Db {
       }
     });
     return res;
-  }
-
-  /// **************************
-  /// Internal schema management
-  /// **************************
-
-  Future<void> _createInternalSchemaTable() async {
-    try {
-      /// create internal schema table
-      var table = schemaColumn;
-      for (final q in table.queries) {
-        await _db.transaction((txn) async {
-          await txn.rawQuery(q);
-        });
-      }
-      table = schemaTable;
-      for (final q in table.queries) {
-        await _db.transaction((txn) async {
-          await txn.rawQuery(q);
-        });
-      }
-    } catch (e) {
-      throw ("Can not create internal schema tables $e");
-    }
-  }
-
-  Future<void> _insertInInternalSchema(DbTable table,
-      {bool verbose = false}) async {
-    int tableId;
-    try {
-      if (verbose) {
-        print("Creating ${table.name}");
-      }
-      final q = "INSERT INTO sqlcool_schema_table (name) VALUES(?)";
-      await _db.transaction((txn) async {
-        tableId = await txn.rawInsert(q, <dynamic>[table.name]);
-      });
-    } catch (e) {
-      throw ("Can not insert table ${table.name} in schema table $e");
-    }
-    for (final column in table.columns) {
-      var onDeleteStr = "NULL";
-      if (column.onDelete != null) {
-        onDeleteStr = onDeleteToString(column.onDelete);
-      }
-      final columnRow = <dynamic>[
-        column.name,
-        column.typeToString(),
-        column.nullable.toString(),
-        column.unique.toString(),
-        column.check ?? "NULL",
-        column.defaultValue ?? "NULL",
-        "$tableId",
-        column.isForeignKey.toString(),
-        column.reference ?? "NULL",
-        onDeleteStr
-      ];
-      try {
-        if (verbose) {
-          print("Inserting column in table schema: $columnRow");
-        }
-        final q = "INSERT INTO sqlcool_schema_column " +
-            "(name,type,is_nullable,is_unique,check_string," +
-            "default_value_string,table_id,is_foreign_key,reference,on_delete) " +
-            "VALUES(?,?,?,?,?,?,?,?,?,?)";
-        await _db.transaction((txn) async {
-          await txn.rawInsert(q, columnRow);
-        });
-      } catch (e) {
-        throw ("Can not insert column row $columnRow in schema table $e");
-      }
-    }
-  }
-
-  Future<DbSchema> _loadInternalSchema() async {
-    final tbs = <DbTable>[];
-    try {
-      final res = await _join(
-              byPassReady: true,
-              table: "sqlcool_schema_column",
-              columns: "sqlcool_schema_column.name as column_name," +
-                  "sqlcool_schema_table.name as table_name,type," +
-                  "is_unique,is_nullable,check_string,default_value_string",
-              joinTable: "sqlcool_schema_table",
-              joinOn: "sqlcool_schema_column.table_id=sqlcool_schema_table.id")
-          .catchError((dynamic e) {
-        throw ("Can not join on sqlcool_schema_column table $e");
-      });
-      final t = DbTable(res[0]["table_name"].toString());
-      for (final item in res) {
-        item.forEach((k, dynamic v) {
-          String onDeleteStr;
-          if (item["on_delete"] != null) {
-            onDeleteStr = item["on_delete"].toString();
-          }
-          OnDelete onDelete;
-          if (onDeleteStr != null) {
-            onDelete = stringToOnDelete(onDeleteStr);
-          }
-          final col = DatabaseColumn(
-            name: item["column_name"].toString(),
-            type: columnStringToType(item["type"].toString()),
-            unique: (item["is_unique"].toString() == "true"),
-            nullable: (item["is_nullable"].toString() == "true"),
-            check: item["check_string"].toString(),
-            defaultValue: item["default_value_string"].toString(),
-            isForeignKey: (item["is_foreign_key"].toString() == "true"),
-            reference: item["reference"].toString(),
-            onDelete: onDelete,
-          );
-          t.columns.add(col);
-        });
-      }
-      tbs.add(t);
-    } catch (e) {
-      throw ("Can not load internal schema $e");
-    }
-    return DbSchema(tbs.toSet());
   }
 }
