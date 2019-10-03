@@ -4,6 +4,7 @@ import 'pages/index.dart';
 import 'pages/join_query.dart';
 import 'pages/upsert.dart';
 import 'pages/dbmodels/dbmodels.dart';
+import 'dbviewer/dbviewer.dart';
 import 'init_db.dart';
 import 'conf.dart';
 
@@ -20,6 +21,7 @@ final routes = {
   '/join': (BuildContext context) => PageJoinQuery(),
   '/upsert': (BuildContext context) => UpsertPage(),
   '/dbmodel': (BuildContext context) => DbModelPage(),
+  '/dbmanager': (BuildContext context) => DbViewer(db: db),
 };
 
 class MyApp extends StatelessWidget {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../conf.dart';
+import '../appbar.dart';
 
 class _PageIndexState extends State<PageIndex> {
   bool databaseIsReady = false;
@@ -20,32 +21,36 @@ class _PageIndexState extends State<PageIndex> {
     return !databaseIsReady
         ? Scaffold(
             body: Center(child: const Text("The database is initializing ...")))
-        : Container(
-            color: Colors.lightBlue,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                RaisedButton(
-                  child: const Text("Select bloc"),
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed("/select_bloc"),
-                ),
-                RaisedButton(
-                  child: const Text("Upsert"),
-                  onPressed: () => Navigator.of(context).pushNamed("/upsert"),
-                ),
-                RaisedButton(
-                  child: const Text("Join query"),
-                  onPressed: () => Navigator.of(context).pushNamed("/join"),
-                ),
-                RaisedButton(
-                  child: const Text("Db model"),
-                  onPressed: () => Navigator.of(context).pushNamed("/dbmodel"),
-                ),
-              ],
-            ));
+        : Scaffold(
+            appBar: appBar(context),
+            body: Container(
+                color: Colors.lightBlue,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    RaisedButton(
+                      child: const Text("Select bloc"),
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed("/select_bloc"),
+                    ),
+                    RaisedButton(
+                      child: const Text("Upsert"),
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed("/upsert"),
+                    ),
+                    RaisedButton(
+                      child: const Text("Join query"),
+                      onPressed: () => Navigator.of(context).pushNamed("/join"),
+                    ),
+                    RaisedButton(
+                      child: const Text("Db model"),
+                      onPressed: () =>
+                          Navigator.of(context).pushNamed("/dbmodel"),
+                    ),
+                  ],
+                )));
   }
 }
 
