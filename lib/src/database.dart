@@ -283,7 +283,7 @@ class Db {
           String orderBy,
           String where,
           String groupBy,
-          bool verbose}) async =>
+          bool verbose = false}) async =>
       _join(
           table: table,
           joinTable: joinTable,
