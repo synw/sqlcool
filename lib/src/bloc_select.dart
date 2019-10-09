@@ -1,5 +1,7 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+
 import 'database.dart';
 
 /// A ready to use select bloc
@@ -13,8 +15,9 @@ class SelectBloc {
   /// Create a select bloc with the specified options. The select
   /// bloc will fire a query on creation
   SelectBloc(
-      {@required this.table,
-      @required this.database,
+      {@required this.database,
+      this.query,
+      this.table,
       this.offset,
       this.limit,
       this.where,
@@ -25,12 +28,14 @@ class SelectBloc {
       this.reactive = false,
       this.verbose = false})
       : assert(database != null),
-        assert(table != null),
         assert(database.isReady) {
     _getItems();
     if (reactive) {
       _changefeed = database.changefeed.listen((change) {
-        if (change.table == table) _getItems();
+        if ((table != null && change.table == table) ||
+            (query != null && change.query == query)) {
+          _getItems();
+        }
         if (verbose) print("CHANGE IN THE DATABASE: $change");
       });
     }
@@ -41,6 +46,9 @@ class SelectBloc {
 
   /// The table name
   final String table;
+
+  /// The query, which if used, will ignore all else statements
+  final String query;
 
   /// Offset sql statement
   int offset;
@@ -97,26 +105,11 @@ class SelectBloc {
 
   Future<void> _getItems() async {
     List<Map<String, dynamic>> res;
-    if (joinTable == null) {
-      try {
-        res = await database.select(
-            table: table,
-            columns: columns,
-            offset: offset,
-            limit: limit,
-            where: where,
-            orderBy: orderBy,
-            verbose: verbose);
-      } catch (e) {
-        if (_changefeedIsActive) {
-          _itemController.sink.addError(e);
-        } else {
-          rethrow;
-        }
-        return;
-      }
-    } else {
-      try {
+
+    try {
+      if (query != null) {
+        res = await database.query(query, verbose: verbose);
+      } else if (joinTable != null) {
         res = await database.join(
             table: table,
             columns: columns,
@@ -127,15 +120,25 @@ class SelectBloc {
             where: where,
             orderBy: orderBy,
             verbose: verbose);
-      } catch (e) {
-        if (_changefeedIsActive) {
-          _itemController.sink.addError(e);
-        } else {
-          rethrow;
-        }
-        return;
+      } else {
+        res = await database.select(
+            table: table,
+            columns: columns,
+            offset: offset,
+            limit: limit,
+            where: where,
+            orderBy: orderBy,
+            verbose: verbose);
       }
+    } catch (e) {
+      if (_changefeedIsActive) {
+        _itemController.sink.addError(e);
+      } else {
+        rethrow;
+      }
+      return;
     }
+
     if (_changefeedIsActive) _itemController.sink.add(res);
   }
 }
