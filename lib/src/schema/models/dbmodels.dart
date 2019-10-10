@@ -90,16 +90,26 @@ class DbModel {
     // encode foreign keys results into dict for proper
     // decoding with client .fromDb methods
     //print("Q RES $res");
+    //print("FK COL PROPS $fkPropertiesCols / ");
     final fres = <Map<String, dynamic>>[];
     for (final row in res) {
       final newRow = <String, dynamic>{};
+      final fkData = <String, Map<String, dynamic>>{};
+      // set fk data keys
+      for (final c in dbTable.table.foreignKeys) {
+        fkData[c.name] = <String, dynamic>{};
+      }
+      // retrieve data
       row.forEach((String k, dynamic v) {
-        //print("FK COL STR $fkPropertiesCols / $k");
+        //print("FK COL STR $k");
         if (fkPropertiesCols.keys.contains(k)) {
-          // print("VALUE $v");
-          final fkData = <String, dynamic>{fkPropertiesCols[k]["col_name"]: v};
+          //print("VALUE $v");
+          fkData[fkPropertiesCols[k]["fk_name"]]
+              [fkPropertiesCols[k]["col_name"]] = v;
           // decode foreign key name from select results
-          newRow[fkPropertiesCols[k]["fk_name"]] = fkData;
+          newRow[fkPropertiesCols[k]["fk_name"]] =
+              fkData[fkPropertiesCols[k]["fk_name"]];
+          print("ROW $newRow");
         } else {
           newRow[k] = v;
         }
@@ -123,7 +133,7 @@ class DbModel {
       bool verbose = false}) async {
     _checkDbIsReady();
     // do not take the foreign keys
-    final cols = <String>[];
+    final cols = <String>["id"];
     for (final col in dbTable.table.columns) {
       if (!col.isForeignKey) {
         cols.add(col.name);
@@ -144,6 +154,21 @@ class DbModel {
       endRes.add(fromDb(row));
     }
     return endRes;
+  }
+
+  /// Update a row in the database table
+  Future<void> sqlUpdate({bool verbose = false}) async {
+    _checkDbIsReady();
+    final data = this.toDb();
+    final row = _toStringsMap(data);
+    await dbTable.db
+        .update(
+            table: dbTable.table.name,
+            row: row,
+            where: 'id=$id',
+            verbose: verbose)
+        .catchError(
+            (dynamic e) => throw ("Can not update model into database $e"));
   }
 
   /// Upsert a row in the database table
@@ -181,6 +206,14 @@ class DbModel {
         .delete(table: dbTable.table.name, where: where, verbose: verbose)
         .catchError(
             (dynamic e) => throw ("Can not delete model from database $e"));
+  }
+
+  /// Count rows
+  Future<int> sqlCount({String where, bool verbose = false}) async {
+    final n = dbTable.db
+        .count(table: dbTable.table.name, where: where, verbose: verbose)
+        .catchError((dynamic e) => throw ("Can not count from database $e"));
+    return n;
   }
 
   Map<String, String> _toStringsMap(Map<String, dynamic> map) {
