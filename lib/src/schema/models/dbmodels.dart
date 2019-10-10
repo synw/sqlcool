@@ -64,13 +64,16 @@ class DbModel {
       // grab the foreign key table schema
       final fkTable = dbTable.db.schema.table(fkCol.name);
       // get columns for foreign key
-      for (final fc in fkTable.columns) {
+      final fkColsNames =
+          fkTable.columns.map<String>((col) => col.name).toList()..add("id");
+      //for (final fc in fkTable.columns) {
+      for (final fc in fkColsNames) {
         // encode for select
-        final endName = "${fkCol.name}_${fc.name}";
-        final encodedFkName = "${fkCol.name}.${fc.name} AS $endName";
+        final endName = "${fkCol.name}_$fc";
+        final encodedFkName = "${fkCol.name}.$fc AS $endName";
         fkColStringsSelect.add(encodedFkName);
         fkPropertiesCols[endName] = <String, String>{
-          "col_name": fc.name,
+          "col_name": fc,
           "fk_name": fkCol.name
         };
       }
