@@ -51,9 +51,9 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
               return ListView.builder(
                   itemCount: int.parse("${snapshot.data.length}"),
                   itemBuilder: (BuildContext context, int index) {
-                    dynamic item = snapshot.data[index];
-                    String name = "${item["name"]}";
-                    int id = int.parse("${item["id"]}");
+                    final dynamic item = snapshot.data[index];
+                    final name = "${item["name"]}";
+                    final id = int.parse("${item["id"]}");
                     return ListTile(
                       title: GestureDetector(
                         child: Text(name),

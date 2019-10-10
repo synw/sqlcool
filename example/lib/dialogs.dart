@@ -18,7 +18,7 @@ void insertItemDialog(BuildContext context) {
           FlatButton(
             child: const Text("Save"),
             onPressed: () {
-              String txt = nameController.text;
+              final txt = nameController.text;
               saveItem(txt).catchError((dynamic e) {
                 throw ("Can not save item ${e.message}");
               });
@@ -86,7 +86,7 @@ void updateItemDialog(BuildContext context, String itemName) {
           FlatButton(
             child: const Text("Save"),
             onPressed: () {
-              String txt = nameController.text;
+              final txt = nameController.text;
               updateItem(itemName, txt).catchError((dynamic e) {
                 throw ("Can not update category $e");
               });

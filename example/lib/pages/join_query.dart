@@ -38,7 +38,7 @@ class _PageJoinQueryState extends State<PageJoinQuery> {
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
-                var item = snapshot.data[index];
+                final item = snapshot.data[index];
                 return ListTile(
                   title: Text("${item["name"]}"),
                   subtitle: Text("${item["category_name"]}"),

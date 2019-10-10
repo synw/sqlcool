@@ -28,8 +28,8 @@ class _UpsertPageState extends State<UpsertPage> {
   }
 
   void upsertAdd() async {
-    int price = r.nextInt(100);
-    db.upsert(
+    final price = r.nextInt(100);
+    await db.upsert(
         table: "product",
         row: {
           "name": "Product ${numProducts + 1}",
@@ -37,12 +37,12 @@ class _UpsertPageState extends State<UpsertPage> {
           "category": "1"
         },
         verbose: true);
-    db.count(table: "product").then((n) => numProducts = n);
+    await db.count(table: "product").then((n) => numProducts = n);
   }
 
   void upsertUpdate() async {
-    int n = r.nextInt(100);
-    db.upsert(
+    final n = r.nextInt(100);
+    await db.upsert(
         table: "product",
         row: {"name": "Product 1", "price": "$n"},
         preserveColumns: ["category"],
@@ -62,12 +62,12 @@ class _UpsertPageState extends State<UpsertPage> {
             children: <Widget>[
               RaisedButton(
                 child: Text("Add"),
-                onPressed: () => upsertAdd(),
+                onPressed: upsertAdd,
               ),
               Padding(padding: EdgeInsets.symmetric(horizontal: 5.0)),
               RaisedButton(
                 child: Text("Update"),
-                onPressed: () => upsertUpdate(),
+                onPressed: upsertUpdate,
               ),
             ],
           ),
@@ -80,7 +80,7 @@ class _UpsertPageState extends State<UpsertPage> {
                   return ListView.builder(
                     itemCount: snapshot.data.length,
                     itemBuilder: (BuildContext context, int index) {
-                      var item = snapshot.data[index];
+                      final item = snapshot.data[index];
                       return ListTile(
                         title: Text(item["name"].toString()),
                         trailing: Text("${item["price"]}"),
