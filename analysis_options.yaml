@@ -56,4 +56,4 @@ linter:
     - omit_local_variable_types
     - package_api_docs
     - prefer_null_aware_operators
-    #    - public_member_api_docs
+    - public_member_api_docs
