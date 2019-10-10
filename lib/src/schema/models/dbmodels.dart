@@ -112,7 +112,7 @@ class DbModel {
           // decode foreign key name from select results
           newRow[fkPropertiesCols[k]["fk_name"]] =
               fkData[fkPropertiesCols[k]["fk_name"]];
-          print("ROW $newRow");
+          //print("ROW $newRow");
         } else {
           newRow[k] = v;
         }
