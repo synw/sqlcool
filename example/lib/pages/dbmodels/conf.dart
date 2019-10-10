@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'package:sqlcool/sqlcool.dart';
-import 'models.dart';
+import 'schema.dart';
+import 'models/car.dart';
+import 'models/manufacturer.dart';
 import '../../conf.dart';
 
 DbModelTable carModelTable;
 DbModelTable manufacturerModelTable;
 
 Future<void> initDbModelConf() async {
-  // set the model table schemas. We use the main db
-  manufacturerModelTable = Manufacturer.modelSchema(db: db);
-  carModelTable = Car.modelSchema(db: db);
+  // set the db models table schemas. We use the main db
+  manufacturerModelTable = DbModelTable(db: db, table: manufacturerTable);
+  carModelTable = DbModelTable(db: db, table: carTable);
 }
 
 Future<void> populateDb() async {

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'models.dart';
+import 'models/car.dart';
 import 'conf.dart';
 import '../../appbar.dart';
 
@@ -7,18 +7,19 @@ class _DbModelPageState extends State<DbModelPage> {
   var cars = <Car>[];
 
   Future<List<Car>> initModel() async {
+    await initDbModelConf();
     // populate db if needed
     await populateDb();
     // query the database for initial data
-    final c = await Car.select();
+    final c = await Car.selectRelated();
     print("Found ${c.length} cars");
     return c;
   }
 
   @override
   void initState() {
-    initModel().then((c) => setState(() => cars = c));
     super.initState();
+    initModel().then((c) => setState(() => cars = c));
   }
 
   @override
@@ -37,7 +38,7 @@ class _DbModelPageState extends State<DbModelPage> {
               onPressed: () async {
                 await car.sqlDelete(verbose: true);
                 // refresh
-                final c = await Car.select();
+                final c = await Car.selectRelated();
                 setState(() => cars = c);
               },
             ),

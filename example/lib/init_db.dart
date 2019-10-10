@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sqlcool/sqlcool.dart';
-import 'pages/dbmodels/conf.dart';
+import 'pages/dbmodels/schema.dart';
 
 Future<void> initDb(
     {@required Db db,
@@ -22,12 +22,6 @@ Future<void> initDb(
     'INSERT INTO product(name,price,category) VALUES("Product 2", 30, 1)',
     'INSERT INTO product(name,price,category) VALUES("Product 3", 20, 2)'
   ];
-  // initialize the database models
-  await initDbModelConf();
-  print("CAT Q: ${category.queries}");
-  print("PROD Q: ${product.queries}");
-  print("CAR: ${carModelTable.table.queries}");
-  print("MAN Q: ${manufacturerModelTable.table.queries}");
   // initialize the database
   await db
       .init(
@@ -36,8 +30,8 @@ Future<void> initDb(
             category,
             product,
             // db models
-            manufacturerModelTable.table,
-            carModelTable.table,
+            manufacturerTable,
+            carTable,
           ],
           queries: populateQueries,
           absolutePath: absPath,

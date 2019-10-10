@@ -1,6 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:sqlcool/sqlcool.dart';
-import 'conf.dart';
+import '../conf.dart';
+import 'manufacturer.dart';
 
 class Car with DbModel {
   Car(
@@ -63,53 +63,11 @@ class Car with DbModel {
     return car;
   }
 
-  /// The table schema generator, as a static method for convenience
-  /// This is used to configure the model table
+  /// Create a static join method for convenience
 
-  static DbModelTable modelSchema({@required Db db}) {
-    return DbModelTable(
-        db: db,
-        table: DbTable("car")
-          ..varchar("name")
-          ..integer("max_speed")
-          ..real("price")
-          ..integer("year")
-          ..boolean("is_4wd", defaultValue: false)
-          ..foreignKey("manufacturer", onDelete: OnDelete.cascade));
-  }
-
-  /// Create a static select method for convenience
-
-  static Future<List<Car>> select({String where, int limit}) async {
+  static Future<List<Car>> selectRelated({String where, int limit}) async {
     final cars = List<Car>.from(
         await Car().sqlJoin(where: where, limit: limit, verbose: true));
     return cars;
-  }
-}
-
-class Manufacturer with DbModel {
-  Manufacturer({this.id, this.name});
-
-  final String name;
-
-  /// [DbModel] required overrides
-
-  @override
-  int id;
-
-  @override
-  DbModelTable get dbTable => manufacturerModelTable;
-
-  @override
-  Map<String, dynamic> toDb() => <String, dynamic>{"name": name};
-
-  @override
-  Manufacturer fromDb(Map<String, dynamic> map) {
-    return Manufacturer(name: map["name"].toString());
-  }
-
-  static DbModelTable modelSchema({@required Db db}) {
-    return DbModelTable(
-        db: db, table: DbTable("manufacturer")..varchar("name"));
   }
 }
