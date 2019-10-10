@@ -30,6 +30,7 @@ class _PageJoinQueryState extends State<PageJoinQuery> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("Join query")),
       body: StreamBuilder(
         stream: _streamController.stream,
         builder: (BuildContext context,

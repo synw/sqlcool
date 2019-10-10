@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'models/car.dart';
 import 'conf.dart';
-import '../../appbar.dart';
 
 class _DbModelPageState extends State<DbModelPage> {
   var cars = <Car>[];
@@ -25,7 +24,7 @@ class _DbModelPageState extends State<DbModelPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(context),
+      appBar: AppBar(title: Text("Db models")),
       body: ListView.builder(
         itemCount: cars.length,
         itemBuilder: (BuildContext context, int i) {

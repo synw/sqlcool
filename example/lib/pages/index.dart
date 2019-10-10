@@ -23,31 +23,31 @@ class _PageIndexState extends State<PageIndex> {
             body: Center(child: const Text("The database is initializing ...")))
         : Scaffold(
             appBar: appBar(context),
-            body: Container(
-                color: Colors.lightBlue,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
+            body: Padding(
+                padding: const EdgeInsets.only(top: 25.0),
+                child: GridView(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2),
                   children: <Widget>[
-                    RaisedButton(
-                      child: const Text("Select bloc"),
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed("/select_bloc"),
+                    ExampleTile(
+                      title: "Select bloc",
+                      iconData: Icons.select_all,
+                      route: "/select_bloc",
                     ),
-                    RaisedButton(
-                      child: const Text("Upsert"),
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed("/upsert"),
+                    ExampleTile(
+                      title: "Upsert",
+                      iconData: Icons.system_update_alt,
+                      route: "/upsert",
                     ),
-                    RaisedButton(
-                      child: const Text("Join query"),
-                      onPressed: () => Navigator.of(context).pushNamed("/join"),
+                    ExampleTile(
+                      title: "Join query",
+                      iconData: Icons.view_module,
+                      route: "/join",
                     ),
-                    RaisedButton(
-                      child: const Text("Db model"),
-                      onPressed: () =>
-                          Navigator.of(context).pushNamed("/dbmodel"),
+                    ExampleTile(
+                      title: "Db model",
+                      iconData: Icons.content_paste,
+                      route: "/dbmodel",
                     ),
                   ],
                 )));
@@ -57,4 +57,24 @@ class _PageIndexState extends State<PageIndex> {
 class PageIndex extends StatefulWidget {
   @override
   _PageIndexState createState() => _PageIndexState();
+}
+
+class ExampleTile extends StatelessWidget {
+  ExampleTile(
+      {@required this.iconData, @required this.title, @required this.route});
+
+  final IconData iconData;
+  final String title;
+  final String route;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: Column(children: <Widget>[
+        Icon(iconData, size: 65.0, color: Colors.grey),
+        Padding(padding: const EdgeInsets.all(5.0), child: Text(title)),
+      ]),
+      onTap: () => Navigator.of(context).pushNamed(route),
+    );
+  }
 }

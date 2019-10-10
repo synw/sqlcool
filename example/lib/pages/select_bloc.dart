@@ -36,6 +36,7 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("Select bloc")),
       body: StreamBuilder<List<Map>>(
           stream: bloc.items,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
