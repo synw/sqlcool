@@ -11,6 +11,8 @@ import 'database.dart';
 /// in the database if the [reactive] parameter is true
 ///
 /// Join queries are possible.
+///
+/// Important: you must provide either a [table] or a [query] argument
 class SelectBloc {
   /// Create a select bloc with the specified options. The select
   /// bloc will fire a query on creation
