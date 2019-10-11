@@ -27,7 +27,8 @@ void main() async {
       expect(db.isReady, true);
       return true;
     });
-
+  });
+  group("query", () {
     test("Insert", () async {
       Future<int> insert() async {
         final res =
@@ -127,6 +128,22 @@ void main() async {
       }
 
       return exists().then((bool r) => expect(r, true));
+    });
+
+    test("Batch insert", () async {
+      Future<List<dynamic>> batchInsert() async {
+        final res = await db.batchInsert(
+            table: "test",
+            rows: [
+              {"k": "v"},
+              {"k2": "v2"}
+            ],
+            verbose: true);
+        return res;
+      }
+
+      return batchInsert()
+          .then((dynamic r) => expect(r is List<dynamic>, true));
     });
   });
 }

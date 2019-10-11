@@ -26,6 +26,9 @@ void setup() async {
       case "update":
         return 1;
         break;
+      case "batch":
+        return [1, 2];
+        break;
       case "query":
         // count query
         if (methodCall.arguments["sql"] ==
