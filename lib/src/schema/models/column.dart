@@ -67,15 +67,26 @@ class DatabaseColumn {
   final OnDelete onDelete;
 
   /// print a description of the schema
-  void describe({String spacer = ""}) {
-    print("${spacer}Column $name:");
-    print("$spacer - Type: $type");
-    print("$spacer - Unique: $unique");
-    print("$spacer - Nullable: $nullable");
-    print("$spacer - Default value: $defaultValue");
-    print("$spacer - Is foreign key: $isForeignKey");
-    print("$spacer - Reference: $reference");
-    print("$spacer - On delete: $onDelete");
+  String describe({String spacer = "", bool isPrint = true}) {
+    final lines = <String>[
+      "${spacer}Column $name:",
+      "$spacer - Type: $type",
+      "$spacer - Unique: $unique",
+      "$spacer - Nullable: $nullable",
+      "$spacer - Default value: $defaultValue",
+      "$spacer - Is foreign key: $isForeignKey",
+      "$spacer - Reference: $reference",
+      "$spacer - On delete: $onDelete",
+    ];
+    var s = "";
+    switch (isPrint) {
+      case false:
+        s = lines.join("\n");
+        break;
+      default:
+        print(lines.join("\n"));
+    }
+    return s;
   }
 
   /// convert a column type to a string
