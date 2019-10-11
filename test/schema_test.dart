@@ -23,22 +23,60 @@ void main() async {
       schema: <DbTable>[table, table1],
       absolutePath: true);
 
-  group("schema", () {
-    test("DbTable", () async {
-      expect(db.hasSchema, true);
-      final t = db.schema.table("table");
-      expect(table.name == t.name, true);
-      expect(db.schema.hasTable("table"), true);
-    });
+  test("DbTable", () async {
+    expect(db.hasSchema, true);
+    var t = db.schema.table("table");
+    expect(table.name == t.name, true);
+    expect(db.schema.hasTable("table"), true);
+    final fkCol = DatabaseColumn(
+        name: "table1",
+        type: DatabaseColumnType.integer,
+        onDelete: OnDelete.cascade);
+    expect(t.foreignKeys[0].type, fkCol.type);
+    expect(t.foreignKeys[0].name, fkCol.name);
+    expect(t.foreignKeys[0].onDelete, fkCol.onDelete);
+    t = db.schema.table("table1");
+    final col = DatabaseColumn(name: "name", type: DatabaseColumnType.varchar);
+    expect(t.column("name").name, "name");
+    expect(t.columns[0].name, col.name);
+    expect(t.columns[0].type, col.type);
+    expect(t.schema[0].name, col.name);
+    expect(t.schema[0].type, col.type);
+  });
 
-    test("Db column", () async {
-      final col = DatabaseColumn(
-          name: "col",
-          type: DatabaseColumnType.varchar,
-          onDelete: OnDelete.restrict);
-      expect(col.typeToString(), "varchar");
-      expect(stringToOnDelete("restrict"), OnDelete.restrict);
-      expect(onDeleteToString(OnDelete.restrict), "restrict");
-    });
+  test("Db column", () async {
+    var col = DatabaseColumn(name: "col", type: DatabaseColumnType.varchar);
+    expect(col.typeToString(), "varchar");
+    col = DatabaseColumn(name: "col", type: DatabaseColumnType.integer);
+    expect(col.typeToString(), "integer");
+    col = DatabaseColumn(name: "col", type: DatabaseColumnType.real);
+    expect(col.typeToString(), "real");
+    col = DatabaseColumn(name: "col", type: DatabaseColumnType.text);
+    expect(col.typeToString(), "text");
+    col = DatabaseColumn(name: "col", type: DatabaseColumnType.boolean);
+    expect(col.typeToString(), "boolean");
+    col = DatabaseColumn(name: "col", type: DatabaseColumnType.blob);
+    expect(col.typeToString(), "blob");
+    expect(stringToOnDelete("restrict"), OnDelete.restrict);
+    expect(onDeleteToString(OnDelete.restrict), "restrict");
+    expect(stringToOnDelete("cascade"), OnDelete.cascade);
+    expect(onDeleteToString(OnDelete.cascade), "cascade");
+    expect(stringToOnDelete("set_null"), OnDelete.setNull);
+    expect(onDeleteToString(OnDelete.setNull), "set_null");
+    expect(stringToOnDelete("set_default"), OnDelete.setDefault);
+    expect(onDeleteToString(OnDelete.setDefault), "set_default");
+  });
+
+  test("describe", () async {
+    final col = DatabaseColumn(name: "col", type: DatabaseColumnType.varchar);
+    final des = col.describe(isPrint: false);
+    expect(des, """Column col:
+ - Type: DatabaseColumnType.varchar
+ - Unique: false
+ - Nullable: false
+ - Default value: null
+ - Is foreign key: false
+ - Reference: null
+ - On delete: null""");
   });
 }
