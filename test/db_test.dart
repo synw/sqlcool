@@ -99,6 +99,23 @@ void main() async {
       return join().then((List<Map<String, dynamic>> r) => expect(r, output));
     });
 
+    test("Mjoin", () async {
+      Future<List<Map<String, dynamic>>> mJoin() async {
+        final res = await db.mJoin(
+            table: "test",
+            joinsOn: ["table1.id=1"],
+            joinsTables: ["table1"],
+            where: "id=1",
+            verbose: true);
+        return res;
+      }
+
+      final output = <Map<String, dynamic>>[
+        <String, dynamic>{"k": "v"}
+      ];
+      return mJoin().then((List<Map<String, dynamic>> r) => expect(r, output));
+    });
+
     test("Query", () async {
       Future<List<Map<String, dynamic>>> query() async {
         final res = await db.query("SELECT * from test_table");
@@ -144,6 +161,33 @@ void main() async {
 
       return batchInsert()
           .then((dynamic r) => expect(r is List<dynamic>, true));
+    });
+  });
+
+  group("Select bloc", () {
+    test("init", () async {
+      final bloc = SelectBloc(database: db, table: "test");
+      bloc.items.listen((item) {
+        //print("ITEM $item");
+        expect(item, <Map<String, dynamic>>[
+          <String, dynamic>{"k": "v"},
+          <String, dynamic>{"k": "v"}
+        ]);
+      });
+    });
+
+    test("init with join", () async {
+      final bloc = SelectBloc(
+          database: db,
+          table: "test",
+          joinOn: "test_join.id=join.id",
+          joinTable: "test_join");
+      bloc.items.listen((item) {
+        //print("ITEM $item");
+        expect(item, <Map<String, dynamic>>[
+          <String, dynamic>{"k": "v"}
+        ]);
+      });
     });
   });
 }

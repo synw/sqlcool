@@ -31,8 +31,14 @@ void main() async {
       expect(db.schema.hasTable("table"), true);
     });
 
-    /*test("Columns", () async {
-      final cols = table.columns;
-    });*/
+    test("Db column", () async {
+      final col = DatabaseColumn(
+          name: "col",
+          type: DatabaseColumnType.varchar,
+          onDelete: OnDelete.restrict);
+      expect(col.typeToString(), "varchar");
+      expect(stringToOnDelete("restrict"), OnDelete.restrict);
+      expect(onDeleteToString(OnDelete.restrict), "restrict");
+    });
   });
 }

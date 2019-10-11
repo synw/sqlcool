@@ -14,7 +14,7 @@ void setup() async {
 
   String response;
   channel.setMockMethodCallHandler((MethodCall methodCall) async {
-    //print("METHOD CALL: $methodCall");
+    print("METHOD CALL: $methodCall");
     log.add(methodCall);
     switch (methodCall.method) {
       case "getDatabasesPath":
@@ -43,6 +43,13 @@ void setup() async {
             "SELECT COUNT(*) FROM test WHERE id=1") {
           final res = <Map<String, dynamic>>[
             <String, dynamic>{"count": 1}
+          ];
+          return res;
+        } // bloc select query
+        else if (methodCall.arguments["sql"] == "SELECT * FROM test") {
+          final res = <Map<String, dynamic>>[
+            <String, dynamic>{"k": "v"},
+            <String, dynamic>{"k": "v"},
           ];
           return res;
         } else {
