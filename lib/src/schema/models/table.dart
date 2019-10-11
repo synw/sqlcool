@@ -90,9 +90,15 @@ class DbTable {
       String defaultValue,
       OnDelete onDelete = OnDelete.restrict}) {
     var q = "$name INTEGER";
-    if (unique) q += " UNIQUE";
-    if (!nullable) q += " NOT NULL";
-    if (defaultValue != null) q += " DEFAULT $defaultValue";
+    if (unique) {
+      q += " UNIQUE";
+    }
+    if (!nullable) {
+      q += " NOT NULL";
+    }
+    if (defaultValue != null) {
+      q += " DEFAULT $defaultValue";
+    }
     String fk;
     fk = "  FOREIGN KEY ($name)\n";
     reference ??= name;
@@ -316,6 +322,7 @@ class DbTable {
   @override
   String toString() => name;
 
+  // The string for the table create query
   String queryString() {
     var q = "CREATE TABLE IF NOT EXISTS $name (\n";
     q += _columns.join(",\n");

@@ -18,13 +18,14 @@ enum DatabaseChange {
 /// A database change event. Used by the changefeed
 class DatabaseChangeEvent {
   /// Default database change event
-  DatabaseChangeEvent(
-      {@required this.type,
-      @required this.value,
-      @required this.query,
-      @required this.table,
-      this.data,
-      @required this.executionTime});
+  DatabaseChangeEvent({
+    @required this.type,
+    @required this.value,
+    @required this.query,
+    @required this.table,
+    @required this.executionTime,
+    this.data,
+  });
 
   /// Type of the change
   final DatabaseChange type;
@@ -47,11 +48,11 @@ class DatabaseChangeEvent {
   /// Human readable format
   @override
   String toString() {
-    String s = "";
+    var s = "";
     if (value > 1) {
       s = "s";
     }
-    String msg = "";
+    var msg = "";
     if (type == DatabaseChange.delete) {
       msg += "$value item$s deleted";
     } else if (type == DatabaseChange.update) {

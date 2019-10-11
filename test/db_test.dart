@@ -7,13 +7,11 @@ void main() async {
 
   final db = Db();
 
-  tearDown(() {
-    log.clear();
-  });
+  tearDown(log.clear);
 
   group("init", () {
     test("Init db", () async {
-      final String schema = """CREATE TABLE item
+      final schema = """CREATE TABLE item
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL
     )""";

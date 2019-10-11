@@ -43,7 +43,9 @@ class SelectBloc {
             (query != null && change.query == query)) {
           _getItems();
         }
-        if (verbose) print("CHANGE IN THE DATABASE: $change");
+        if (verbose) {
+          print("CHANGE IN THE DATABASE: $change");
+        }
       });
     }
   }
@@ -146,6 +148,8 @@ class SelectBloc {
       return;
     }
 
-    if (_changefeedIsActive) _itemController.sink.add(res);
+    if (_changefeedIsActive) {
+      _itemController.sink.add(res);
+    }
   }
 }
