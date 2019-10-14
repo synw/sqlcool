@@ -1,5 +1,6 @@
 import 'package:sqlcool/sqlcool.dart';
-import '../conf.dart';
+import '../../../conf.dart' as conf;
+import '../schema.dart';
 
 class Manufacturer with DbModel {
   Manufacturer({this.id, this.name});
@@ -12,7 +13,10 @@ class Manufacturer with DbModel {
   int id;
 
   @override
-  DbModelTable get dbTable => manufacturerModelTable;
+  Db get db => conf.db;
+
+  @override
+  DbTable get table => manufacturerTable;
 
   @override
   Map<String, dynamic> toDb() => <String, dynamic>{"name": name};

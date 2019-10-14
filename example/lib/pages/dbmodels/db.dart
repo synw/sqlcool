@@ -1,18 +1,7 @@
 import 'dart:async';
-import 'package:sqlcool/sqlcool.dart';
-import 'schema.dart';
 import 'models/car.dart';
 import 'models/manufacturer.dart';
 import '../../conf.dart';
-
-DbModelTable carModelTable;
-DbModelTable manufacturerModelTable;
-
-Future<void> initDbModelConf() async {
-  // set the db models table schemas. We use the main db
-  manufacturerModelTable = DbModelTable(db: db, table: manufacturerTable);
-  carModelTable = DbModelTable(db: db, table: carTable);
-}
 
 Future<void> populateDb() async {
   final n = await db.count(table: "car");

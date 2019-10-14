@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'models/car.dart';
-import 'conf.dart';
+import 'db.dart';
 
 class _DbModelPageState extends State<DbModelPage> {
   var cars = <Car>[];
 
   Future<List<Car>> initModel() async {
-    await initDbModelConf();
     // populate db if needed
     await populateDb();
     // query the database for initial data
