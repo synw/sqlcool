@@ -2,29 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'table.dart';
 import '../../database.dart';
 
-/// A table representing a model
-class DbModelTable {
-  /// Provide a [Db] and a [DbTable]
-  DbModelTable({@required this.db, @required this.table});
-
-  /// The [Db] to use
-  Db db;
-
-  /// The [DbTable] database schema definition
-  DbTable table;
-}
-
 /// The database model class to extend
 class DbModel {
-  /// The [DbModelTable] to use
-  ///
-  /// **Important** : this must be set in all the inherited constructors
-  DbModelTable dbTable;
-
   /// The database id of the model instance
   ///
   /// **Important** : it must be overriden
   int id;
+
+  /// get the database
+  Db get db => null;
+
+  /// get the table schema
+  DbTable get table => null;
 
   /// The database row serializer for the model
   ///
@@ -45,11 +34,11 @@ class DbModel {
       String groupBy,
       bool verbose = false}) async {
     _checkDbIsReady();
-    final colStringsSelect = <String>["${dbTable.table.name}.id AS id"];
+    final colStringsSelect = <String>["${table.name}.id AS id"];
     // get regular column names
-    for (final col in dbTable.table.columns) {
+    for (final col in table.columns) {
       if (!col.isForeignKey) {
-        final encodedName = "${dbTable.table.name}.${col.name} AS ${col.name}";
+        final encodedName = "${table.name}.${col.name} AS ${col.name}";
         colStringsSelect.add(encodedName);
       }
     }
@@ -58,11 +47,11 @@ class DbModel {
     final joinsOn = <String>[];
     final fkColStringsSelect = <String>[];
     final fkPropertiesCols = <String, Map<String, String>>{};
-    for (final fkCol in dbTable.table.foreignKeys) {
+    for (final fkCol in table.foreignKeys) {
       joinsTables.add(fkCol.name);
-      joinsOn.add("${dbTable.table.name}.${fkCol.name}=${fkCol.name}.id");
+      joinsOn.add("${table.name}.${fkCol.name}=${fkCol.name}.id");
       // grab the foreign key table schema
-      final fkTable = dbTable.db.schema.table(fkCol.name);
+      final fkTable = db.schema.table(fkCol.name);
       // get columns for foreign key
       final fkColsNames =
           fkTable.columns.map<String>((col) => col.name).toList()..add("id");
@@ -80,8 +69,8 @@ class DbModel {
     }
     colStringsSelect.addAll(fkColStringsSelect);
     final columns = colStringsSelect.join(",");
-    final res = await dbTable.db.mJoin(
-        table: dbTable.table.name,
+    final res = await db.mJoin(
+        table: table.name,
         joinsTables: joinsTables,
         joinsOn: joinsOn,
         columns: columns,
@@ -99,7 +88,7 @@ class DbModel {
       final newRow = <String, dynamic>{};
       final fkData = <String, Map<String, dynamic>>{};
       // set fk data keys
-      for (final c in dbTable.table.foreignKeys) {
+      for (final c in table.foreignKeys) {
         fkData[c.name] = <String, dynamic>{};
       }
       // retrieve data
@@ -137,14 +126,14 @@ class DbModel {
     _checkDbIsReady();
     // do not take the foreign keys
     final cols = <String>["id"];
-    for (final col in dbTable.table.columns) {
+    for (final col in table.columns) {
       if (!col.isForeignKey) {
         cols.add(col.name);
       }
     }
     final columns = cols.join(",");
-    final res = await dbTable.db.select(
-        table: dbTable.table.name,
+    final res = await db.select(
+        table: table.name,
         columns: columns,
         where: where,
         orderBy: orderBy,
@@ -164,12 +153,8 @@ class DbModel {
     _checkDbIsReady();
     final data = this.toDb();
     final row = _toStringsMap(data);
-    await dbTable.db
-        .update(
-            table: dbTable.table.name,
-            row: row,
-            where: 'id=$id',
-            verbose: verbose)
+    await db
+        .update(table: table.name, row: row, where: 'id=$id', verbose: verbose)
         .catchError(
             (dynamic e) => throw ("Can not update model into database $e"));
   }
@@ -179,10 +164,8 @@ class DbModel {
     _checkDbIsReady();
     final data = this.toDb();
     final row = _toStringsMap(data);
-    await dbTable.db
-        .upsert(table: dbTable.table.name, row: row, verbose: verbose)
-        .catchError(
-            (dynamic e) => throw ("Can not upsert model into database $e"));
+    await db.upsert(table: table.name, row: row, verbose: verbose).catchError(
+        (dynamic e) => throw ("Can not upsert model into database $e"));
   }
 
   /// Insert a row in the database table
@@ -190,8 +173,8 @@ class DbModel {
     _checkDbIsReady();
     final data = this.toDb();
     final row = _toStringsMap(data);
-    final id = await dbTable.db
-        .insert(table: dbTable.table.name, row: row, verbose: verbose)
+    final id = await db
+        .insert(table: table.name, row: row, verbose: verbose)
         .catchError(
             (dynamic e) => throw ("Can not insert model into database $e"));
     return id;
@@ -205,16 +188,16 @@ class DbModel {
           "The instance id must not be null if no where clause is used");
       where = "id=$id";
     }
-    await dbTable.db
-        .delete(table: dbTable.table.name, where: where, verbose: verbose)
+    await db
+        .delete(table: table.name, where: where, verbose: verbose)
         .catchError(
             (dynamic e) => throw ("Can not delete model from database $e"));
   }
 
   /// Count rows
   Future<int> sqlCount({String where, bool verbose = false}) async {
-    final n = dbTable.db
-        .count(table: dbTable.table.name, where: where, verbose: verbose)
+    final n = db
+        .count(table: table.name, where: where, verbose: verbose)
         .catchError((dynamic e) => throw ("Can not count from database $e"));
     return n;
   }
@@ -226,9 +209,8 @@ class DbModel {
   }
 
   void _checkDbIsReady() {
-    assert(dbTable != null);
-    assert(dbTable.db != null);
-    assert(dbTable.db.isReady,
-        "Please intialize the database by running db.init()");
+    assert(table != null);
+    assert(db != null);
+    assert(db.isReady, "Please intialize the database by running db.init()");
   }
 }
