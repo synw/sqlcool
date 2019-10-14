@@ -46,6 +46,9 @@ class DbTable {
   /// Get the table constraints
   List<String> get constraints => _fkConstraints;
 
+  /// Check if a column exists
+  bool hasColumn(String name) => _hasColumn(name);
+
   /// Get a column by name
   DatabaseColumn column(String name) {
     DatabaseColumn col;
@@ -322,7 +325,7 @@ class DbTable {
   @override
   String toString() => name;
 
-  // The string for the table create query
+  /// The string for the table create query
   String queryString() {
     var q = "CREATE TABLE IF NOT EXISTS $name (\n";
     q += _columns.join(",\n");
@@ -347,5 +350,13 @@ class DbTable {
       }
     });
     return fks;
+  }
+
+  bool _hasColumn(String name) {
+    final hasCol = column(name);
+    if (hasCol == null) {
+      return false;
+    }
+    return true;
   }
 }
