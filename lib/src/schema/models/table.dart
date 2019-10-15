@@ -27,18 +27,18 @@ class DbTable {
 
   final List<String> _columns = <String>["id INTEGER PRIMARY KEY"];
   final List<String> _queries = <String>[];
-  final List<DatabaseColumn> _columnsData = <DatabaseColumn>[];
+  final List<DbColumn> _columnsData = <DbColumn>[];
   final List<String> _fkConstraints = <String>[];
 
   /// The columns info
-  List<DatabaseColumn> get columns => _columnsData;
+  List<DbColumn> get columns => _columnsData;
 
   /// The foreign key columns
-  List<DatabaseColumn> get foreignKeys => _foreignKeys();
+  List<DbColumn> get foreignKeys => _foreignKeys();
 
   /// The columns info
   @deprecated
-  List<DatabaseColumn> get schema => _columnsData;
+  List<DbColumn> get schema => _columnsData;
 
   /// Get the list of queries to perform for database initialization
   List<String> get queries => _getQueries();
@@ -50,8 +50,8 @@ class DbTable {
   bool hasColumn(String name) => _hasColumn(name);
 
   /// Get a column by name
-  DatabaseColumn column(String name) {
-    DatabaseColumn col;
+  DbColumn column(String name) {
+    DbColumn col;
     for (final c in _columnsData) {
       if (c.name == name) {
         col = c;
@@ -122,12 +122,12 @@ class DbTable {
     }
     _columns.add(q);
     _fkConstraints.add(fk);
-    _columnsData.add(DatabaseColumn(
+    _columnsData.add(DbColumn(
         name: name,
         unique: unique,
         nullable: nullable,
         defaultValue: defaultValue,
-        type: DatabaseColumnType.integer,
+        type: DbColumnType.integer,
         isForeignKey: true,
         reference: reference,
         onDelete: onDelete));
@@ -157,13 +157,13 @@ class DbTable {
       q += " CHECK($check)";
     }
     _columns.add(q);
-    _columnsData.add(DatabaseColumn(
+    _columnsData.add(DbColumn(
         name: name,
         unique: unique,
         nullable: nullable,
         defaultValue: defaultValue,
         check: check,
-        type: DatabaseColumnType.varchar));
+        type: DbColumnType.varchar));
   }
 
   /// Add a text column
@@ -186,13 +186,13 @@ class DbTable {
       q += " CHECK($check)";
     }
     _columns.add(q);
-    _columnsData.add(DatabaseColumn(
+    _columnsData.add(DbColumn(
         name: name,
         unique: unique,
         nullable: nullable,
         defaultValue: defaultValue,
         check: check,
-        type: DatabaseColumnType.text));
+        type: DbColumnType.text));
   }
 
   /// Add a float column
@@ -215,13 +215,13 @@ class DbTable {
       q += " CHECK($check)";
     }
     _columns.add(q);
-    _columnsData.add(DatabaseColumn(
+    _columnsData.add(DbColumn(
         name: name,
         unique: unique,
         nullable: nullable,
         defaultValue: "$defaultValue",
         check: check,
-        type: DatabaseColumnType.real));
+        type: DbColumnType.real));
   }
 
   /// Add an integer column
@@ -246,13 +246,13 @@ class DbTable {
       q += " CHECK($check)";
     }
     _columns.add(q);
-    _columnsData.add(DatabaseColumn(
+    _columnsData.add(DbColumn(
         name: name,
         unique: unique,
         nullable: nullable,
         defaultValue: "$defaultValue",
         check: check,
-        type: DatabaseColumnType.integer));
+        type: DbColumnType.integer));
   }
 
   /// Add a float column
@@ -260,10 +260,8 @@ class DbTable {
     var q = "$name REAL";
     q += " DEFAULT $defaultValue";
     _columns.add(q);
-    _columnsData.add(DatabaseColumn(
-        name: name,
-        defaultValue: "$defaultValue",
-        type: DatabaseColumnType.boolean));
+    _columnsData.add(DbColumn(
+        name: name, defaultValue: "$defaultValue", type: DbColumnType.boolean));
   }
 
   /// Add a blob column
@@ -288,13 +286,13 @@ class DbTable {
       q += " CHECK($check)";
     }
     _columns.add(q);
-    _columnsData.add(DatabaseColumn(
+    _columnsData.add(DbColumn(
         name: name,
         unique: unique,
         nullable: nullable,
         defaultValue: "$defaultValue",
         check: check,
-        type: DatabaseColumnType.blob));
+        type: DbColumnType.blob));
   }
 
   /// Add an automatic timestamp
@@ -302,8 +300,7 @@ class DbTable {
     final q =
         "$name INTEGER DEFAULT (cast(strftime('%s','now') as int)) NOT NULL";
     _columns.add(q);
-    _columnsData
-        .add(DatabaseColumn(name: name, type: DatabaseColumnType.timestamp));
+    _columnsData.add(DbColumn(name: name, type: DbColumnType.timestamp));
   }
 
   /// Print the queries to perform for database initialization
@@ -342,8 +339,8 @@ class DbTable {
     return qs;
   }
 
-  List<DatabaseColumn> _foreignKeys() {
-    final fks = <DatabaseColumn>[];
+  List<DbColumn> _foreignKeys() {
+    final fks = <DbColumn>[];
     _columnsData.forEach((col) {
       if (col.isForeignKey) {
         fks.add(col);

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:sqlcool/sqlcool.dart';
 
 /// The type of a database column
-enum DatabaseColumnType {
+enum DbColumnType {
   /// A varchar column
   varchar,
 
@@ -26,9 +26,9 @@ enum DatabaseColumnType {
 }
 
 /// A database column representation
-class DatabaseColumn {
+class DbColumn {
   /// Provide a name and a type
-  const DatabaseColumn(
+  const DbColumn(
       {@required this.name,
       @required this.type,
       this.unique = false,
@@ -43,7 +43,7 @@ class DatabaseColumn {
   final String name;
 
   /// The data type of the column
-  final DatabaseColumnType type;
+  final DbColumnType type;
 
   /// Is the column unique
   final bool unique;
@@ -93,25 +93,25 @@ class DatabaseColumn {
   String typeToString() {
     String res;
     switch (type) {
-      case DatabaseColumnType.varchar:
+      case DbColumnType.varchar:
         res = "varchar";
         break;
-      case DatabaseColumnType.integer:
+      case DbColumnType.integer:
         res = "integer";
         break;
-      case DatabaseColumnType.real:
+      case DbColumnType.real:
         res = "real";
         break;
-      case DatabaseColumnType.boolean:
+      case DbColumnType.boolean:
         res = "boolean";
         break;
-      case DatabaseColumnType.text:
+      case DbColumnType.text:
         res = "text";
         break;
-      case DatabaseColumnType.timestamp:
+      case DbColumnType.timestamp:
         res = "timestamp";
         break;
-      case DatabaseColumnType.blob:
+      case DbColumnType.blob:
         res = "blob";
         break;
     }
