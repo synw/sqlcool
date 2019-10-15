@@ -8,7 +8,7 @@ class _DbModelPageState extends State<DbModelPage> {
   Future<List<Car>> initModel() async {
     // populate db if needed
     await populateDb();
-    // query the database for initial data
+    // perform a join query on the database for initial data
     final c = await Car.selectRelated();
     print("Found ${c.length} cars");
     return c;

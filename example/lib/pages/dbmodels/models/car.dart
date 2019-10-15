@@ -13,7 +13,7 @@ class Car with DbModel {
       this.is4wd,
       this.manufacturer});
 
-  /// define my class properties
+  /// define some class properties
 
   final String name;
   final int maxSpeed;
@@ -27,12 +27,16 @@ class Car with DbModel {
   @override
   int id;
 
+  /// the [Db] used
   @override
   Db get db => conf.db;
 
+  /// the table schema representation
+  /// check example/pages/dbmodels/schema.dart
   @override
   DbTable get table => carTable;
 
+  /// serialize a row to the database
   @override
   Map<String, dynamic> toDb() {
     final row = <String, dynamic>{
@@ -43,13 +47,12 @@ class Car with DbModel {
       "is_4wd": is4wd,
       "manufacturer": manufacturer.id
     };
-    //print("Serialized car data to database: $row");
     return row;
   }
 
+  /// deserialize a row from database
   @override
   Car fromDb(Map<String, dynamic> map) {
-    //print("Deserializing car data from database: $map");
     final car = Car(
       id: map["id"] as int,
       name: map["name"].toString(),
