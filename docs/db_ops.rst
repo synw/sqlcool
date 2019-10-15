@@ -119,11 +119,12 @@ Required parameters:
 
 Optionnal parameters:
 
-:preserveColumns: *List<String>* a list of columns to preserve: the data in 
-these columns will not be updated. Note: the `indexColumn` parameter is required
+:preserveColumns: *List<String>* a list of columns to preserve,
+the data in these columns will not be updated. Note: the `indexColumn`
+parameter is required
 when using this method (used to retrieve the existing data).
-:indexColumn: *String* the reference index column use to retrieve existing data 
-in case of preserve
+:indexColumn: *String* the reference index column use to retrieve
+existing data in case of preserve
 :verbose: *bool* ``true`` or ``false``
 
 Join

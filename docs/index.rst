@@ -3,6 +3,9 @@
 Welcome to Sqlcool's documentation!
 ===================================
 
+The objectives of this lib is to provide a simple api while staying
+close to sql.
+
 .. toctree::
    :maxdepth: 2
    :caption: Crud operations
@@ -17,6 +20,15 @@ Welcome to Sqlcool's documentation!
    :caption: Select bloc
 
    bloc.rst
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Database models
+
+   dbmodels/init.rst
+   dbmodels/mutate.rst
+   dbmodels/select.rst
+   dbmodels/foreign_keys.rst
 
 .. toctree::
    :maxdepth: 2
