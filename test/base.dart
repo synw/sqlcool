@@ -52,6 +52,41 @@ void setup() async {
             <String, dynamic>{"k": "v"},
           ];
           return res;
+        } // dbmodels select
+        else if (methodCall.arguments["sql"] ==
+            "SELECT id,name,price FROM car WHERE price=30000") {
+          final res = <Map<String, dynamic>>[
+            <String, dynamic>{"name": "My car", "price": 30000.0},
+          ];
+          return res;
+        } // dbmodels other select
+        else if (methodCall.arguments["sql"] ==
+            'SELECT id,name,price FROM car WHERE name="My car"') {
+          final res = <Map<String, dynamic>>[];
+          return res;
+        }
+        // dbmodels other select
+        else if (methodCall.arguments["sql"] ==
+            "SELECT id,name,price FROM car WHERE price=40000") {
+          final res = <Map<String, dynamic>>[
+            <String, dynamic>{"name": "My car", "price": 40000.0},
+          ];
+          return res;
+        } // dbmodels foreign key
+        else if (methodCall.arguments["sql"] ==
+            "SELECT car.id AS id,car.name AS name,car.price AS price,manufacturer.name " +
+                "AS manufacturer_name,manufacturer.id AS manufacturer_id FROM car " +
+                "INNER JOIN manufacturer ON car.manufacturer=manufacturer.id") {
+          final res = <Map<String, dynamic>>[
+            <String, dynamic>{
+              "id": 1,
+              "name": "My car",
+              "price": 10000.0,
+              "manufacturer_name": "My manufacturer",
+              "manufacturer_id": 1
+            },
+          ];
+          return res;
         } else {
           final res = <Map<String, dynamic>>[
             <String, dynamic>{"k": "v"}

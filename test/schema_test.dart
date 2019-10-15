@@ -40,8 +40,8 @@ void main() async {
     expect(t.column("name").name, "name");
     expect(t.columns[0].name, col.name);
     expect(t.columns[0].type, col.type);
-    expect(t.schema[0].name, col.name);
-    expect(t.schema[0].type, col.type);
+    expect(t.columns[0].name, col.name);
+    expect(t.columns[0].type, col.type);
   });
 
   test("Db column", () async {
@@ -65,6 +65,7 @@ void main() async {
     expect(onDeleteToString(OnDelete.setNull), "set_null");
     expect(stringToOnDelete("set_default"), OnDelete.setDefault);
     expect(onDeleteToString(OnDelete.setDefault), "set_default");
+    expect(db.schema.table("table").hasColumn("name"), true);
   });
 
   test("describe", () async {
