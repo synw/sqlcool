@@ -1,7 +1,7 @@
 Foreign keys support
 ====================
 
-The database models support foreign keys
+The database models support foreign keys. Example: create a foreign key model:
 
 .. highlight:: dart
 
