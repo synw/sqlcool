@@ -12,11 +12,11 @@ Columns
    DbTable product = DbTable("product")
       ..varchar("name", unique: true)
       ..integer("price")
-	  ..real("number")
-	  ..boolean("bool", defaultValue: true)
-	  ..text("description")
-	  ..blob("blob")
-	  ..timestamp()
+     ..real("number")
+     ..boolean("bool", defaultValue: true)
+     ..text("description")
+     ..blob("blob")
+     ..timestamp()
       ..foreignKey("category", onDelete: OnDelete.cascade);
 
 Parameters for the column constructors:
@@ -43,7 +43,7 @@ Create an index on a column:
 
    DbTable("table")
       ..varchar("name")
-	  ..index("name");
+      ..index("name");
 
 Unique together constraint:
 
@@ -51,8 +51,8 @@ Unique together constraint:
 
    DbTable("table")
       ..varchar("name")
-	  ..integer("number")
-	  ..uniqueTogether("name", "number");
+      ..integer("number")
+      ..uniqueTogether("name", "number");
 
 Methods
 -------
@@ -80,3 +80,9 @@ Check if a table is in the schema:
 ::
 
    final bool tableExists = db.schema.hasTable("product");
+
+Check if a table has a column:
+
+::
+
+   final bool columnExists = db.schema.table("product").hasColumn("name");
