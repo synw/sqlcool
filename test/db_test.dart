@@ -166,9 +166,25 @@ void main() async {
 
   group("Select bloc", () {
     test("init", () async {
-      final bloc = SelectBloc(database: db, table: "test");
+      final bloc = SelectBloc(database: db, reactive: true, table: "test");
+      var i = 0;
       bloc.items.listen((item) {
-        //print("ITEM $item");
+        expect(item, <Map<String, dynamic>>[
+          <String, dynamic>{"k": "v"},
+          <String, dynamic>{"k": "v"}
+        ]);
+        if (i > 0) {
+          // update finished, dispose
+          bloc.dispose();
+        }
+        ++i;
+      });
+      bloc.update(<Map<String, dynamic>>[
+        <String, dynamic>{"k": "v"},
+        <String, dynamic>{"k": "v"}
+      ]);
+      final bloc2 = SelectBloc(database: db, query: "SELECT * FROM test");
+      bloc2.items.listen((item) {
         expect(item, <Map<String, dynamic>>[
           <String, dynamic>{"k": "v"},
           <String, dynamic>{"k": "v"}
