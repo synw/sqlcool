@@ -39,6 +39,8 @@ class Car with DbModel {
   /// serialize a row to the database
   @override
   Map<String, dynamic> toDb() {
+    // we want the foreign key to be recorded
+    assert(manufacturer?.id != null);
     final row = <String, dynamic>{
       "name": name,
       "max_speed": maxSpeed,
