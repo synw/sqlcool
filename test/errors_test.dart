@@ -24,11 +24,50 @@ void main() async {
   test("Init", () async {
     expect(db.isReady, false);
     await db.select(table: "table").catchError((dynamic e) {
+      expect(e is DatabaseNotReady, true);
       expect(
-          e,
+          e.message,
           'The Sqlcool database is not ready. This happens when a query' +
               ' is fired and the database has not finished initializing.');
     });
+    await db.insert(table: "table", row: <String, String>{}).catchError(
+        (dynamic e) {
+      expect(e is DatabaseNotReady, true);
+    });
+    await db.upsert(table: "table", row: <String, String>{}).catchError(
+        (dynamic e) {
+      expect(e is DatabaseNotReady, true);
+    });
+    await db
+        .update(table: "table", row: <String, String>{}, where: "id=1")
+        .catchError((dynamic e) {
+      expect(e is DatabaseNotReady, true);
+    });
+    await db.delete(table: "table", where: "id=1").catchError((dynamic e) {
+      expect(e is DatabaseNotReady, true);
+    });
+    await db
+        .join(table: "table", joinOn: "", joinTable: "")
+        .catchError((dynamic e) {
+      expect(e is DatabaseNotReady, true);
+    });
+    await db.mJoin(
+        table: "table",
+        joinsOn: <String>[],
+        joinsTables: <String>[]).catchError((dynamic e) {
+      expect(e is DatabaseNotReady, true);
+    });
+    await db.exists(table: "table", where: "id=1").catchError((dynamic e) {
+      expect(e is DatabaseNotReady, true);
+    });
+    await db.count(table: "table", where: "id=1").catchError((dynamic e) {
+      expect(e is DatabaseNotReady, true);
+    });
+    await db.batchInsert(
+        table: "table", rows: <Map<String, String>>[]).catchError((dynamic e) {
+      expect(e is DatabaseNotReady, true);
+    });
+    // init
     expect(() async => await db.init(path: null),
         throwsA(predicate<dynamic>((dynamic e) => e is AssertionError)));
     unawaited(db.onReady.then((_) {

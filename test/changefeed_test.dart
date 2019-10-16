@@ -48,5 +48,6 @@ INSERT INTO test (k) VALUES(?) {k: v} in """), true);
     await db.update(
         table: "test", row: {"k": "v"}, where: 'name="k"', verbose: true);
     await db.delete(table: "test", where: 'name="k"', verbose: true);
+    db.dispose();
   });
 }
