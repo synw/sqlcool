@@ -209,8 +209,6 @@ class Db {
         print(msg);
       }
       return res;
-    } on DatabaseNotReady catch (e) {
-      throw ("${e.message}");
     } catch (e) {
       rethrow;
     }
@@ -265,8 +263,6 @@ class Db {
         print(msg);
       }
       return res;
-    } on DatabaseNotReady catch (e) {
-      throw ("${e.message}");
     } catch (e) {
       rethrow;
     }
@@ -463,8 +459,6 @@ class Db {
           final msg = "$q $row in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
-      } on DatabaseNotReady catch (e) {
-        throw ("${e.message}");
       } catch (e) {
         rethrow;
       }
@@ -519,8 +513,6 @@ class Db {
           print(msg);
         }
         return updated;
-      } on DatabaseNotReady catch (e) {
-        throw ("${e.message}");
       } catch (e) {
         rethrow;
       }
@@ -596,8 +588,6 @@ class Db {
         if (verbose) {
           print("$q $row in ${timer.elapsedMilliseconds} ms");
         }
-      } on DatabaseNotReady catch (e) {
-        throw ("${e.message}");
       } catch (e) {
         rethrow;
       }
@@ -635,8 +625,6 @@ class Db {
           print(msg);
         }
         return deleted;
-      } on DatabaseNotReady catch (e) {
-        throw ("${e.message}");
       } catch (e) {
         rethrow;
       }
@@ -670,8 +658,6 @@ class Db {
       if (count > 0) {
         return true;
       }
-    } on DatabaseNotReady catch (e) {
-      throw ("${e.message}");
     } catch (e) {
       rethrow;
     }
@@ -707,8 +693,6 @@ class Db {
         print(msg);
       }
       return c;
-    } on DatabaseNotReady catch (e) {
-      throw ("${e.message}");
     } catch (e) {
       rethrow;
     }
@@ -748,8 +732,6 @@ class Db {
               "in ${timer.elapsedMilliseconds} ms";
           print(msg);
         }
-      } on DatabaseNotReady catch (e) {
-        throw ("${e.message}");
       } catch (e) {
         rethrow;
       }
