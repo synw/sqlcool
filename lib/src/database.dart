@@ -152,7 +152,6 @@ class Db {
         });
       });
     }
-    await _db.isOpen;
     if (verbose) {
       print("DATABASE INITIALIZED");
     }
