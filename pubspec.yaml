@@ -9,7 +9,7 @@ homepage: https://github.com/synw/sqlcool
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 3.2.1
+version: 4.0.0
 
 environment:
   sdk: ">=2.2.2 <3.0.0"

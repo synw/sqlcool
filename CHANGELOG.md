@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.0.0
+
+- Add informative getters to the schema
+- Join on multiple foreign keys
+- Database models
+- Query support in `SelectBloc`
+- Update dependencies
+- Use more strict analysis options
+
 ## 3.2.1
 
 - Run create queries and schema for asset database
