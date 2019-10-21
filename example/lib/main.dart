@@ -9,10 +9,11 @@ import 'init_db.dart';
 import 'conf.dart';
 
 void main() {
+  runApp(MyApp());
+
   /// initialize the database async. We will use the [onReady]
   /// callback later to react to the initialization completed event
   initDb(db: db);
-  runApp(MyApp());
 }
 
 final routes = {
