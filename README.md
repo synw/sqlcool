@@ -288,5 +288,5 @@ Then use the models:
 ## Using this
 
 - [Sqlview](https://github.com/synw/sqlview): admin view and infinite list view
-- [Kvsql](https://github.com/synw/kvsql): a key/value store
+- [Kvsql](https://github.com/synw/kvsql): a type safe key/value store
 - [Geopoint sql](https://github.com/synw/geopoint_sql): sql operations for geospatial data
