@@ -6,6 +6,7 @@ A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Fo
 
 - **Simple**: easy api for crud operations
 - **Reactive**: stream of changes, select bloc
+- **Adaptative**: plug custom models into the database
 
 Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api doc](https://pub.dev/documentation/sqlcool/latest/sqlcool/sqlcool-library.html) for usage instructions
 
@@ -165,7 +166,7 @@ parameter set to `true`:
 *New in 4.0.0*: define models that have database methods. The main
 advantage of this is to use only typed model data and avoid the
 type conversions from maps for every query. It directly plugs custom
-models to the database. Example:
+models into the database. Example:
 
 In schema.dart:
 
