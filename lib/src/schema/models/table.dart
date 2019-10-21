@@ -36,10 +36,6 @@ class DbTable {
   /// The foreign key columns
   List<DbColumn> get foreignKeys => _foreignKeys();
 
-  /// The columns info
-  @deprecated
-  List<DbColumn> get schema => _columnsData;
-
   /// Get the list of queries to perform for database initialization
   List<String> get queries => _getQueries();
 
