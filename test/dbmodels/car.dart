@@ -1,7 +1,8 @@
 import 'package:sqlcool/sqlcool.dart';
+
 import 'conf.dart' as conf;
-import 'schema.dart';
 import 'manufacturer.dart';
+import 'schema.dart';
 
 class Car with DbModel {
   Car({this.id, this.name, this.price, this.manufacturer});

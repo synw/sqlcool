@@ -4,7 +4,7 @@ import 'package:pedantic/pedantic.dart';
 import 'package:sqlcool/sqlcool.dart';
 import 'base.dart';
 
-void main() async {
+Future<void> main() async {
   await setup();
 
   final db = Db();
@@ -27,8 +27,8 @@ void main() async {
       expect(e is DatabaseNotReady, true);
       expect(
           e.message,
-          'The Sqlcool database is not ready. This happens when a query' +
-              ' is fired and the database has not finished initializing.');
+          'The Sqlcool database is not ready. This happens when a query'
+          ' is fired and the database has not finished initializing.');
     });
     await db.insert(table: "table", row: <String, String>{}).catchError(
         (dynamic e) {
@@ -68,7 +68,7 @@ void main() async {
       expect(e is DatabaseNotReady, true);
     });
     // init
-    expect(() async => await db.init(path: null),
+    expect(() async => db.init(path: null),
         throwsA(predicate<dynamic>((dynamic e) => e is AssertionError)));
     unawaited(db.onReady.then((_) {
       expect(db.isReady, true);

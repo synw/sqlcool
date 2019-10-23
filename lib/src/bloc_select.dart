@@ -32,8 +32,7 @@ class SelectBloc {
       : assert(database != null),
         assert(database.isReady) {
     if ((query == null) && (table == null)) {
-      throw (ArgumentError(
-          "Please provide either a table or a query argument"));
+      throw ArgumentError("Please provide either a table or a query argument");
     }
 
     _getItems();

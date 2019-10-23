@@ -1,5 +1,7 @@
 import 'dart:typed_data';
+
 import 'package:flutter/foundation.dart';
+
 import 'column.dart';
 
 /// types of on delete actions for foreign keys
@@ -326,12 +328,11 @@ class DbTable {
       q += ",\n";
       q += _fkConstraints.join(",\n");
     }
-    q += "\n)";
-    return q;
+    return q += "\n)";
   }
 
   List<String> _getQueries() {
-    final qs = <String>[this.queryString()]..addAll(_queries);
+    final qs = <String>[this.queryString(), ..._queries];
     return qs;
   }
 

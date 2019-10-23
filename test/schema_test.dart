@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlcool/sqlcool.dart';
 import 'base.dart';
 
-void main() async {
+Future<void> main() async {
   await setup();
 
   final db = Db();
@@ -28,13 +28,13 @@ void main() async {
     var t = db.schema.table("table");
     expect(table.name == t.name, true);
     expect(db.schema.hasTable("table"), true);
-    final fkCol = DbColumn(
+    const fkCol = DbColumn(
         name: "table1", type: DbColumnType.integer, onDelete: OnDelete.cascade);
     expect(t.foreignKeys[0].type, fkCol.type);
     expect(t.foreignKeys[0].name, fkCol.name);
     expect(t.foreignKeys[0].onDelete, fkCol.onDelete);
     t = db.schema.table("table1");
-    final col = DbColumn(name: "name", type: DbColumnType.varchar);
+    const col = DbColumn(name: "name", type: DbColumnType.varchar);
     expect(t.column("name").name, "name");
     expect(t.columns[0].name, col.name);
     expect(t.columns[0].type, col.type);
@@ -43,17 +43,17 @@ void main() async {
   });
 
   test("Db column", () async {
-    var col = DbColumn(name: "col", type: DbColumnType.varchar);
+    var col = const DbColumn(name: "col", type: DbColumnType.varchar);
     expect(col.typeToString(), "varchar");
-    col = DbColumn(name: "col", type: DbColumnType.integer);
+    col = const DbColumn(name: "col", type: DbColumnType.integer);
     expect(col.typeToString(), "integer");
-    col = DbColumn(name: "col", type: DbColumnType.real);
+    col = const DbColumn(name: "col", type: DbColumnType.real);
     expect(col.typeToString(), "real");
-    col = DbColumn(name: "col", type: DbColumnType.text);
+    col = const DbColumn(name: "col", type: DbColumnType.text);
     expect(col.typeToString(), "text");
-    col = DbColumn(name: "col", type: DbColumnType.boolean);
+    col = const DbColumn(name: "col", type: DbColumnType.boolean);
     expect(col.typeToString(), "boolean");
-    col = DbColumn(name: "col", type: DbColumnType.blob);
+    col = const DbColumn(name: "col", type: DbColumnType.blob);
     expect(col.typeToString(), "blob");
     expect(stringToOnDelete("restrict"), OnDelete.restrict);
     expect(onDeleteToString(OnDelete.restrict), "restrict");
@@ -67,7 +67,7 @@ void main() async {
   });
 
   test("describe", () async {
-    final col = DbColumn(name: "col", type: DbColumnType.varchar);
+    const col = DbColumn(name: "col", type: DbColumnType.varchar);
     final des = col.describe(isPrint: false);
     expect(des, """Column col:
  - Type: DbColumnType.varchar

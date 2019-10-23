@@ -1,12 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlcool/sqlcool.dart';
-import 'base.dart';
-import 'dbmodels/schema.dart';
-import 'dbmodels/car.dart';
-import 'dbmodels/manufacturer.dart';
-import 'dbmodels/conf.dart';
 
-void main() async {
+import 'base.dart';
+import 'dbmodels/car.dart';
+import 'dbmodels/conf.dart';
+import 'dbmodels/manufacturer.dart';
+import 'dbmodels/schema.dart';
+
+Future<void> main() async {
   await setup();
 
   await db.init(

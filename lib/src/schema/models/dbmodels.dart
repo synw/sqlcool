@@ -1,5 +1,7 @@
-import 'table.dart';
+import 'package:sqlcool/src/exceptions.dart';
+
 import '../../database.dart';
+import 'table.dart';
 
 /// The database model class to extend
 class DbModel {
@@ -154,8 +156,8 @@ class DbModel {
     final row = _toStringsMap(data);
     await db
         .update(table: table.name, row: row, where: 'id=$id', verbose: verbose)
-        .catchError(
-            (dynamic e) => throw ("Can not update model into database $e"));
+        .catchError((dynamic e) =>
+            throw WriteQueryException("Can not update model into database $e"));
   }
 
   /// Upsert a row in the database table
@@ -164,7 +166,8 @@ class DbModel {
     final data = this.toDb();
     final row = _toStringsMap(data);
     await db.upsert(table: table.name, row: row, verbose: verbose).catchError(
-        (dynamic e) => throw ("Can not upsert model into database $e"));
+        (dynamic e) =>
+            throw WriteQueryException("Can not upsert model into database $e"));
   }
 
   /// Insert a row in the database table
@@ -174,30 +177,32 @@ class DbModel {
     final row = _toStringsMap(data);
     final id = await db
         .insert(table: table.name, row: row, verbose: verbose)
-        .catchError(
-            (dynamic e) => throw ("Can not insert model into database $e"));
+        .catchError((dynamic e) =>
+            throw WriteQueryException("Can not insert model into database $e"));
     return id;
   }
 
   /// Delete an instance from the database
   Future<void> sqlDelete({String where, bool verbose = false}) async {
     _checkDbIsReady();
+    var _where = where;
     if (where == null) {
       assert(id != null,
           "The instance id must not be null if no where clause is used");
-      where = "id=$id";
+      _where = "id=$id";
     }
     await db
-        .delete(table: table.name, where: where, verbose: verbose)
-        .catchError(
-            (dynamic e) => throw ("Can not delete model from database $e"));
+        .delete(table: table.name, where: _where, verbose: verbose)
+        .catchError((dynamic e) =>
+            throw WriteQueryException("Can not delete model from database $e"));
   }
 
   /// Count rows
   Future<int> sqlCount({String where, bool verbose = false}) async {
     final n = db
         .count(table: table.name, where: where, verbose: verbose)
-        .catchError((dynamic e) => throw ("Can not count from database $e"));
+        .catchError((dynamic e) =>
+            throw ReadQueryException("Can not count from database $e"));
     return n;
   }
 

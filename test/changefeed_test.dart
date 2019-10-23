@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlcool/sqlcool.dart';
 import 'base.dart';
 
-void main() async {
+Future<void> main() async {
   await setup();
 
   final db = Db();

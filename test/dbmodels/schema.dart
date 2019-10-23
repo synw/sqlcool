@@ -1,8 +1,8 @@
 import 'package:sqlcool/sqlcool.dart';
 
-final carTable = DbTable("car")
+final DbTable carTable = DbTable("car")
   ..varchar("name")
   ..real("price")
   ..foreignKey("manufacturer", onDelete: OnDelete.cascade);
 
-final manufacturerTable = DbTable("manufacturer")..varchar("name");
+final DbTable manufacturerTable = DbTable("manufacturer")..varchar("name");

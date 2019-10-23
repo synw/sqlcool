@@ -1,44 +1,52 @@
 import 'package:flutter/foundation.dart';
 import 'package:sqlcool/sqlcool.dart';
 
-/// The type of a database column
-enum DbColumnType {
-  /// A varchar column
-  varchar,
+import '../../exceptions.dart';
 
-  /// An integer column
-  integer,
+/// Convert an on delete constraint to a string
+String onDeleteToString(OnDelete onDelete) {
+  String res;
+  switch (onDelete) {
+    case OnDelete.cascade:
+      res = "cascade";
+      break;
+    case OnDelete.restrict:
+      res = "restrict";
+      break;
+    case OnDelete.setDefault:
+      res = "set_default";
+      break;
+    case OnDelete.setNull:
+      res = "set_null";
+      break;
+  }
+  return res;
+}
 
-  /// A double column
-  real,
-
-  /// A text column
-  text,
-
-  /// A boolean colum
-  boolean,
-
-  /// A blob value
-  blob,
-
-  /// An automatic timestamp
-  timestamp
+/// Convert a string to an on delete constraint
+OnDelete stringToOnDelete(String value) {
+  OnDelete res;
+  switch (value) {
+    case "restrict":
+      res = OnDelete.restrict;
+      break;
+    case "cascade":
+      res = OnDelete.cascade;
+      break;
+    case "set_null":
+      res = OnDelete.setNull;
+      break;
+    case "set_default":
+      res = OnDelete.setDefault;
+      break;
+    default:
+      throw OnDeleteConstraintUnknown("Unknown on delete constraint $value");
+  }
+  return res;
 }
 
 /// A database column representation
 class DbColumn {
-  /// Provide a name and a type
-  const DbColumn(
-      {@required this.name,
-      @required this.type,
-      this.unique = false,
-      this.nullable = false,
-      this.check,
-      this.defaultValue,
-      this.isForeignKey = false,
-      this.reference,
-      this.onDelete});
-
   /// The column name
   final String name;
 
@@ -65,6 +73,18 @@ class DbColumn {
 
   /// The on delete constraint on a foreign key
   final OnDelete onDelete;
+
+  /// Provide a name and a type
+  const DbColumn(
+      {@required this.name,
+      @required this.type,
+      this.unique = false,
+      this.nullable = false,
+      this.check,
+      this.defaultValue,
+      this.isForeignKey = false,
+      this.reference,
+      this.onDelete});
 
   /// print a description of the schema
   String describe({String spacer = "", bool isPrint = true}) {
@@ -119,44 +139,26 @@ class DbColumn {
   }
 }
 
-/// Convert a string to an on delete constraint
-OnDelete stringToOnDelete(String value) {
-  OnDelete res;
-  switch (value) {
-    case "restrict":
-      res = OnDelete.restrict;
-      break;
-    case "cascade":
-      res = OnDelete.cascade;
-      break;
-    case "set_null":
-      res = OnDelete.setNull;
-      break;
-    case "set_default":
-      res = OnDelete.setDefault;
-      break;
-    default:
-      throw ("Unknown on delete constraint $value");
-  }
-  return res;
-}
+/// The type of a database column
+enum DbColumnType {
+  /// A varchar column
+  varchar,
 
-/// Convert an on delete constraint to a string
-String onDeleteToString(OnDelete onDelete) {
-  String res;
-  switch (onDelete) {
-    case OnDelete.cascade:
-      res = "cascade";
-      break;
-    case OnDelete.restrict:
-      res = "restrict";
-      break;
-    case OnDelete.setDefault:
-      res = "set_default";
-      break;
-    case OnDelete.setNull:
-      res = "set_null";
-      break;
-  }
-  return res;
+  /// An integer column
+  integer,
+
+  /// A double column
+  real,
+
+  /// A text column
+  text,
+
+  /// A boolean colum
+  boolean,
+
+  /// A blob value
+  blob,
+
+  /// An automatic timestamp
+  timestamp
 }

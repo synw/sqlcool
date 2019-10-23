@@ -4,7 +4,7 @@ import 'table.dart';
 class DbSchema {
   /// Provide a set of [DbTable]
   DbSchema([this.tables]) {
-    tables ??= Set();
+    tables ??= <DbTable>{};
   }
 
   /// The tables in the database

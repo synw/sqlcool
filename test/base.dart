@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 Directory directory;
@@ -6,7 +7,8 @@ const MethodChannel channel = MethodChannel('com.tekartik.sqflite');
 final List<MethodCall> log = <MethodCall>[];
 bool setupDone = false;
 
-void setup() async {
+Future<void> setup() async {
+  WidgetsFlutterBinding.ensureInitialized();
   if (setupDone) {
     return;
   }
@@ -14,7 +16,7 @@ void setup() async {
 
   String response;
   channel.setMockMethodCallHandler((MethodCall methodCall) async {
-    print("METHOD CALL: $methodCall");
+    // print("METHOD CALL: $methodCall");
     log.add(methodCall);
     switch (methodCall.method) {
       case "getDatabasesPath":
@@ -74,8 +76,8 @@ void setup() async {
           return res;
         } // dbmodels foreign key
         else if (methodCall.arguments["sql"] ==
-            "SELECT car.id AS id,car.name AS name,car.price AS price,manufacturer.name " +
-                "AS manufacturer_name,manufacturer.id AS manufacturer_id FROM car " +
+            "SELECT car.id AS id,car.name AS name,car.price AS price,manufacturer.name "
+                "AS manufacturer_name,manufacturer.id AS manufacturer_id FROM car "
                 "INNER JOIN manufacturer ON car.manufacturer=manufacturer.id") {
           final res = <Map<String, dynamic>>[
             <String, dynamic>{

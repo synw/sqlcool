@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:sqlcool/sqlcool.dart';
 import 'base.dart';
 
-void main() async {
+Future<void> main() async {
   await setup();
 
   final db = Db();
@@ -11,11 +11,11 @@ void main() async {
 
   group("init", () {
     test("Init db", () async {
-      final schema = """CREATE TABLE item
+      const schema = """CREATE TABLE item
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL
     )""";
-      final q = <String>[
+      const q = <String>[
         schema,
         'INSERT INTO item(name) values("Name 1")',
         'INSERT INTO item(name) values("Name 2")',
@@ -60,13 +60,13 @@ void main() async {
     });
 
     test("Upsert", () async {
-      Future<Null> upsert() async {
-        final Null res =
+      Future<dynamic> upsert() async {
+        final res =
             await db.upsert(table: "test", row: {"k": "v"}, verbose: true);
         return res;
       }
 
-      return upsert().then((r) => expect(r, null));
+      return upsert().then((dynamic r) => expect(r, null));
     });
 
     test("Select", () async {
