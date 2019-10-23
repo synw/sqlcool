@@ -1,4 +1,4 @@
-include: package:pedantic/analysis_options.yaml
+include: package:extra_pedantic/analysis_options.yaml
 
 analyzer:
   strong-mode:
@@ -56,4 +56,8 @@ linter:
     - omit_local_variable_types
     - package_api_docs
     - prefer_null_aware_operators
+    - prefer_const_constructors_in_immutables
+    - prefer_const_constructors
+    - sort_child_properties_last
+    - only_throw_errors
     - public_member_api_docs
