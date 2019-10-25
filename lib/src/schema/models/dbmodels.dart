@@ -161,12 +161,19 @@ class DbModel {
   }
 
   /// Upsert a row in the database table
-  Future<void> sqlUpsert({bool verbose = false}) async {
+  Future<void> sqlUpsert(
+      {bool verbose = false,
+      List<String> preserveColumns = const <String>[]}) async {
     _checkDbIsReady();
     final data = this.toDb();
     final row = _toStringsMap(data);
-    await db.upsert(table: table.name, row: row, verbose: verbose).catchError(
-        (dynamic e) =>
+    await db
+        .upsert(
+            table: table.name,
+            row: row,
+            preserveColumns: preserveColumns,
+            verbose: verbose)
+        .catchError((dynamic e) =>
             throw WriteQueryException("Can not upsert model into database $e"));
   }
 
