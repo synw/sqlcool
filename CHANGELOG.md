@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.1.0
+
+- Use extra_pedantic for stronger analysis_options
+- Add more custom exceptions
+- Add a `DbModel.sqlInsertIfNotExists` method
+- Add a `preserveColumn` parameter to `DbModel.sqlUpsert`
+
 ## 4.0.0
 
 - Add informative getters to the schema

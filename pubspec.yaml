@@ -1,6 +1,6 @@
 name: sqlcool
 author: synw <ansterj@gmail.com>
-description: Easy api for Sqlite with reactivity bingings. Stream of changes, select bloc
+description: Easy and reactive Sqlite. Stream of changes, select bloc, custom database models
 homepage: https://github.com/synw/sqlcool
 
 # The following defines the version and build number for your application.
@@ -9,7 +9,7 @@ homepage: https://github.com/synw/sqlcool
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 4.0.0
+version: 4.1.0
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
