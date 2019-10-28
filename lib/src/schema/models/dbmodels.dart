@@ -189,6 +189,18 @@ class DbModel {
     return id;
   }
 
+  /// Insert a row in the database table if it does not exist already
+  Future<int> sqlInsertIfNotExists({bool verbose = false}) async {
+    _checkDbIsReady();
+    final data = this.toDb();
+    final row = _toStringsMap(data);
+    final id = await db
+        .insertIfNotExists(table: table.name, row: row, verbose: verbose)
+        .catchError((dynamic e) =>
+            throw WriteQueryException("Can not insert model into database $e"));
+    return id;
+  }
+
   /// Delete an instance from the database
   Future<void> sqlDelete({String where, bool verbose = false}) async {
     _checkDbIsReady();
