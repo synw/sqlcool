@@ -64,156 +64,6 @@ class Db {
   /// This database schema
   DbSchema get schema => _schema;
 
-  /// Insert rows in a table
-  Future<List<dynamic>> batchInsert(
-      {@required String table,
-      @required List<Map<String, String>> rows,
-      ConflictAlgorithm confligAlgoritm = ConflictAlgorithm.rollback,
-      bool verbose = false}) async {
-    var res = <dynamic>[];
-    await _mutex.synchronized(() async {
-      try {
-        if (!_isReady) {
-          throw DatabaseNotReady();
-        }
-        final timer = Stopwatch()..start();
-
-        await _db.transaction((txn) async {
-          final batch = txn.batch();
-          rows.forEach((row) {
-            batch.insert(table, row, conflictAlgorithm: confligAlgoritm);
-            _changeFeedController.sink.add(DatabaseChangeEvent(
-                type: DatabaseChange.insert,
-                value: 1,
-                query: "",
-                table: table,
-                data: row,
-                executionTime: timer.elapsedMicroseconds));
-          });
-          res = await batch.commit();
-        });
-        timer.stop();
-        if (verbose) {
-          final msg = "Inserted ${rows.length} records "
-              "in ${timer.elapsedMilliseconds} ms";
-          print(msg);
-        }
-      } catch (e) {
-        rethrow;
-      }
-    });
-    return res;
-  }
-
-  /// count rows in a table
-  Future<int> count(
-      {@required String table,
-      String where,
-      String columns = "id",
-      bool verbose = false}) async {
-    /// [table] is the table to use and [where] the sql where clause
-    ///
-    /// Returns a future with the count of the rows
-    try {
-      if (!_isReady) {
-        throw DatabaseNotReady();
-      }
-      final timer = Stopwatch()..start();
-      var w = "";
-      if (where != null) {
-        w = " WHERE $where";
-      }
-      final q = 'SELECT COUNT($columns) FROM $table$w';
-      int c;
-      await _db.transaction((txn) async {
-        c = Sqflite.firstIntValue(await txn.rawQuery(q));
-      });
-      timer.stop();
-      if (verbose) {
-        final msg = "$q in ${timer.elapsedMilliseconds} ms";
-        print(msg);
-      }
-      return c;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  /// Delete some datapoints from the database
-  Future<int> delete(
-      {@required String table,
-      @required String where,
-      bool verbose = false}) async {
-    /// [table] is the table to use and [where] the sql where clause
-    ///
-    /// Returns a future with a count of the deleted rows
-    var deleted = 0;
-    await _mutex.synchronized(() async {
-      if (!_isReady) {
-        throw DatabaseNotReady();
-      }
-      try {
-        final timer = Stopwatch()..start();
-        final q = 'DELETE FROM $table WHERE $where';
-        await _db.transaction((txn) async {
-          deleted = await txn.rawDelete(q);
-        });
-        timer.stop();
-        _changeFeedController.sink.add(DatabaseChangeEvent(
-            type: DatabaseChange.delete,
-            value: deleted,
-            query: q,
-            table: table,
-            executionTime: timer.elapsedMicroseconds));
-        if (verbose) {
-          final msg = "$q in ${timer.elapsedMilliseconds} ms";
-          print(msg);
-        }
-        return deleted;
-      } catch (e) {
-        rethrow;
-      }
-    });
-    return deleted;
-  }
-
-  /// Dispose the changefeed stream when finished using
-  void dispose() {
-    _changeFeedController.close();
-  }
-
-  /// Check if a value exists in the table
-  Future<bool> exists(
-      {@required String table,
-      @required String where,
-      bool verbose = false}) async {
-    /// [table] is the table to use and [where] the sql where clause
-    ///
-    /// Returns a future with true if the data exists
-    try {
-      if (!_isReady) {
-        throw DatabaseNotReady();
-      }
-      final timer = Stopwatch()..start();
-      final q = 'SELECT COUNT(*) FROM $table WHERE $where';
-      int count;
-      await _db.transaction((txn) async {
-        count = Sqflite.firstIntValue(await txn.rawQuery(q));
-      });
-      timer.stop();
-      if (verbose) {
-        final msg = "$q in ${timer.elapsedMilliseconds} ms";
-        print(msg);
-      }
-      if (count > 0) {
-        return true;
-      }
-    } catch (e) {
-      rethrow;
-    }
-    return false;
-  }
-
   /// Initialize the database
   ///
   /// The database can be initialized either from an asset file
@@ -313,15 +163,37 @@ class Db {
     _isReady = true;
   }
 
+  /// Insert a row in a table if it is not present already
+  ///
+  /// [table] the table to insert into. [row] is a map of the data
+  /// to insert
+  ///
+  /// Returns a future with the last inserted id
+  Future<int> insertIfNotExists(
+      {@required String table,
+      @required Map<String, String> row,
+      bool verbose = false}) async {
+    return _insert(table: table, row: row, ifNotExists: true, verbose: verbose);
+  }
+
   /// Insert a row in a table
+  ///
+  /// [table] the table to insert into. [row] is a map of the data
+  /// to insert
+  ///
+  /// Returns a future with the last inserted id
   Future<int> insert(
       {@required String table,
       @required Map<String, String> row,
       bool verbose = false}) async {
-    /// [table] the table to insert into. [row] is a map of the data
-    /// to insert
-    ///
-    /// Returns a future with the last inserted id
+    return _insert(table: table, row: row, verbose: verbose);
+  }
+
+  Future<int> _insert(
+      {@required String table,
+      @required Map<String, String> row,
+      bool ifNotExists = false,
+      bool verbose = false}) async {
     int id;
     await _mutex.synchronized(() async {
       try {
@@ -346,7 +218,24 @@ class Db {
           }
           i++;
         }
-        final q = "INSERT INTO $table ($fields) VALUES($values)";
+        var q = "INSERT INTO $table ($fields) VALUES($values)";
+        if (ifNotExists) {
+          var where = "";
+          var i = 0;
+          row.forEach((k, v) {
+            if (i > 0) {
+              where += " AND ";
+            }
+            var val = v;
+            final isNum = num.tryParse(v) != null;
+            if (!isNum) {
+              val = '"$v"';
+            }
+            where += '$k=$val';
+            ++i;
+          });
+          q += " IF NOT EXISTS (SELECT id from $table WHERE $where) LIMIT 1";
+        }
         await _db.transaction((txn) async {
           id = await txn.rawInsert(q, datapoint);
         }).catchError((dynamic e) {
@@ -674,6 +563,156 @@ class Db {
         rethrow;
       }
     });
+  }
+
+  /// Insert rows in a table
+  Future<List<dynamic>> batchInsert(
+      {@required String table,
+      @required List<Map<String, String>> rows,
+      ConflictAlgorithm confligAlgoritm = ConflictAlgorithm.rollback,
+      bool verbose = false}) async {
+    var res = <dynamic>[];
+    await _mutex.synchronized(() async {
+      try {
+        if (!_isReady) {
+          throw DatabaseNotReady();
+        }
+        final timer = Stopwatch()..start();
+
+        await _db.transaction((txn) async {
+          final batch = txn.batch();
+          rows.forEach((row) {
+            batch.insert(table, row, conflictAlgorithm: confligAlgoritm);
+            _changeFeedController.sink.add(DatabaseChangeEvent(
+                type: DatabaseChange.insert,
+                value: 1,
+                query: "",
+                table: table,
+                data: row,
+                executionTime: timer.elapsedMicroseconds));
+          });
+          res = await batch.commit();
+        });
+        timer.stop();
+        if (verbose) {
+          final msg = "Inserted ${rows.length} records "
+              "in ${timer.elapsedMilliseconds} ms";
+          print(msg);
+        }
+      } catch (e) {
+        rethrow;
+      }
+    });
+    return res;
+  }
+
+  /// count rows in a table
+  Future<int> count(
+      {@required String table,
+      String where,
+      String columns = "id",
+      bool verbose = false}) async {
+    /// [table] is the table to use and [where] the sql where clause
+    ///
+    /// Returns a future with the count of the rows
+    try {
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
+      final timer = Stopwatch()..start();
+      var w = "";
+      if (where != null) {
+        w = " WHERE $where";
+      }
+      final q = 'SELECT COUNT($columns) FROM $table$w';
+      int c;
+      await _db.transaction((txn) async {
+        c = Sqflite.firstIntValue(await txn.rawQuery(q));
+      });
+      timer.stop();
+      if (verbose) {
+        final msg = "$q in ${timer.elapsedMilliseconds} ms";
+        print(msg);
+      }
+      return c;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  /// Delete some datapoints from the database
+  Future<int> delete(
+      {@required String table,
+      @required String where,
+      bool verbose = false}) async {
+    /// [table] is the table to use and [where] the sql where clause
+    ///
+    /// Returns a future with a count of the deleted rows
+    var deleted = 0;
+    await _mutex.synchronized(() async {
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
+      try {
+        final timer = Stopwatch()..start();
+        final q = 'DELETE FROM $table WHERE $where';
+        await _db.transaction((txn) async {
+          deleted = await txn.rawDelete(q);
+        });
+        timer.stop();
+        _changeFeedController.sink.add(DatabaseChangeEvent(
+            type: DatabaseChange.delete,
+            value: deleted,
+            query: q,
+            table: table,
+            executionTime: timer.elapsedMicroseconds));
+        if (verbose) {
+          final msg = "$q in ${timer.elapsedMilliseconds} ms";
+          print(msg);
+        }
+        return deleted;
+      } catch (e) {
+        rethrow;
+      }
+    });
+    return deleted;
+  }
+
+  /// Dispose the changefeed stream when finished using
+  void dispose() {
+    _changeFeedController.close();
+  }
+
+  /// Check if a value exists in the table
+  Future<bool> exists(
+      {@required String table,
+      @required String where,
+      bool verbose = false}) async {
+    /// [table] is the table to use and [where] the sql where clause
+    ///
+    /// Returns a future with true if the data exists
+    try {
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
+      final timer = Stopwatch()..start();
+      final q = 'SELECT COUNT(*) FROM $table WHERE $where';
+      int count;
+      await _db.transaction((txn) async {
+        count = Sqflite.firstIntValue(await txn.rawQuery(q));
+      });
+      timer.stop();
+      if (verbose) {
+        final msg = "$q in ${timer.elapsedMilliseconds} ms";
+        print(msg);
+      }
+      if (count > 0) {
+        return true;
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return false;
   }
 
   Future<void> _initQueries(List<DbTable> schema, List<String> queries,
