@@ -76,3 +76,4 @@ example/ios/Flutter/flutter_export_environment.sh
 
 # Coverage report
 coverage/output/
+coverage/lcov.info
