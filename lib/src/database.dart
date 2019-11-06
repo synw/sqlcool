@@ -451,11 +451,10 @@ class Db {
         final buf = StringBuffer();
         for (final el in row.keys) {
           buf..write("$pairs")..write("$el")..write("= ?");
-          //pairs = "$pairs$el= ?";
           pairs = buf.toString();
           datapoint.add(row[el]);
           if (i < n) {
-            pairs = "$pairs, ";
+            pairs = ", ";
           }
           i++;
         }
