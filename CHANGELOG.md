@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.1
+
+Fix update query constructor bug #16
+
 ## 4.1.0
 
 - Use extra_pedantic for stronger analysis_options
