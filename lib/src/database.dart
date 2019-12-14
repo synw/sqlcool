@@ -593,7 +593,7 @@ class Db {
   Future<List<dynamic>> batchInsert(
       {@required String table,
       @required List<Map<String, String>> rows,
-      ConflictAlgorithm confligAlgoritm = ConflictAlgorithm.rollback,
+      ConflictAlgorithm conflictAlgorithm = ConflictAlgorithm.rollback,
       bool verbose = false}) async {
     var res = <dynamic>[];
     await _mutex.synchronized(() async {
@@ -606,7 +606,7 @@ class Db {
         await _db.transaction((txn) async {
           final batch = txn.batch();
           rows.forEach((row) {
-            batch.insert(table, row, conflictAlgorithm: confligAlgoritm);
+            batch.insert(table, row, conflictAlgorithm: conflictAlgorithm);
             _changeFeedController.sink.add(DatabaseChangeEvent(
                 type: DatabaseChange.insert,
                 value: 1,
