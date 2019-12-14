@@ -1,5 +1,11 @@
 # Changelog
 
+# 4.2.0
+
+- Update dependencies
+- Add `insertManageConflict` method
+- Fix typo in `confligAlgoritm` parameter for `batchInsert`
+
 ## 4.1.1
 
 Fix update query constructor bug #16
