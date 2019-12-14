@@ -189,6 +189,31 @@ class Db {
     return _insert(table: table, row: row, verbose: verbose);
   }
 
+  /// Insert a row in a table with conflict algorithm
+  ///
+  /// [table] the table to insert into. [row] is a map of the data
+  /// to insert
+  ///
+  /// Returns a future with the last inserted id
+  Future<int> insertManageConflict(
+      {@required String table,
+      @required ConflictAlgorithm conflictAlgorithm,
+      @required Map<String, dynamic> row,
+      bool verbose = false}) async {
+    int id;
+    try {
+      if (!_isReady) {
+        throw DatabaseNotReady();
+      }
+      await _db.transaction((txn) async {
+        id = await txn.insert(table, row, conflictAlgorithm: conflictAlgorithm);
+      });
+    } catch (e) {
+      throw WriteQueryException("Can not insert in table $table: $e");
+    }
+    return id;
+  }
+
   Future<int> _insert(
       {@required String table,
       @required Map<String, String> row,
