@@ -255,7 +255,7 @@ class DbTable {
 
   /// Add a float column
   void boolean(String name, {@required bool defaultValue}) {
-    var q = "$name REAL";
+    var q = "$name BOOLEAN";
     q += " DEFAULT $defaultValue";
     _columns.add(q);
     _columnsData.add(DbColumn(
