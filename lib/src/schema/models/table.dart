@@ -80,7 +80,7 @@ class DbTable {
   /// Add a unique constraint for combined values from two columns
   void uniqueTogether(String column1, String column2) {
     final q = 'UNIQUE("$column1", "$column2")';
-    _queries.add(q);
+    _columns.add(q);
   }
 
   /// Add a foreign key to a column
