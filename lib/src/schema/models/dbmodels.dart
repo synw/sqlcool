@@ -49,18 +49,19 @@ class DbModel {
     final fkColStringsSelect = <String>[];
     final fkPropertiesCols = <String, Map<String, String>>{};
     for (final fkCol in table.foreignKeys) {
-      joinsTables.add(fkCol.name);
-      joinsOn.add("${table.name}.${fkCol.name}=${fkCol.name}.id");
+      final refTable = fkCol?.reference ?? fkCol.name;
+      joinsTables.add(refTable);
+      joinsOn.add("${table.name}.${fkCol.name}=${refTable}.id");
       // grab the foreign key table schema
-      final fkTable = db.schema.table(fkCol.name);
+      final fkTable = db.schema.table(refTable);
       // get columns for foreign key
       final fkColsNames =
           fkTable.columns.map<String>((col) => col.name).toList()..add("id");
       //for (final fc in fkTable.columns) {
       for (final fc in fkColsNames) {
         // encode for select
-        final endName = "${fkCol.name}_$fc";
-        final encodedFkName = "${fkCol.name}.$fc AS $endName";
+        final endName = "${refTable}_$fc";
+        final encodedFkName = "$refTable.$fc AS $endName";
         fkColStringsSelect.add(encodedFkName);
         fkPropertiesCols[endName] = <String, String>{
           "col_name": fc,
@@ -90,7 +91,8 @@ class DbModel {
       final fkData = <String, Map<String, dynamic>>{};
       // set fk data keys
       for (final c in table.foreignKeys) {
-        fkData[c.name] = <String, dynamic>{};
+        final refTable = c?.reference ?? c.name;
+        fkData[refTable] = <String, dynamic>{};
       }
       // retrieve data
       row.forEach((String k, dynamic v) {
