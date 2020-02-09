@@ -67,6 +67,7 @@ class DbModel {
           "col_name": fc,
           "fk_name": fkCol.name
         };
+        //print("Encoded fk ${fkPropertiesCols[endName]}");
       }
     }
     colStringsSelect.addAll(fkColStringsSelect);
@@ -83,28 +84,23 @@ class DbModel {
         verbose: verbose);
     // encode foreign keys results into dict for proper
     // decoding with client .fromDb methods
-    //print("Q RES $res");
-    //print("FK COL PROPS $fkPropertiesCols / ");
     final fres = <Map<String, dynamic>>[];
     for (final row in res) {
       final newRow = <String, dynamic>{};
       final fkData = <String, Map<String, dynamic>>{};
       // set fk data keys
+      String refTable;
       for (final c in table.foreignKeys) {
-        final refTable = c?.reference ?? c.name;
+        refTable = c?.reference ?? c.name;
         fkData[refTable] = <String, dynamic>{};
       }
       // retrieve data
       row.forEach((String k, dynamic v) {
-        //print("FK COL STR $k");
         if (fkPropertiesCols.keys.contains(k)) {
-          //print("VALUE $v");
-          fkData[fkPropertiesCols[k]["fk_name"]]
-              [fkPropertiesCols[k]["col_name"]] = v;
+          fkData[refTable][fkPropertiesCols[k]["col_name"]] = v;
           // decode foreign key name from select results
           newRow[fkPropertiesCols[k]["fk_name"]] =
               fkData[fkPropertiesCols[k]["fk_name"]];
-          //print("ROW $newRow");
         } else {
           newRow[k] = v;
         }
