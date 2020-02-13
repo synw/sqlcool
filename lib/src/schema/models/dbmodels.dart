@@ -99,8 +99,7 @@ class DbModel {
         if (fkPropertiesCols.keys.contains(k)) {
           fkData[refTable][fkPropertiesCols[k]["col_name"]] = v;
           // decode foreign key name from select results
-          newRow[fkPropertiesCols[k]["fk_name"]] =
-              fkData[fkPropertiesCols[k]["fk_name"]];
+          newRow[fkPropertiesCols[k]["fk_name"]] = fkData[refTable];
         } else {
           newRow[k] = v;
         }
