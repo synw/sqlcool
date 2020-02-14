@@ -51,7 +51,7 @@ class DbModel {
     for (final fkCol in table.foreignKeys) {
       final ref = fkCol?.reference ?? fkCol.name;
       joinsTables.add(ref);
-      joinsOn.add("${table.name}.${fkCol.name}=${ref}.id");
+      joinsOn.add("${table.name}.${fkCol.name}=$ref.id");
       // grab the foreign key table schema
       final fkTable = db.schema.table(ref);
       // get columns for foreign key
