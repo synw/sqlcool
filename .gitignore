@@ -30,6 +30,7 @@ docs/_build/
 .pub-cache/
 .pub/
 build/
+example/.flutter-plugins-dependencies
 
 # Android related
 **/android/**/gradle-wrapper.jar
