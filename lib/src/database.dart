@@ -170,7 +170,7 @@ class Db {
   ///
   /// Returns a future with the last inserted id
   @Deprecated(
-      "The insertIfNotExists function will be deprecated in version 4.4.0")
+      "The insertIfNotExists function will be removed after version 4.4.0")
   Future<int> insertIfNotExists(
       {@required String table,
       @required Map<String, String> row,
