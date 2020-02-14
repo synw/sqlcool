@@ -49,19 +49,19 @@ class DbModel {
     final fkColStringsSelect = <String>[];
     final fkPropertiesCols = <String, Map<String, String>>{};
     for (final fkCol in table.foreignKeys) {
-      final refTable = fkCol?.reference ?? fkCol.name;
-      joinsTables.add(refTable);
-      joinsOn.add("${table.name}.${fkCol.name}=${refTable}.id");
+      final ref = fkCol?.reference ?? fkCol.name;
+      joinsTables.add(ref);
+      joinsOn.add("${table.name}.${fkCol.name}=${ref}.id");
       // grab the foreign key table schema
-      final fkTable = db.schema.table(refTable);
+      final fkTable = db.schema.table(ref);
       // get columns for foreign key
       final fkColsNames =
           fkTable.columns.map<String>((col) => col.name).toList()..add("id");
       //for (final fc in fkTable.columns) {
       for (final fc in fkColsNames) {
         // encode for select
-        final endName = "${refTable}_$fc";
-        final encodedFkName = "$refTable.$fc AS $endName";
+        final endName = "${ref}_$fc";
+        final encodedFkName = "$ref.$fc AS $endName";
         fkColStringsSelect.add(encodedFkName);
         fkPropertiesCols[endName] = <String, String>{
           "col_name": fc,
@@ -89,17 +89,17 @@ class DbModel {
       final newRow = <String, dynamic>{};
       final fkData = <String, Map<String, dynamic>>{};
       // set fk data keys
-      String refTable;
+      String ref;
       for (final c in table.foreignKeys) {
-        refTable = c?.reference ?? c.name;
-        fkData[refTable] = <String, dynamic>{};
+        ref = c?.reference ?? c.name;
+        fkData[ref] = <String, dynamic>{};
       }
       // retrieve data
       row.forEach((String k, dynamic v) {
         if (fkPropertiesCols.keys.contains(k)) {
-          fkData[refTable][fkPropertiesCols[k]["col_name"]] = v;
+          fkData[ref][fkPropertiesCols[k]["col_name"]] = v;
           // decode foreign key name from select results
-          newRow[fkPropertiesCols[k]["fk_name"]] = fkData[refTable];
+          newRow[fkPropertiesCols[k]["fk_name"]] = fkData[ref];
         } else {
           newRow[k] = v;
         }
