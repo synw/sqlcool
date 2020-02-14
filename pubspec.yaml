@@ -1,5 +1,4 @@
 name: sqlcool
-author: synw <ansterj@gmail.com>
 description: Easy and reactive Sqlite. Stream of changes, select bloc, custom database models
 homepage: https://github.com/synw/sqlcool
 
