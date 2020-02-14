@@ -187,6 +187,8 @@ class DbModel {
   }
 
   /// Insert a row in the database table if it does not exist already
+  @Deprecated(
+      "The insertIfNotExists function will be removed after version 4.4.0")
   Future<int> sqlInsertIfNotExists({bool verbose = false}) async {
     _checkDbIsReady();
     final data = this.toDb();
