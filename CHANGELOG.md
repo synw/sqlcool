@@ -1,5 +1,15 @@
 # Changelog
 
+# 4.3.0
+
+- Update dependencies
+- Fix `boolean` column in schema
+- Fix `unique` in schema
+- Fix `uniqueTogether` in schema
+- Fix edge case in `DbModel.sqlJoin`
+- Deprecate `insertIfNotExists`
+- Deprecate `DbModels.insertIfNotExists`
+
 # 4.2.0
 
 - Update dependencies
