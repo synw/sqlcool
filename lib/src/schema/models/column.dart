@@ -137,6 +137,9 @@ class DbColumn {
     }
     return res;
   }
+
+  @override
+  String toString() => "$name $type";
 }
 
 /// The type of a database column
