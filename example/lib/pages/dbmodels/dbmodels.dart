@@ -10,7 +10,7 @@ class _DbModelPageState extends State<DbModelPage> {
     await populateDb();
     // perform a join query on the database for initial data
     final c = await Car.selectRelated();
-    print("Found ${c.length} cars");
+    print("Found ${c.length} cars: $c");
     return c;
   }
 
