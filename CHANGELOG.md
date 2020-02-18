@@ -1,5 +1,10 @@
 # Changelog
 
+# 4.3.1
+
+- Refactor and fix `DbModel.sqlJoin`
+- Add a toString method to `DbColumn`
+
 # 4.3.0
 
 - Update dependencies
