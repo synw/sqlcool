@@ -33,46 +33,59 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
 
    ```dart
    String dbpath = "db.sqlite"; // relative to the documents directory
-   await db.init(path: dbpath, schema: schema).catchError((e) {
-     throw("Error initializing the database: ${e.message}");
-   });
+   try {
+     await db.init(path: dbpath, schema: schema);
+   } catch(e) {
+     rethrow;
+   }
    ```
 
 ### Insert
 
    ```dart
-   Map<String, String> row = {name: "My item",};
-   await db.insert(table: "category", row: row).catchError((e) {
-     throw("Error inserting data: ${e.message}");
-   });
+   final Map<String, String> row = {name: "My item"};
+   try {
+     int id = await db.insert(table: "category", row: row)
+   } catch(e) {
+     rethrow;
+   }
    ```
 
 ### Select
 
    ```dart
-   List<Map<String, dynamic>> rows = await db.select(
-      table: "product", limit: 20, columns: "id,name",
-      where: "name LIKE '%something%'",
-      orderBy: "name ASC").catchError((e) {
-       throw("Error selecting data: ${e.message}");
-   });
+   try {
+     List<Map<String, dynamic>> rows = await db.select(
+       table: "product",
+       limit: 20,
+       columns: "id,name",
+       where: "name LIKE '%something%'",
+       orderBy: "name ASC",
+     );
+   } catch (e) {
+     rethrow;
+   }
    ```
 
 ### Update
 
    ```dart
-   int updated = await db.update(table: "category", 
-      row: row, where: "id=1").catchError((e) {
-         throw("Error updating data: ${e.message}");
-   });
+   try {
+     int numRowsUpdated = await db.update(table: "category", 
+      row: row, where: "id=1");
+   } catch(e) {
+     rethrow;
+   }
    ```
 
 ### Delete
 
    ```dart
-   db.delete(table: "category", where: "id=3").catchError((e) {
-      throw("Error deleting data: ${e.message}");
-   });
+   try {
+     await db.delete(table: "category", where: "id=3");
+   } catch(e) {
+     rethrow;
+   }
    ```
 
 ## Reactivity
