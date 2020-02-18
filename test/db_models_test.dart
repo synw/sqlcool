@@ -54,7 +54,9 @@ Future<void> main() async {
     manufacturer.id = await manufacturer.sqlInsert();
     final car = Car(name: "My car", price: 10000.0, manufacturer: manufacturer);
     car.id = await car.sqlInsert();
+    print("Car $car / ${car.manufacturer}");
     final cars = await Car.selectRelated();
+    print("Query cars: $cars");
     assert(cars.length == 1);
     assert(cars[0].manufacturer.name == "My manufacturer");
   });

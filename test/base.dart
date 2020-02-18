@@ -16,7 +16,7 @@ Future<void> setup() async {
 
   String response;
   channel.setMockMethodCallHandler((MethodCall methodCall) async {
-    // print("METHOD CALL: $methodCall");
+    //print("METHOD CALL: $methodCall");
     log.add(methodCall);
     switch (methodCall.method) {
       case "getDatabasesPath":
@@ -76,9 +76,9 @@ Future<void> setup() async {
           return res;
         } // dbmodels foreign key
         else if (methodCall.arguments["sql"] ==
-            "SELECT car.id AS id,car.name AS name,car.price AS price,manufacturer.name "
-                "AS manufacturer_name,manufacturer.id AS manufacturer_id FROM car "
-                "INNER JOIN manufacturer ON car.manufacturer=manufacturer.id") {
+            "SELECT car.name AS name,car.price AS price,car.id AS id,"
+                "manufacturer.name AS manufacturer_name,manufacturer.id AS manufacturer_id "
+                "FROM car INNER JOIN manufacturer ON car.manufacturer=manufacturer.id") {
           final res = <Map<String, dynamic>>[
             <String, dynamic>{
               "id": 1,
