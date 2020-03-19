@@ -66,7 +66,7 @@ Future<void> main() async {
     expect(db.schema.table("table").hasColumn("name"), true);
   });
 
-  test("describe", () async {
+  test("column describe", () async {
     const col = DbColumn(name: "col", type: DbColumnType.varchar);
     final des = col.describe(isPrint: false);
     expect(des, """Column col:
@@ -78,4 +78,5 @@ Future<void> main() async {
  - Reference: null
  - On delete: null""");
   });
+  db.schema.describe();
 }
