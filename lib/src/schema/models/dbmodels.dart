@@ -1,9 +1,9 @@
-import 'package:sqlcool/src/exceptions.dart';
 import 'package:flutter/foundation.dart';
+import 'package:sqlcool/src/exceptions.dart';
 
 import '../../database.dart';
-import 'table.dart';
 import 'column.dart';
+import 'table.dart';
 
 /// The database model class to extend
 class DbModel {
@@ -167,6 +167,7 @@ class DbModel {
   /// Upsert a row in the database table
   Future<void> sqlUpsert(
       {bool verbose = false,
+      String indexColumn,
       List<String> preserveColumns = const <String>[]}) async {
     _checkDbIsReady();
     final data = this.toDb();
@@ -175,6 +176,7 @@ class DbModel {
         .upsert(
             table: table.name,
             row: row,
+            indexColumn: indexColumn,
             preserveColumns: preserveColumns,
             verbose: verbose)
         .catchError((dynamic e) =>
@@ -240,7 +242,7 @@ class DbModel {
   void _checkDbIsReady() {
     assert(table != null);
     assert(db != null);
-    assert(db.isReady, "Please intialize the database by running db.init()");
+    assert(db.isReady, "Please initialize the database by running db.init()");
   }
 }
 
