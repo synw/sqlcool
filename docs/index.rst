@@ -17,9 +17,10 @@ close to sql.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Select bloc
+   :caption: Reactivity
 
    bloc.rst
+   changefeed.rst
 
 .. toctree::
    :maxdepth: 2
@@ -29,13 +30,6 @@ close to sql.
    dbmodels/mutate.rst
    dbmodels/select.rst
    dbmodels/foreign_keys.rst
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Reactivity
-
-   changefeed.rst
-   sync_map.rst
 
 Indices and tables
 ==================
