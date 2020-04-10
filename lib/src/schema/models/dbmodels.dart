@@ -43,19 +43,22 @@ class DbModel {
     final _joinOn = <String>[];
     final _select = <String>[];
     final _encodedFks = <_EncodedFk>[];
-    table.columns
-      ..add(const DbColumn(name: "id", type: DbColumnType.integer))
-      ..forEach((c) {
-        if (!c.isForeignKey) {
-          _select.add("${table.name}.${c.name} AS ${c.name}");
-        }
-      });
+    if (!table.hasColumn("id")) {
+      table.columns.add(const DbColumn(name: "id", type: DbColumnType.integer));
+    }
+    table.columns.forEach((c) {
+      if (!c.isForeignKey) {
+        _select.add("${table.name}.${c.name} AS ${c.name}");
+      }
+    });
     for (final fkCol in table.foreignKeys) {
       final fkTable = db.schema.table(fkCol.reference);
       _joinTables.add(fkTable.name);
       //print("FK COLS $fkTable: ${fkTable.columns}");
-      final c = fkTable.columns
-        ..add(const DbColumn(name: "id", type: DbColumnType.integer));
+      final c = fkTable.columns;
+      if (!fkTable.hasColumn("id")) {
+        c.add(const DbColumn(name: "id", type: DbColumnType.integer));
+      }
       //print("NEW FK COLS ${fkTable.columns}");
       _joinOn.add("${table.name}.${fkCol.name}=${fkTable.name}.id");
       //print("Joins add ${table.name}.${fkCol.name}=${fkTable.name}.id");
