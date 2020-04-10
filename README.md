@@ -87,8 +87,8 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
      rethrow;
    }
    ```
-
-### Join queries
+   
+### Join queries
 
    ```dart
    try {
@@ -101,8 +101,8 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
      rethrow;
    }
    ```
-
-### Join on multiple tables
+   
+### Join on multiple tables
 
    ```dart
    try {
