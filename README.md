@@ -88,6 +88,36 @@ Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api
    }
    ```
 
+### Join queries
+
+   ```dart
+   try {
+     final data = await db.join(
+      table: "product",
+      columns: "product.name, price, category.name as category_name",
+      joinTable: "category",
+      joinOn: "product.category = category.id");
+   } catch(e) {
+     rethrow;
+   }
+   ```
+
+### Join on multiple tables
+
+   ```dart
+   try {
+     final data = db.mJoin(table: "product", joinsTables: <String>[
+      "category",
+      "manufacturer"
+    ], joinsOn: <String>[
+      "product.category = category.id",
+      "product.manufacturer=manufacturer.id"
+    ]);
+   } catch(e) {
+     rethrow;
+   }
+   ```
+
 ## Reactivity
 
 ### Changefeed
