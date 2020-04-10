@@ -46,7 +46,20 @@ OnDelete stringToOnDelete(String value) {
 }
 
 /// A database column representation
+@immutable
 class DbColumn {
+  /// Provide a name and a type
+  const DbColumn(
+      {@required this.name,
+      @required this.type,
+      this.unique = false,
+      this.nullable = false,
+      this.check,
+      this.defaultValue,
+      this.isForeignKey = false,
+      this.reference,
+      this.onDelete});
+
   /// The column name
   final String name;
 
@@ -73,18 +86,6 @@ class DbColumn {
 
   /// The on delete constraint on a foreign key
   final OnDelete onDelete;
-
-  /// Provide a name and a type
-  const DbColumn(
-      {@required this.name,
-      @required this.type,
-      this.unique = false,
-      this.nullable = false,
-      this.check,
-      this.defaultValue,
-      this.isForeignKey = false,
-      this.reference,
-      this.onDelete});
 
   /// print a description of the schema
   String describe({String spacer = "", bool isPrint = true}) {
