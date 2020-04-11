@@ -1,3 +1,4 @@
 import 'package:sqlcool/sqlcool.dart';
 
-Db db = Db();
+final SqlDb db = SqlDb();
+final Db db2 = Db();

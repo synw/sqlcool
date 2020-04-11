@@ -1,17 +1,19 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:sqlcool/sqlcool.dart';
-import '../dialogs.dart';
+
 import '../conf.dart';
+import '../dialogs.dart';
 
 class _PageSelectBlocState extends State<PageSelectBloc> {
-  SelectBloc bloc;
+  SqlSelectBloc bloc;
   StreamSubscription _changefeed;
 
   @override
   void initState() {
     // declare the query
-    this.bloc = SelectBloc(
+    this.bloc = SqlSelectBloc(
         database: db, table: "product", orderBy: 'name ASC', reactive: true);
     // listen for changes in the database
     _changefeed = db.changefeed.listen((change) {
@@ -36,25 +38,24 @@ class _PageSelectBlocState extends State<PageSelectBloc> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Select bloc")),
-      body: StreamBuilder<List<Map>>(
-          stream: bloc.items,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
+      appBar: AppBar(title: const Text("Select bloc")),
+      body: StreamBuilder<List<DbRow>>(
+          stream: bloc.rows,
+          builder: (BuildContext context, AsyncSnapshot<List<DbRow>> snapshot) {
             if (snapshot.hasData) {
               // the select query has not found anything
-              if (snapshot.data.length == 0) {
-                return Center(
-                  child:
-                      const Text("No data. Use the + button to insert an item"),
+              if (snapshot.data.isEmpty) {
+                return const Center(
+                  child: Text("No data. Use the + button to insert an item"),
                 );
               }
               // the select query has results
               return ListView.builder(
-                  itemCount: int.parse("${snapshot.data.length}"),
+                  itemCount: snapshot.data.length,
                   itemBuilder: (BuildContext context, int index) {
-                    final dynamic item = snapshot.data[index];
-                    final name = "${item["name"]}";
-                    final id = int.parse("${item["id"]}");
+                    final row = snapshot.data[index];
+                    final name = row.record<String>("name");
+                    final id = row.record<int>("id");
                     return ListTile(
                       title: GestureDetector(
                         child: Text(name),

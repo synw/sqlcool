@@ -1,5 +1,6 @@
 import 'package:sqlcool/sqlcool.dart';
-import '../../../conf.dart' as conf;
+
+import '../../conf.dart' as conf;
 import '../schema.dart';
 
 class Manufacturer with DbModel {
@@ -13,7 +14,7 @@ class Manufacturer with DbModel {
   int id;
 
   @override
-  Db get db => conf.db;
+  Db get db => conf.db2;
 
   @override
   DbTable get table => manufacturerTable;

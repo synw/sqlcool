@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import '../conf.dart';
+
 import '../appbar.dart';
+import '../conf.dart';
 
 class _PageIndexState extends State<PageIndex> {
   bool databaseIsReady = false;
 
   @override
   void initState() {
-    db.onReady.then((_) {
+    db.onReady.then((_) async {
+      await db2.onReady;
       print("STATE: THE DATABASE IS READY");
       setState(() {
         databaseIsReady = true;
@@ -19,14 +21,14 @@ class _PageIndexState extends State<PageIndex> {
   @override
   Widget build(BuildContext context) {
     return !databaseIsReady
-        ? Scaffold(
-            body: Center(child: const Text("The database is initializing ...")))
+        ? const Scaffold(
+            body: Center(child: Text("The database is initializing ...")))
         : Scaffold(
             appBar: appBar(context),
             body: Padding(
                 padding: const EdgeInsets.only(top: 25.0),
                 child: GridView(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2),
                   children: <Widget>[
                     ExampleTile(
@@ -60,7 +62,7 @@ class PageIndex extends StatefulWidget {
 }
 
 class ExampleTile extends StatelessWidget {
-  ExampleTile(
+  const ExampleTile(
       {@required this.iconData, @required this.title, @required this.route});
 
   final IconData iconData;

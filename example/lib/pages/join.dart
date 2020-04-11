@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:sqlcool/sqlcool.dart';
 import '../conf.dart';
 
 class _PageJoinQueryState extends State<PageJoinQuery> {
-  final _streamController = StreamController<List<Map<String, dynamic>>>();
+  final _streamController = StreamController<List<DbRow>>();
 
   @override
   void initState() {
@@ -33,19 +34,17 @@ class _PageJoinQueryState extends State<PageJoinQuery> {
       appBar: AppBar(title: Text("Join query")),
       body: StreamBuilder(
         stream: _streamController.stream,
-        builder: (BuildContext context,
-            AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<DbRow>> snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (BuildContext context, int index) {
-                final item = snapshot.data[index];
+                final row = snapshot.data[index];
+                final price = row.record<int>("price");
                 return ListTile(
-                  title: Text("${item["name"]}"),
-                  subtitle: Text("${item["category_name"]}"),
-                  trailing: (item["price"] != null)
-                      ? Text("${item["price"]}")
-                      : const Text(""),
+                  title: Text(row.record<String>("name")),
+                  subtitle: Text(row.record<String>("category_name")),
+                  trailing: (price != null) ? Text("$price") : const Text(""),
                 );
               },
             );

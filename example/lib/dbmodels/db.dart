@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'models/car.dart';
 import 'models/manufacturer.dart';
-import '../../conf.dart';
+import '../conf.dart';
 
 Future<void> populateDb() async {
   final n = await db.count(table: "car");
-  final hasData = (n > 0);
+  final hasData = n > 0;
   if (hasData) {
     print("Car table has data");
     return;
@@ -19,7 +19,7 @@ Future<void> populateDb() async {
       name: "Car 1",
       price: 13000.0,
       maxSpeed: 200,
-      year: DateTime.now().subtract(Duration(days: (360 * 5))),
+      year: DateTime.now().subtract(const Duration(days: 360 * 5)),
       is4wd: true,
       manufacturer: m1);
   final c2 = Car(
@@ -27,14 +27,14 @@ Future<void> populateDb() async {
       price: 15000.0,
       maxSpeed: 220,
       is4wd: false,
-      year: DateTime.now().subtract(Duration(days: (360 * 3))),
+      year: DateTime.now().subtract(const Duration(days: 360 * 3)),
       manufacturer: m1);
   final c3 = Car(
       name: "Car 3",
       price: 23000.0,
       maxSpeed: 260,
       is4wd: false,
-      year: DateTime.now().subtract(Duration(days: 360)),
+      year: DateTime.now().subtract(const Duration(days: 360)),
       manufacturer: m2);
   await c1.sqlInsert(verbose: true);
   await c2.sqlInsert(verbose: true);

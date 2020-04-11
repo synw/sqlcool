@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:sqlcool/sqlcool.dart';
-import 'table.dart';
+
 import '../appbar.dart';
+import 'table.dart';
 
 class _DbViewerState extends State<DbViewer> {
   _DbViewerState({@required this.db});
 
-  final Db db;
+  final SqlDb db;
 
   Map<DbTable, int> _tableNumRows;
   var _ready = false;
@@ -58,7 +59,7 @@ class DbViewer extends StatefulWidget {
       : assert(db.hasSchema,
             "The database has no schema, the viewer is unavailable");
 
-  final Db db;
+  final SqlDb db;
 
   @override
   _DbViewerState createState() => _DbViewerState(db: db);

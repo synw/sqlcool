@@ -5,15 +5,16 @@ import '../appbar.dart';
 class _DbViewerTableState extends State<DbViewerTable> {
   _DbViewerTableState({@required this.db, @required this.table});
 
-  final Db db;
+  final SqlDb db;
   final DbTable table;
 
-  List<Map<String, dynamic>> _rows;
+  List<DbRow> _rows;
   var _ready = false;
 
   Future<void> _getData() async {
     _rows = await db.select(table: table.name, limit: 100).catchError(
-        (dynamic e) => throw ("Can not select from table ${table.name}"));
+        (dynamic e) =>
+            throw Exception("Can not select from table ${table.name}"));
   }
 
   @override
@@ -31,7 +32,7 @@ class _DbViewerTableState extends State<DbViewerTable> {
               itemCount: _rows.length,
               itemBuilder: (BuildContext context, int index) {
                 final row = _rows[index];
-                return ListTile(title: Text("$row"));
+                return ListTile(title: Text("${row.line()}"));
               },
             ))
         : const Center(
@@ -41,9 +42,9 @@ class _DbViewerTableState extends State<DbViewerTable> {
 }
 
 class DbViewerTable extends StatefulWidget {
-  DbViewerTable({@required this.db, @required this.table});
+  const DbViewerTable({@required this.db, @required this.table});
 
-  final Db db;
+  final SqlDb db;
   final DbTable table;
 
   @override

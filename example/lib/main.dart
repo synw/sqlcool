@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'pages/select_bloc.dart';
-import 'pages/index.dart';
-import 'pages/join_query.dart';
-import 'pages/upsert.dart';
-import 'pages/dbmodels/dbmodels.dart';
+
+import 'conf.dart';
+import 'dbmodels/dbmodels.dart';
 import 'dbviewer/dbviewer.dart';
 import 'init_db.dart';
-import 'conf.dart';
+import 'pages/index.dart';
+import 'pages/join.dart';
+import 'pages/select_bloc.dart';
+import 'pages/upsert.dart';
 
 void main() {
   runApp(MyApp());
@@ -14,6 +15,7 @@ void main() {
   /// initialize the database async. We will use the [onReady]
   /// callback later to react to the initialization completed event
   initDb(db: db);
+  initDb2(db: db2);
 }
 
 final routes = {
