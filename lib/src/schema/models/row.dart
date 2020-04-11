@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:sqlcool/sqlcool.dart';
 
 import 'column.dart';
 import 'table.dart';
@@ -85,7 +86,10 @@ class DbRecord<T> {
 @immutable
 class DbRow {
   /// Default constructor
-  const DbRow({@required this.records});
+  const DbRow(this.records);
+
+  /// Build a row from a single record
+  factory DbRow.fromRecord(DbRecord record) => DbRow(<DbRecord>[record]);
 
   /// Create from a map of strings
   factory DbRow.fromMap(DbTable table, Map<String, dynamic> row) {
@@ -158,7 +162,7 @@ class DbRow {
       }
     });
     //print("ROW $recs");
-    return DbRow(records: recs);
+    return DbRow(recs);
   }
 
   /// The row's records
@@ -197,5 +201,14 @@ class DbRow {
     final data = <String, String>{};
     records.forEach((r) => data["${r.key}"] = r.value.toString());
     return data;
+  }
+
+  /// Get a string representation
+  String line() {
+    final l = <String>[];
+    records.forEach((rec) {
+      l.add("${rec.key} : ${rec.value}");
+    });
+    return l.join(",");
   }
 }

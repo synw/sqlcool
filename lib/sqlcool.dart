@@ -2,6 +2,7 @@
 library sqlcool;
 
 export "src/bloc_select.dart";
+export 'src/bloc_select_rows.dart';
 export "src/database.dart";
 export 'src/exceptions.dart';
 export 'src/models.dart';
