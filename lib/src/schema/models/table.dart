@@ -20,18 +20,17 @@ enum OnDelete {
 }
 
 /// The class used to create tables
-@immutable
 class DbTable {
   /// Default constructor
-  const DbTable(this.name) : assert(name != null);
+  DbTable(this.name) : assert(name != null);
 
   /// Name of the table: no spaces
   final String name;
 
-  final List<String> _columns = const <String>["id INTEGER PRIMARY KEY"];
-  final List<String> _queries = const <String>[];
-  final List<DbColumn> _columnsData = const <DbColumn>[];
-  final List<String> _fkConstraints = const <String>[];
+  final List<String> _columns = <String>["id INTEGER PRIMARY KEY"];
+  final List<String> _queries = <String>[];
+  final List<DbColumn> _columnsData = <DbColumn>[];
+  final List<String> _fkConstraints = <String>[];
 
   /// The columns info
   List<DbColumn> get columns => _columnsData;
