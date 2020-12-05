@@ -39,7 +39,11 @@ Future<void> initDb(
     throw Exception("Error initializing the database: ${e.message}");
   });
   print("Database initialized with schema:");
-  db.schema.describe();
+  //db.schema.describe();
+  print("SCHEMA TABLES ${db.schema.tables}");
+  final q = await db.query(
+      "SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';");
+  print("T $q");
 }
 
 Future<void> initDb2(
@@ -79,6 +83,6 @@ Future<void> initDb2(
       .catchError((dynamic e) {
     throw ("Error initializing the database: ${e.message}");
   });
-  print("Database initialized with schema:");
-  db.schema.describe();
+  //print("Database initialized with schema:");
+  //db.schema.describe();
 }

@@ -1,9 +1,14 @@
 import 'dart:async';
+
+import '../conf.dart';
 import 'models/car.dart';
 import 'models/manufacturer.dart';
-import '../conf.dart';
 
 Future<void> populateDb() async {
+  print("SCHEMA TABLES ${db.schema.tables}");
+  final q = await db.query(
+      "SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE 'sqlite_%';");
+  print("T $q");
   final n = await db.count(table: "car");
   final hasData = n > 0;
   if (hasData) {

@@ -1,4 +1,4 @@
-package com.example.sqlcool_example
+package com.example.sqlcool
 
 import io.flutter.embedding.android.FlutterActivity
 
