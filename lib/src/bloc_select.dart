@@ -111,6 +111,13 @@ class SelectBloc {
     }
   }
 
+  //A way to externally trigger the BLOC to rerun the query.
+  //Very useful if you have a changing filter being used as part of the
+  //search query.
+  Future<void> reload() async {
+    return _getItems();
+  }
+
   Future<void> _getItems() async {
     List<Map<String, dynamic>> res;
 
