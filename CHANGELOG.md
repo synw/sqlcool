@@ -1,5 +1,9 @@
 # Changelog
 
+# 5.0.0
+
+- Update Flutter project and dependencies
+
 # 4.3.1
 
 - Refactor and fix `DbModel.sqlJoin`
