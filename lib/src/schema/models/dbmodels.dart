@@ -238,7 +238,7 @@ class DbModel {
 
   Map<String, String> _toStringsMap(Map<String, dynamic> map) {
     final res = <String, String>{};
-    map.forEach((String k, dynamic v) => v == null ? null : res[k] = "$v");
+    map.forEach((String k, dynamic v) => res[k] = v == null ? null : "$v");
     return res;
   }
 
