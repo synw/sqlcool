@@ -1,5 +1,9 @@
 # Changelog
 
+# 5.0.2
+
+- Save null values to database as NULL in Db models
+
 # 5.0.1
 
 - Fix null values in Db models
