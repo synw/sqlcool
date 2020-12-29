@@ -1,5 +1,9 @@
 # Changelog
 
+# 5.0.1
+
+- Fix null values in Db models
+
 # 5.0.0
 
 - Update Flutter project and dependencies
