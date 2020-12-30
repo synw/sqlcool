@@ -238,7 +238,13 @@ class DbModel {
 
   Map<String, String> _toStringsMap(Map<String, dynamic> map) {
     final res = <String, String>{};
-    map.forEach((String k, dynamic v) => res[k] = v == null ? "NULL" : "$v");
+    map.forEach((String k, dynamic v) {
+      if (v == null) {
+        res[k] = null;
+      } else {
+        res[k] = "$v";
+      }
+    });
     return res;
   }
 

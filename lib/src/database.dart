@@ -216,6 +216,21 @@ class Db {
     return id;
   }
 
+  /// Serialize a string value to db
+  String _serializeStringValue(String initial) {
+    if (initial == null) {
+      // Null value
+      return "NULL";
+    }
+    final isNum = num.tryParse(initial) != null;
+    if (isNum) {
+      // Numeric value
+      return initial;
+    }
+    // String value
+    return "'$initial'";
+  }
+
   Future<int> _insert(
       {@required String table,
       @required Map<String, String> row,
@@ -234,11 +249,13 @@ class Db {
         var i = 1;
         final datapoint = <String>[];
         for (final k in row.keys) {
+          //print("ROW $k, ${row[k]},${row[k] == null} ");
           final buf = StringBuffer("$fields")..write("$k");
           fields = buf.toString();
           final buf2 = StringBuffer("$values")..write("?");
           values = buf2.toString();
-          datapoint.add(row[k]);
+          final v = _serializeStringValue(row[k]);
+          datapoint.add(v);
           if (i < n) {
             fields = "$fields,";
             values = "$values,";
@@ -253,11 +270,7 @@ class Db {
             if (i > 0) {
               where += " AND ";
             }
-            var val = v;
-            final isNum = num.tryParse(v) != null;
-            if (!isNum) {
-              val = '"$v"';
-            }
+            final val = _serializeStringValue(v);
             where += '$k=$val';
             ++i;
           });
@@ -552,7 +565,8 @@ class Db {
             valuesBuf.write("(SELECT $k FROM $table WHERE "
                 "$indexColumn='${row[indexColumn]}')");
           } else {
-            valuesBuf.write("'${row[k]}'");
+            final v = _serializeStringValue(row[k]);
+            valuesBuf.write(v);
           }
           //pairs += "$k='${row[k]}'";
           if (i < n) {
