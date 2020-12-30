@@ -1,5 +1,12 @@
 # Changelog
 
+
+# 5.1.0
+
+Better null values management. Dart `null` values as now stored in the
+database as proper `NULL` values. This could break null checks in data
+saved with previous versions
+
 # 5.0.2
 
 - Save null values to database as NULL in Db models
