@@ -243,26 +243,24 @@ class Db {
           throw DatabaseNotReady();
         }
         final timer = Stopwatch()..start();
-        var fields = "";
-        var values = "";
         final n = row.length;
         var i = 1;
         final datapoint = <String>[];
+        final fieldsBuf = StringBuffer();
+        final valuesBuf = StringBuffer();
         for (final k in row.keys) {
-          //print("ROW $k, ${row[k]},${row[k] == null} ");
-          final buf = StringBuffer("$fields")..write("$k");
-          fields = buf.toString();
-          final buf2 = StringBuffer("$values")..write("?");
-          values = buf2.toString();
-          final v = _serializeStringValue(row[k]);
+          fieldsBuf.write("$k");
+          valuesBuf.write("?");
+          final v = row[k];
           datapoint.add(v);
           if (i < n) {
-            fields = "$fields,";
-            values = "$values,";
+            fieldsBuf.write(",");
+            valuesBuf.write(",");
           }
           i++;
         }
-        var q = "INSERT INTO $table ($fields) VALUES($values)";
+        var q =
+            "INSERT INTO $table (${fieldsBuf.toString()}) VALUES(${valuesBuf.toString()})";
         if (ifNotExists) {
           var where = "";
           var i = 0;
