@@ -1,5 +1,8 @@
 # Changelog
 
+# 5.1.1
+
+Fix insert method
 
 # 5.1.0
 
