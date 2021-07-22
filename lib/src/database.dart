@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:sqlcool/src/schema/models/upgrade.dart';
 import 'package:synchronized/synchronized.dart';
 
 import 'exceptions.dart';
@@ -72,12 +73,14 @@ class Db {
   /// parameter must be provided.
   Future<void> init(
       {@required String path,
+      int version = 1,
       bool absolutePath = false,
       List<String> queries = const <String>[],
       List<DbTable> schema = const <DbTable>[],
       bool verbose = false,
       String fromAsset,
-      bool debug = false}) async {
+      bool debug = false,
+      Map<int, Upgrade> upgradeMap}) async {
     /// The [path] is where the database file will be stored. It is by
     /// default relative to the documents directory unless [absolutePath]
     /// is true.
@@ -137,7 +140,7 @@ class Db {
         if (verbose) {
           print("OPENING database");
         }
-        this._db = await openDatabase(dbpath, version: 1,
+        this._db = await openDatabase(dbpath, version: version,
             onCreate: (Database _sqfliteDb, int version) async {
           await _initQueries(schema, queries, _sqfliteDb, verbose);
         }, onOpen: (Database _sqfliteDb) async {
@@ -146,6 +149,10 @@ class Db {
             if (schema != null || queries.isNotEmpty) {
               await _initQueries(schema, queries, _sqfliteDb, verbose);
             }
+          }
+        }, onUpgrade: (Database _sqfliteDb, int oldVersion, int newVersion) async {
+          if (upgradeMap != null && upgradeMap.isNotEmpty) {
+            await _upgradeQueries(upgradeMap, oldVersion, _sqfliteDb, verbose);
           }
         });
       });
@@ -775,6 +782,19 @@ class Db {
           }
         }
       });
+    }
+  }
+
+  Future<void> _upgradeQueries(Map<int, Upgrade> upgradeMap, int oldVersion,
+      Database _sqfliteDb, bool verbose,) async {
+    for (final upgradeVersion in upgradeMap.keys) {
+      if (oldVersion == upgradeVersion - 1) {
+        final upgradeSchema = upgradeMap[upgradeVersion].schema;
+        final upgradeQueries = upgradeMap[upgradeVersion].queries;
+        if (upgradeSchema != null || upgradeQueries.isNotEmpty) {
+          await _initQueries(upgradeSchema, upgradeQueries, _sqfliteDb, verbose);
+        }
+      }
     }
   }
 
