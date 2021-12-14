@@ -30,13 +30,13 @@ Future<void> main() async {
   });
   group("query", () {
     test("Insert", () async {
-      Future<int> insert() async {
+      Future<int?> insert() async {
         final res =
             await db.insert(table: "test", row: {"k": "v"}, verbose: true);
         return res;
       }
 
-      return insert().then((int r) => expect(r, 1));
+      return insert().then((int? r) => expect(r, 1));
     });
 
     test("Delete", () async {
@@ -70,7 +70,7 @@ Future<void> main() async {
     });
 
     test("Select", () async {
-      Future<List<Map<String, dynamic>>> select() async {
+      Future<List<Map<String, dynamic>>?> select() async {
         final res =
             await db.select(table: "test", where: "id=1", verbose: true);
         return res;
@@ -79,11 +79,11 @@ Future<void> main() async {
       final output = <Map<String, dynamic>>[
         <String, dynamic>{"k": "v"}
       ];
-      return select().then((List<Map<String, dynamic>> r) => expect(r, output));
+      return select().then((List<Map<String, dynamic>>? r) => expect(r, output));
     });
 
     test("Join", () async {
-      Future<List<Map<String, dynamic>>> join() async {
+      Future<List<Map<String, dynamic>>?> join() async {
         final res = await db.join(
             table: "test",
             joinOn: "table1.id=1",
@@ -96,11 +96,11 @@ Future<void> main() async {
       final output = <Map<String, dynamic>>[
         <String, dynamic>{"k": "v"}
       ];
-      return join().then((List<Map<String, dynamic>> r) => expect(r, output));
+      return join().then((List<Map<String, dynamic>>? r) => expect(r, output));
     });
 
     test("Mjoin", () async {
-      Future<List<Map<String, dynamic>>> mJoin() async {
+      Future<List<Map<String, dynamic>>?> mJoin() async {
         final res = await db.mJoin(
             table: "test",
             joinsOn: ["table1.id=1"],
@@ -113,11 +113,11 @@ Future<void> main() async {
       final output = <Map<String, dynamic>>[
         <String, dynamic>{"k": "v"}
       ];
-      return mJoin().then((List<Map<String, dynamic>> r) => expect(r, output));
+      return mJoin().then((List<Map<String, dynamic>>? r) => expect(r, output));
     });
 
     test("Query", () async {
-      Future<List<Map<String, dynamic>>> query() async {
+      Future<List<Map<String, dynamic>>?> query() async {
         final res = await db.query("SELECT * from test_table");
         return res;
       }
@@ -125,16 +125,16 @@ Future<void> main() async {
       final output = <Map<String, dynamic>>[
         <String, dynamic>{"k": "v"}
       ];
-      return query().then((List<Map<String, dynamic>> r) => expect(r, output));
+      return query().then((List<Map<String, dynamic>>? r) => expect(r, output));
     });
 
     test("Count", () async {
-      Future<int> count() async {
+      Future<int?> count() async {
         final res = await db.count(table: "test", where: "id=1", verbose: true);
         return res;
       }
 
-      return count().then((int r) => expect(r, 1));
+      return count().then((int? r) => expect(r, 1));
     });
 
     test("Exists", () async {

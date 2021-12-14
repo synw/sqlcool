@@ -19,11 +19,11 @@ enum DatabaseChange {
 class DatabaseChangeEvent {
   /// Default database change event
   DatabaseChangeEvent({
-    @required this.type,
-    @required this.value,
-    @required this.query,
-    @required this.table,
-    @required this.executionTime,
+    required this.type,
+    required this.value,
+    required this.query,
+    required this.table,
+    required this.executionTime,
     this.data,
   });
 
@@ -43,7 +43,7 @@ class DatabaseChangeEvent {
   final String table;
 
   /// The data manipulated by the query
-  final Map<String, String> data;
+  final Map<String, String?>? data;
 
   /// Human readable format
   @override

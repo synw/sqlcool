@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-Directory directory;
+late Directory directory;
 const MethodChannel channel = MethodChannel('com.tekartik.sqflite');
 final List<MethodCall> log = <MethodCall>[];
 bool setupDone = false;
@@ -14,8 +14,8 @@ Future<void> setup() async {
   }
   directory = await Directory.systemTemp.createTemp();
 
-  String response;
-  channel.setMockMethodCallHandler((MethodCall methodCall) async {
+  String? response;
+  channel.setMethodCallHandler((MethodCall methodCall) async {
     //print("METHOD CALL: $methodCall");
     log.add(methodCall);
     switch (methodCall.method) {
