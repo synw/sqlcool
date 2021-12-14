@@ -1,7 +1,7 @@
 name: sqlcool2
 description: Easy and reactive Sqlite. Stream of changes, select bloc, custom
   database models
-homepage: https://github.com/cristianpaulo4/sqlcool
+homepage: https://github.com/cristianpaulo4/sqlcool2
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
