@@ -15,7 +15,7 @@ Check the [documentation](https://sqlcool2.readthedocs.io/en/latest/) or the [ap
 ### Define the database schema
 
    ```dart
-   import 'package:sqlcool22/sqlcool22.dart';
+   import 'package:sqlcool2/sqlcool2.dart';
 
    Db db = Db();
    // define the database schema
@@ -126,7 +126,7 @@ A stream of database change events is available. Inspired by [Rethinkdb](https:/
 
    ```dart
    import 'dart:async';
-   import 'package:sqlcool22/sqlcool22.dart';
+   import 'package:sqlcool2/sqlcool2.dart';
 
    StreamSubscription changefeed;
 
@@ -148,7 +148,7 @@ parameter set to `true`:
 
    ```dart
    import 'package:flutter/material.dart';
-   import 'package:sqlcool22/sqlcool22.dart';
+   import 'package:sqlcool2/sqlcool2.dart';
 
    class _PageSelectBlocState extends State<PageSelectBloc> {
      SelectBloc bloc;
@@ -228,7 +228,7 @@ In schema.dart:
 In car_model.dart:
 
    ```dart
-   import 'package:sqlcool22/sqlcool22.dart';
+   import 'package:sqlcool2/sqlcool2.dart';
    // the database schema
    import 'schema.dart';
    // another model
