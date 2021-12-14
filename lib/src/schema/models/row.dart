@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:sqlcool/sqlcool.dart';
+import 'package:sqlcool2/sqlcool2.dart';
 
 import 'column.dart';
 import 'table.dart';

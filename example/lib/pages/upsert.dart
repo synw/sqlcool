@@ -1,6 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:sqlcool/sqlcool.dart';
+import 'package:sqlcool2/sqlcool2.dart';
 import '../conf.dart';
 
 class _UpsertPageState extends State<UpsertPage> {

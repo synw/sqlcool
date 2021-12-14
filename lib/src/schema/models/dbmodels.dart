@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:sqlcool/src/exceptions.dart';
+import 'package:sqlcool2/src/exceptions.dart';
 
 import '../../database.dart';
 import 'column.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sqlcool/sqlcool.dart';
+import 'package:sqlcool2/sqlcool2.dart';
 import '../appbar.dart';
 
 class _DbViewerTableState extends State<DbViewerTable> {
