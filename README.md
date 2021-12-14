@@ -1,6 +1,6 @@
-# Sqlcool2
+# sqlcool2
 
-[![pub package](https://img.shields.io/pub/v/sqlcool.svg)](https://pub.dartlang.org/packages/sqlcool)  [![Build Status](https://travis-ci.org/synw/sqlcool.svg?branch=master)](https://travis-ci.org/synw/sqlcool) [![Coverage Status](https://coveralls.io/repos/github/synw/sqlcool/badge.svg?branch=master&kill_cache=1")](https://coveralls.io/github/synw/sqlcool?branch=master")
+[![pub package](https://img.shields.io/pub/v/sqlcool2.svg)](https://pub.dartlang.org/packages/sqlcool2)  [![Build Status](https://travis-ci.org/synw/sqlcool2.svg?branch=master)](https://travis-ci.org/synw/sqlcool2) [![Coverage Status](https://coveralls.io/repos/github/synw/sqlcool2/badge.svg?branch=master&kill_cache=1")](https://coveralls.io/github/synw/sqlcool2?branch=master")
 
 A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Forget about implementation details and focus on the business logic.
 
@@ -8,14 +8,14 @@ A database helper library for [Sqflite](https://github.com/tekartik/sqflite). Fo
 - **Reactive**: stream of changes, select bloc
 - **Adaptative**: plug custom models into the database
 
-Check the [documentation](https://sqlcool.readthedocs.io/en/latest/) or the [api doc](https://pub.dev/documentation/sqlcool/latest/sqlcool/sqlcool-library.html) for usage instructions
+Check the [documentation](https://sqlcool2.readthedocs.io/en/latest/) or the [api doc](https://pub.dev/documentation/sqlcool2/latest/sqlcool2/sqlcool2-library.html) for usage instructions
 
 ## Simple crud
 
 ### Define the database schema
 
    ```dart
-   import 'package:sqlcool/sqlcool.dart';
+   import 'package:sqlcool22/sqlcool22.dart';
 
    Db db = Db();
    // define the database schema
@@ -126,7 +126,7 @@ A stream of database change events is available. Inspired by [Rethinkdb](https:/
 
    ```dart
    import 'dart:async';
-   import 'package:sqlcool/sqlcool.dart';
+   import 'package:sqlcool22/sqlcool22.dart';
 
    StreamSubscription changefeed;
 
@@ -148,7 +148,7 @@ parameter set to `true`:
 
    ```dart
    import 'package:flutter/material.dart';
-   import 'package:sqlcool/sqlcool.dart';
+   import 'package:sqlcool22/sqlcool22.dart';
 
    class _PageSelectBlocState extends State<PageSelectBloc> {
      SelectBloc bloc;
@@ -228,7 +228,7 @@ In schema.dart:
 In car_model.dart:
 
    ```dart
-   import 'package:sqlcool/sqlcool.dart';
+   import 'package:sqlcool22/sqlcool22.dart';
    // the database schema
    import 'schema.dart';
    // another model
