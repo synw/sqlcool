@@ -1,7 +1,7 @@
-name: sqlcool
+name: sqlcool2
 description: Easy and reactive Sqlite. Stream of changes, select bloc, custom
   database models
-homepage: https://github.com/synw/sqlcool
+homepage: https://github.com/cristianpaulo4/sqlcool2
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -13,19 +13,19 @@ homepage: https://github.com/synw/sqlcool
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 5.1.1
+version: 1.0.0
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  extra_pedantic: ^1.2.0
-  path_provider: ^1.6.24
-  pedantic: ^1.9.2
-  sqflite: ^1.3.2+1
-  synchronized: ^2.2.0+2
+  extra_pedantic: ^1.5.0
+  path_provider: ^2.0.8 
+  mews_pedantic: ^0.3.0
+  sqflite: ^2.0.1
+  synchronized: ^3.0.0
 
 dev_dependencies:
   flutter_test:

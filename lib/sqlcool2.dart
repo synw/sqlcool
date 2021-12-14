@@ -1,5 +1,5 @@
 /// A library to use Sqflite with ease
-library sqlcool;
+library sqlcool2;
 
 export "src/bloc_select.dart";
 export 'src/bloc_select_rows.dart';

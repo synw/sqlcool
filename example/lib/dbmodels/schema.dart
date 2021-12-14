@@ -1,4 +1,4 @@
-import 'package:sqlcool/sqlcool.dart';
+import 'package:sqlcool2/sqlcool2.dart';
 
 final carTable = DbTable("car")
   ..varchar("name")

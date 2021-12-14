@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sqlcool/sqlcool.dart';
+import 'package:sqlcool2/sqlcool2.dart';
 import 'base.dart';
 
 Future<void> main() async {
@@ -25,7 +25,7 @@ Future<void> main() async {
 
   test("DbTable", () async {
     expect(db.hasSchema, true);
-    var t = db.schema.table("table");
+    var t = db.schema.table("table")!;
     expect(table.name == t.name, true);
     expect(db.schema.hasTable("table"), true);
     const fkCol = DbColumn(
@@ -33,9 +33,9 @@ Future<void> main() async {
     expect(t.foreignKeys[0].type, fkCol.type);
     expect(t.foreignKeys[0].name, fkCol.name);
     expect(t.foreignKeys[0].onDelete, fkCol.onDelete);
-    t = db.schema.table("table1");
+    t = db.schema.table("table1")!;
     const col = DbColumn(name: "name", type: DbColumnType.varchar);
-    expect(t.column("name").name, "name");
+    expect(t.column("name")!.name, "name");
     expect(t.columns[0].name, col.name);
     expect(t.columns[0].type, col.type);
     expect(t.columns[0].name, col.name);
@@ -63,7 +63,7 @@ Future<void> main() async {
     expect(onDeleteToString(OnDelete.setNull), "set_null");
     expect(stringToOnDelete("set_default"), OnDelete.setDefault);
     expect(onDeleteToString(OnDelete.setDefault), "set_default");
-    expect(db.schema.table("table").hasColumn("name"), true);
+    expect(db.schema.table("table")!.hasColumn("name"), true);
   });
 
   test("column describe", () async {

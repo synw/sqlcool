@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:sqlcool/sqlcool.dart';
+import 'package:sqlcool2/sqlcool2.dart';
 
 import 'base.dart';
 import 'dbmodels/car.dart';
@@ -58,6 +58,6 @@ Future<void> main() async {
     final cars = await Car.selectRelated();
     print("Query cars: $cars");
     assert(cars.length == 1);
-    assert(cars[0].manufacturer.name == "My manufacturer");
+    assert(cars[0].manufacturer!.name == "My manufacturer");
   });
 }

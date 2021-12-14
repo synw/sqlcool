@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:sqlcool/src/exceptions.dart';
+import 'package:sqlcool2/src/exceptions.dart';
 
 import '../../database.dart';
 import 'column.dart';
@@ -10,13 +10,13 @@ class DbModel {
   /// The database id of the model instance
   ///
   /// **Important** : it must be overriden
-  int id;
+  int? id;
 
   /// get the database
-  Db get db => null;
+  Db? get db => null;
 
   /// get the table schema
-  DbTable get table => null;
+  DbTable? get table => null;
 
   /// The database row serializer for the model
   ///
@@ -26,15 +26,15 @@ class DbModel {
   /// The database row deserializer for the model
   ///
   /// **Important** : it must be overriden
-  DbModel fromDb(Map<String, dynamic> map) => null;
+  DbModel? fromDb(Map<String, dynamic> map) => null;
 
   /// Select rows in the database table with joins on foreign keys
   Future<List<dynamic>> sqlJoin(
-      {int offset,
-      int limit,
-      String orderBy,
-      String where,
-      String groupBy,
+      {int? offset,
+      int? limit,
+      String? orderBy,
+      String? where,
+      String? groupBy,
       bool verbose = false}) async {
     _checkDbIsReady();
     print("> Sqljoin for table $table");
@@ -43,16 +43,16 @@ class DbModel {
     final _joinOn = <String>[];
     final _select = <String>[];
     final _encodedFks = <_EncodedFk>[];
-    if (!table.hasColumn("id")) {
-      table.columns.add(const DbColumn(name: "id", type: DbColumnType.integer));
+    if (!table!.hasColumn("id")) {
+      table!.columns.add(const DbColumn(name: "id", type: DbColumnType.integer));
     }
-    table.columns.forEach((c) {
+    table!.columns.forEach((c) {
       if (!c.isForeignKey) {
-        _select.add("${table.name}.${c.name} AS ${c.name}");
+        _select.add("${table!.name}.${c.name} AS ${c.name}");
       }
     });
-    for (final fkCol in table.foreignKeys) {
-      final fkTable = db.schema.table(fkCol.reference);
+    for (final fkCol in table!.foreignKeys) {
+      final fkTable = db!.schema.table(fkCol.reference)!;
       _joinTables.add(fkTable.name);
       //print("FK COLS $fkTable: ${fkTable.columns}");
       final c = fkTable.columns;
@@ -60,7 +60,7 @@ class DbModel {
         c.add(const DbColumn(name: "id", type: DbColumnType.integer));
       }
       //print("NEW FK COLS ${fkTable.columns}");
-      _joinOn.add("${table.name}.${fkCol.name}=${fkTable.name}.id");
+      _joinOn.add("${table!.name}.${fkCol.name}=${fkTable.name}.id");
       //print("Joins add ${table.name}.${fkCol.name}=${fkTable.name}.id");
       for (final _fkTableCol in c) {
         final encodedName = "${fkTable.name}_${_fkTableCol.name}";
@@ -75,8 +75,8 @@ class DbModel {
       }
     }
     final columns = _select.join(",");
-    final res = await db.mJoin(
-        table: table.name,
+    final res = await (db!.mJoin(
+        table: table!.name,
         joinsTables: _joinTables,
         joinsOn: _joinOn,
         columns: columns,
@@ -84,7 +84,7 @@ class DbModel {
         limit: limit,
         where: where,
         groupBy: groupBy,
-        verbose: verbose);
+        verbose: verbose) as Future<List<Map<String, dynamic>>>);
     final endRes = <Map<String, dynamic>>[];
     //print("\nRES $res\n");
     for (final row in res) {
@@ -102,7 +102,7 @@ class DbModel {
           if (!fkData.containsKey(efk.refColName)) {
             fkData[efk.refColName] = <String, dynamic>{};
           }
-          fkData[efk.refColName][efk.name] = value;
+          fkData[efk.refColName]![efk.name] = value;
           //endRow[key][encodedFk[0].refColName] = value;
           //print("FKDATA : $fkData");
         }
@@ -125,30 +125,30 @@ class DbModel {
 
   /// Select rows in the database table
   Future<List<dynamic>> sqlSelect(
-      {String where,
-      String orderBy,
-      int limit,
-      int offset,
-      String groupBy,
+      {String? where,
+      String? orderBy,
+      int? limit,
+      int? offset,
+      String? groupBy,
       bool verbose = false}) async {
     _checkDbIsReady();
     // do not take the foreign keys
     final cols = <String>["id"];
-    for (final col in table.columns) {
+    for (final col in table!.columns) {
       if (!col.isForeignKey) {
         cols.add(col.name);
       }
     }
     final columns = cols.join(",");
-    final res = await db.select(
-        table: table.name,
+    final res = await (db!.select(
+        table: table!.name,
         columns: columns,
         where: where,
         orderBy: orderBy,
         limit: limit,
         offset: offset,
         groupBy: groupBy,
-        verbose: verbose);
+        verbose: verbose) as Future<List<Map<String, dynamic>>>);
     final endRes = <dynamic>[];
     for (final row in res) {
       endRes.add(fromDb(row));
@@ -161,8 +161,8 @@ class DbModel {
     _checkDbIsReady();
     final data = this.toDb();
     final row = _toStringsMap(data);
-    await db
-        .update(table: table.name, row: row, where: 'id=$id', verbose: verbose)
+    await db!
+        .update(table: table!.name, row: row, where: 'id=$id', verbose: verbose)
         .catchError((dynamic e) =>
             throw WriteQueryException("Can not update model into database $e"));
   }
@@ -170,14 +170,14 @@ class DbModel {
   /// Upsert a row in the database table
   Future<void> sqlUpsert(
       {bool verbose = false,
-      String indexColumn,
+      String? indexColumn,
       List<String> preserveColumns = const <String>[]}) async {
     _checkDbIsReady();
     final data = this.toDb();
     final row = _toStringsMap(data);
-    await db
+    await db!
         .upsert(
-            table: table.name,
+            table: table!.name,
             row: row,
             indexColumn: indexColumn,
             preserveColumns: preserveColumns,
@@ -187,12 +187,12 @@ class DbModel {
   }
 
   /// Insert a row in the database table
-  Future<int> sqlInsert({bool verbose = false}) async {
+  Future<int?> sqlInsert({bool verbose = false}) async {
     _checkDbIsReady();
     final data = this.toDb();
     final row = _toStringsMap(data);
-    final id = await db
-        .insert(table: table.name, row: row, verbose: verbose)
+    final id = await db!
+        .insert(table: table!.name, row: row, verbose: verbose)
         .catchError((dynamic e) =>
             throw WriteQueryException("Can not insert model into database $e"));
     return id;
@@ -201,19 +201,19 @@ class DbModel {
   /// Insert a row in the database table if it does not exist already
   @Deprecated(
       "The insertIfNotExists function will be removed after version 4.4.0")
-  Future<int> sqlInsertIfNotExists({bool verbose = false}) async {
+  Future<int?> sqlInsertIfNotExists({bool verbose = false}) async {
     _checkDbIsReady();
     final data = this.toDb();
     final row = _toStringsMap(data);
-    final id = await db
-        .insertIfNotExists(table: table.name, row: row, verbose: verbose)
+    final id = await db!
+        .insertIfNotExists(table: table!.name, row: row, verbose: verbose)
         .catchError((dynamic e) =>
             throw WriteQueryException("Can not insert model into database $e"));
     return id;
   }
 
   /// Delete an instance from the database
-  Future<void> sqlDelete({String where, bool verbose = false}) async {
+  Future<void> sqlDelete({String? where, bool verbose = false}) async {
     _checkDbIsReady();
     var _where = where;
     if (where == null) {
@@ -221,23 +221,23 @@ class DbModel {
           "The instance id must not be null if no where clause is used");
       _where = "id=$id";
     }
-    await db
-        .delete(table: table.name, where: _where, verbose: verbose)
+    await db!
+        .delete(table: table!.name, where: _where, verbose: verbose)
         .catchError((dynamic e) =>
             throw WriteQueryException("Can not delete model from database $e"));
   }
 
   /// Count rows
-  Future<int> sqlCount({String where, bool verbose = false}) async {
-    final n = db
-        .count(table: table.name, where: where, verbose: verbose)
+  Future<int?> sqlCount({String? where, bool verbose = false}) async {
+    final n = db!
+        .count(table: table!.name, where: where, verbose: verbose)
         .catchError((dynamic e) =>
             throw ReadQueryException("Can not count from database $e"));
     return n;
   }
 
-  Map<String, String> _toStringsMap(Map<String, dynamic> map) {
-    final res = <String, String>{};
+  Map<String, String?> _toStringsMap(Map<String, dynamic> map) {
+    final res = <String, String?>{};
     map.forEach((String k, dynamic v) {
       if (v == null) {
         res[k] = null;
@@ -251,16 +251,16 @@ class DbModel {
   void _checkDbIsReady() {
     assert(table != null);
     assert(db != null);
-    assert(db.isReady, "Please initialize the database by running db.init()");
+    assert(db!.isReady, "Please initialize the database by running db.init()");
   }
 }
 
 class _EncodedFk {
   const _EncodedFk(
-      {@required this.table,
-      @required this.name,
-      @required this.encodedName,
-      @required this.refColName});
+      {required this.table,
+      required this.name,
+      required this.encodedName,
+      required this.refColName});
 
   final DbTable table;
   final String name;
