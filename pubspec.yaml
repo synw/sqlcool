@@ -21,11 +21,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  extra_pedantic: ^1.3.0
-  path_provider: ^2.0.1
-  pedantic: ^1.11.0
-  sqflite: ^2.0.0+3
-  synchronized: ^3.0.0
+  extra_pedantic: ^2.0.0
+  path_provider: ^2.0.9
+  pedantic: ^1.11.1
+  sqflite: ^2.0.2+1
+  synchronized: ^3.0.0+2
 
 dev_dependencies:
   flutter_test:
