@@ -20,19 +20,19 @@ class SqlDb {
   ///
   /// Use this parameter if you want to work with an existing
   /// Sqflite database
-  Database sqfliteDatabase;
+  Database? sqfliteDatabase;
 
-  Db _db;
+  late Db _db;
 
   /// A stream of [DatabaseChangeEvent] with all the changes
   /// that occur in the database
   Stream<DatabaseChangeEvent> get changefeed => _db.changefeed;
 
   /// This Sqflite [Database]
-  Database get database => _db.database;
+  Database? get database => _db.database;
 
   /// This Sqlite file
-  File get file => _db.file;
+  File? get file => _db.file;
 
   /// Check the existence of a schema
   bool get hasSchema => _db.hasSchema;
@@ -53,12 +53,12 @@ class SqlDb {
   /// with the [fromAsset] parameter or from a [schema] or from
   /// create table and other [queries]. A [schema] must be provided.
   Future<void> init(
-      {@required String path,
-      @required List<DbTable> schema,
+      {required String path,
+      required List<DbTable> schema,
       bool absolutePath = false,
       List<String> queries = const <String>[],
       bool verbose = false,
-      String fromAsset,
+      String? fromAsset,
       bool debug = false}) async {
     assert(schema != null);
     await _db.init(
@@ -76,11 +76,11 @@ class SqlDb {
   /// [table] the table to insert into
   ///
   /// Returns a future with the last inserted id
-  Future<int> insert(
-      {@required String table,
-      @required DbRow row,
+  Future<int?> insert(
+      {required String table,
+      required DbRow row,
       bool verbose = false}) async {
-    int res;
+    int? res;
     try {
       res = await _db.insert(
           table: table, row: row.toStringsMap(), verbose: verbose);
@@ -96,12 +96,12 @@ class SqlDb {
   /// to insert
   ///
   /// Returns a future with the last inserted id
-  Future<int> insertManageConflict(
-      {@required String table,
-      @required ConflictAlgorithm conflictAlgorithm,
-      @required DbRow row,
+  Future<int?> insertManageConflict(
+      {required String table,
+      required ConflictAlgorithm conflictAlgorithm,
+      required DbRow row,
       bool verbose = false}) async {
-    int res;
+    int? res;
     try {
       res = await _db.insertManageConflict(
           table: table,
@@ -116,15 +116,15 @@ class SqlDb {
 
   /// A select query
   Future<List<DbRow>> select(
-      {@required String table,
+      {required String table,
       String columns = "*",
-      String where,
-      String orderBy,
-      int limit,
-      int offset,
-      String groupBy,
+      String? where,
+      String? orderBy,
+      int? limit,
+      int? offset,
+      String? groupBy,
       bool verbose = false}) async {
-    List<Map<String, dynamic>> data;
+    List<Map<String, dynamic>>? data;
     try {
       data = await _db.select(
           table: table,
@@ -138,14 +138,14 @@ class SqlDb {
     } catch (e) {
       rethrow;
     }
-    return _rowsFromRawData(table, data);
+    return _rowsFromRawData(table, data!);
   }
 
   /// Update some datapoints in the database
   Future<int> update(
-      {@required String table,
-      @required DbRow row,
-      @required String where,
+      {required String table,
+      required DbRow row,
+      required String where,
       bool verbose = false}) async {
     int res;
     try {
@@ -165,11 +165,11 @@ class SqlDb {
   /// It is highly recommended to use an unique index for the table
   /// to upsert into
   Future<void> upsert(
-      {@required String table,
-      @required DbRow row,
+      {required String table,
+      required DbRow row,
       //@required List<String> columns,
       List<String> preserveColumns = const [],
-      String indexColumn,
+      String? indexColumn,
       bool verbose = false}) async {
     try {
       await _db.upsert(table: table, row: row.toStringsMap(), verbose: verbose);
@@ -180,8 +180,8 @@ class SqlDb {
 
   /// Insert rows in a table
   Future<List<dynamic>> batchInsert(
-      {@required String table,
-      @required List<DbRow> rows,
+      {required String table,
+      required List<DbRow> rows,
       ConflictAlgorithm conflictAlgorithm = ConflictAlgorithm.rollback,
       bool verbose = false}) async {
     final data = <Map<String, String>>[];
@@ -197,17 +197,17 @@ class SqlDb {
 
   /// A select query with a join
   Future<List<DbRow>> join(
-      {@required String table,
-      @required String joinTable,
-      @required String joinOn,
+      {required String table,
+      required String? joinTable,
+      required String? joinOn,
       String columns = "*",
-      int offset,
-      int limit,
-      String orderBy,
-      String where,
-      String groupBy,
+      int? offset,
+      int? limit,
+      String? orderBy,
+      String? where,
+      String? groupBy,
       bool verbose = false}) async {
-    List<Map<String, dynamic>> data;
+    List<Map<String, dynamic>>? data;
     try {
       data = await _db.join(
           table: table,
@@ -223,22 +223,22 @@ class SqlDb {
     } catch (e) {
       rethrow;
     }
-    return _rowsFromRawData(table, data);
+    return _rowsFromRawData(table, data!);
   }
 
   /// A select query with a join on multiple tables
   Future<List<DbRow>> mJoin(
-      {@required String table,
-      @required List<String> joinsTables,
-      @required List<String> joinsOn,
+      {required String table,
+      required List<String> joinsTables,
+      required List<String> joinsOn,
       String columns = "*",
-      int offset,
-      int limit,
-      String orderBy,
-      String where,
-      String groupBy,
+      int? offset,
+      int? limit,
+      String? orderBy,
+      String? where,
+      String? groupBy,
       bool verbose = false}) async {
-    List<Map<String, dynamic>> data;
+    List<Map<String, dynamic>>? data;
     try {
       data = await _db.mJoin(
           table: table,
@@ -254,32 +254,32 @@ class SqlDb {
     } catch (e) {
       rethrow;
     }
-    return _rowsFromRawData(table, data);
+    return _rowsFromRawData(table, data!);
   }
 
   /// Delete some datapoints from the database
   Future<int> delete(
-          {@required String table,
-          @required String where,
+          {required String table,
+          required String where,
           bool verbose = false}) async =>
       _db.delete(table: table, where: where, verbose: verbose);
 
   /// Execute a query
-  Future<List<Map<String, dynamic>>> query(String q,
+  Future<List<Map<String, dynamic>>?> query(String q,
           {bool verbose = false}) async =>
       _db.query(q, verbose: verbose);
 
   /// count rows in a table
-  Future<int> count(
-          {@required String table,
-          String where,
+  Future<int?> count(
+          {required String table,
+          String? where,
           String columns = "id",
           bool verbose = false}) async =>
       _db.count(table: table, where: where, columns: columns, verbose: verbose);
 
   List<DbRow> _rowsFromRawData(String table, List<Map<String, dynamic>> data) {
     final rows = <DbRow>[];
-    DbTable t;
+    DbTable? t;
     try {
       t = schema.table(table);
     } catch (e) {
@@ -291,8 +291,8 @@ class SqlDb {
 
   /// Check if a value exists in the table
   Future<bool> exists(
-          {@required String table,
-          @required String where,
+          {required String table,
+          required String where,
           bool verbose = false}) async =>
       _db.exists(table: table, where: where, verbose: verbose);
 

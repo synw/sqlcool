@@ -19,24 +19,24 @@ class Db {
   ///
   /// Use this parameter if you want to work with an existing
   /// Sqflite database
-  final Database sqfliteDatabase;
+  final Database? sqfliteDatabase;
 
-  Database _db;
+  Database? _db;
 
   final _mutex = Lock();
 
   final Completer<void> _readyCompleter = Completer<void>();
-  final StreamController<DatabaseChangeEvent> _changeFeedController =
-      StreamController<DatabaseChangeEvent>.broadcast();
-  File _dbFile;
+  final StreamController<DatabaseChangeEvent> _changeFeedController = StreamController<DatabaseChangeEvent>.broadcast();
+  File? _dbFile;
   bool _isReady = false;
   final _schema = DbSchema();
 
   /// An empty database. Has to be initialized with [init]
   Db({this.sqfliteDatabase}) {
-    if (sqfliteDatabase != null) {
-      _db = sqfliteDatabase;
-      _dbFile = File(sqfliteDatabase.path);
+    final _sqfliteDatabase = sqfliteDatabase;
+    if (_sqfliteDatabase != null) {
+      _db = _sqfliteDatabase;
+      _dbFile = File(_sqfliteDatabase.path);
       _isReady = true;
       _readyCompleter.complete();
     }
@@ -47,10 +47,10 @@ class Db {
   Stream<DatabaseChangeEvent> get changefeed => _changeFeedController.stream;
 
   /// This Sqflite [Database]
-  Database get database => _db;
+  Database? get database => _db;
 
   /// This Sqlite file
-  File get file => _dbFile;
+  File? get file => _dbFile;
 
   /// Check the existence of a schema
   bool get hasSchema => _schema != null;
@@ -72,15 +72,15 @@ class Db {
   /// create table and other [queries]. Either a [schema] or [query]
   /// parameter must be provided.
   Future<void> init(
-      {@required String path,
+      {required String? path,
       int version = 1,
       bool absolutePath = false,
       List<String> queries = const <String>[],
       List<DbTable> schema = const <DbTable>[],
       bool verbose = false,
-      String fromAsset,
+      String? fromAsset,
       bool debug = false,
-      Map<int, Upgrade> upgradeMap}) async {
+      Map<int, Upgrade>? upgradeMap}) async {
     /// The [path] is where the database file will be stored. It is by
     /// default relative to the documents directory unless [absolutePath]
     /// is true.
@@ -90,12 +90,14 @@ class Db {
     /// Either a [queries] or a [schema] must be provided if the
     /// database is not initialized from an asset
     assert(path != null);
+    if (path == null) return;
     /*if (fromAsset == null && queries.isEmpty && schema.isEmpty) {
       throw ArgumentError("Either a [queries] or a [schema] must be provided");
     }*/
     if (debug) {
       await Sqflite.setDebugModeOn(true);
     }
+
     var dbpath = path;
     if (!absolutePath) {
       final documentsDirectory = await getApplicationDocumentsDirectory();
@@ -116,8 +118,7 @@ class Db {
         try {
           // read
           final data = await rootBundle.load("$fromAsset");
-          bytes =
-              data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+          bytes = data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
         } catch (e) {
           throw DatabaseAssetProblem("Unable to read database from asset: $e");
         }
@@ -140,8 +141,7 @@ class Db {
         if (verbose) {
           print("OPENING database");
         }
-        this._db = await openDatabase(dbpath, version: version,
-            onCreate: (Database _sqfliteDb, int version) async {
+        this._db = await openDatabase(dbpath, version: version, onCreate: (Database _sqfliteDb, int version) async {
           await _initQueries(schema, queries, _sqfliteDb, verbose);
         }, onOpen: (Database _sqfliteDb) async {
           // run create queries for file copied from an asset
@@ -176,12 +176,9 @@ class Db {
   /// to insert
   ///
   /// Returns a future with the last inserted id
-  @Deprecated(
-      "The insertIfNotExists function will be removed after version 4.4.0")
-  Future<int> insertIfNotExists(
-      {@required String table,
-      @required Map<String, String> row,
-      bool verbose = false}) async {
+  @Deprecated("The insertIfNotExists function will be removed after version 4.4.0")
+  Future<int?> insertIfNotExists(
+      {required String table, required Map<String, String?> row, bool verbose = false}) async {
     return _insert(table: table, row: row, ifNotExists: true, verbose: verbose);
   }
 
@@ -191,10 +188,7 @@ class Db {
   /// to insert
   ///
   /// Returns a future with the last inserted id
-  Future<int> insert(
-      {@required String table,
-      @required Map<String, String> row,
-      bool verbose = false}) async {
+  Future<int?> insert({required String table, required Map<String, String?> row, bool verbose = false}) async {
     return _insert(table: table, row: row, verbose: verbose);
   }
 
@@ -204,19 +198,22 @@ class Db {
   /// to insert
   ///
   /// Returns a future with the last inserted id
-  Future<int> insertManageConflict(
-      {@required String table,
-      @required ConflictAlgorithm conflictAlgorithm,
-      @required Map<String, dynamic> row,
+  Future<int?> insertManageConflict(
+      {required String table,
+      required ConflictAlgorithm conflictAlgorithm,
+      required Map<String, dynamic> row,
       bool verbose = false}) async {
-    int id;
+    int? id;
     try {
       if (!_isReady) {
         throw DatabaseNotReady();
       }
-      await _db.transaction((txn) async {
-        id = await txn.insert(table, row, conflictAlgorithm: conflictAlgorithm);
-      });
+      final nullableDb = _db;
+      if (nullableDb != null) {
+        await nullableDb.transaction((txn) async {
+          id = await txn.insert(table, row, conflictAlgorithm: conflictAlgorithm);
+        });
+      }
     } catch (e) {
       throw WriteQueryException("Can not insert in table $table: $e");
     }
@@ -224,7 +221,7 @@ class Db {
   }
 
   /// Serialize a string value to db
-  String _serializeStringValue(String initial) {
+  String _serializeStringValue(String? initial) {
     if (initial == null) {
       // Null value
       return "NULL";
@@ -238,12 +235,12 @@ class Db {
     return "'$initial'";
   }
 
-  Future<int> _insert(
-      {@required String table,
-      @required Map<String, String> row,
+  Future<int?> _insert(
+      {required String table,
+      required Map<String, String?> row,
       bool ifNotExists = false,
       bool verbose = false}) async {
-    int id;
+    int? id;
     await _mutex.synchronized(() async {
       try {
         if (!_isReady) {
@@ -252,7 +249,7 @@ class Db {
         final timer = Stopwatch()..start();
         final n = row.length;
         var i = 1;
-        final datapoint = <String>[];
+        final datapoint = <String?>[];
         final fieldsBuf = StringBuffer();
         final valuesBuf = StringBuffer();
         for (final k in row.keys) {
@@ -266,8 +263,7 @@ class Db {
           }
           i++;
         }
-        var q =
-            "INSERT INTO $table (${fieldsBuf.toString()}) VALUES(${valuesBuf.toString()})";
+        var q = "INSERT INTO $table (${fieldsBuf.toString()}) VALUES(${valuesBuf.toString()})";
         if (ifNotExists) {
           var where = "";
           var i = 0;
@@ -281,11 +277,15 @@ class Db {
           });
           q += " IF NOT EXISTS (SELECT id from $table WHERE $where) LIMIT 1";
         }
-        await _db.transaction((txn) async {
-          id = await txn.rawInsert(q, datapoint);
-        }).catchError((dynamic e) {
-          throw WriteQueryException("Can not insert in table $table: $e");
-        });
+        final nullableDb = _db;
+        if (nullableDb != null) {
+          await nullableDb.transaction((txn) async {
+            id = await txn.rawInsert(q, datapoint);
+          }).catchError((dynamic e) {
+            throw WriteQueryException("Can not insert in table $table: $e");
+          });
+        }
+
         final qStr = "$q $row";
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
@@ -307,16 +307,16 @@ class Db {
   }
 
   /// A select query with a join
-  Future<List<Map<String, dynamic>>> join(
-          {@required String table,
-          @required String joinTable,
-          @required String joinOn,
+  Future<List<Map<String, dynamic>>?> join(
+          {required String? table,
+          required String? joinTable,
+          required String? joinOn,
           String columns = "*",
-          int offset,
-          int limit,
-          String orderBy,
-          String where,
-          String groupBy,
+          int? offset,
+          int? limit,
+          String? orderBy,
+          String? where,
+          String? groupBy,
           bool verbose = false}) async =>
       _join(
           table: table,
@@ -331,16 +331,16 @@ class Db {
           verbose: verbose);
 
   /// A select query with a join on multiple tables
-  Future<List<Map<String, dynamic>>> mJoin(
-      {@required String table,
-      @required List<String> joinsTables,
-      @required List<String> joinsOn,
+  Future<List<Map<String, dynamic>>?> mJoin(
+      {required String table,
+      required List<String> joinsTables,
+      required List<String> joinsOn,
       String columns = "*",
-      int offset,
-      int limit,
-      String orderBy,
-      String where,
-      String groupBy,
+      int? offset,
+      int? limit,
+      String? orderBy,
+      String? where,
+      String? groupBy,
       bool verbose = false}) async {
     /// [table] the table to select from
     /// [joinsTables] the tables to join from
@@ -378,12 +378,16 @@ class Db {
     if (offset != null) {
       q += " OFFSET $offset";
     }
-    List<Map<String, dynamic>> res;
-    await _db.transaction((txn) async {
-      res = await txn.rawQuery(q);
-    }).catchError((dynamic e) {
-      throw ReadQueryException("Join query error: $e");
-    });
+    List<Map<String, dynamic>>? res;
+    final nullableDb = _db;
+    if (nullableDb != null) {
+      await nullableDb.transaction((txn) async {
+        res = await txn.rawQuery(q);
+      }).catchError((dynamic e) {
+        throw ReadQueryException("Join query error: $e");
+      });
+    }
+
     timer.stop();
     if (verbose) {
       final msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -393,19 +397,21 @@ class Db {
   }
 
   /// Execute a query
-  Future<List<Map<String, dynamic>>> query(String q,
-      {bool verbose = false}) async {
+  Future<List<Map<String, dynamic>>?> query(String? q, {bool verbose = false}) async {
     /// [q] the query to execute
     try {
       if (!_isReady) {
         throw DatabaseNotReady();
       }
       final timer = Stopwatch()..start();
-      List<Map<String, dynamic>> res;
-      await _db.transaction((txn) async {
-        res = await txn.rawQuery(q);
-      }).catchError((dynamic e) =>
-          throw RawQueryException("Can not execute query $q $e"));
+      List<Map<String, dynamic>>? res;
+      final nullableDb = _db;
+      if (nullableDb != null) {
+        await nullableDb.transaction((txn) async {
+          res = await txn.rawQuery(q!);
+        }).catchError((dynamic e) => throw RawQueryException("Can not execute query $q $e"));
+      }
+
       timer.stop();
       if (verbose) {
         final msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -418,14 +424,14 @@ class Db {
   }
 
   /// A select query
-  Future<List<Map<String, dynamic>>> select(
-      {@required String table,
+  Future<List<Map<String, dynamic>>?> select(
+      {required String? table,
       String columns = "*",
-      String where,
-      String orderBy,
-      int limit,
-      int offset,
-      String groupBy,
+      String? where,
+      String? orderBy,
+      int? limit,
+      int? offset,
+      String? groupBy,
       bool verbose = false}) async {
     /// [table] the table to select from
     /// [columns] the columns to return
@@ -456,11 +462,14 @@ class Db {
       if (offset != null) {
         q += " OFFSET $offset";
       }
-      List<Map<String, dynamic>> res;
-      await _db.transaction((txn) async {
-        res = await txn.rawQuery(q);
-      }).catchError((dynamic e) =>
-          throw ReadQueryException("Can not select from table $table $e"));
+      List<Map<String, dynamic>>? res;
+      final nullableDb = _db;
+      if (nullableDb != null) {
+        await nullableDb.transaction((txn) async {
+          res = await txn.rawQuery(q);
+        }).catchError((dynamic e) => throw ReadQueryException("Can not select from table $table $e"));
+      }
+
       timer.stop();
       if (verbose) {
         final msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -474,10 +483,7 @@ class Db {
 
   /// Update some datapoints in the database
   Future<int> update(
-      {@required String table,
-      @required Map<String, String> row,
-      @required String where,
-      bool verbose = false}) async {
+      {required String table, required Map<String, String?> row, required String where, bool verbose = false}) async {
     /// [table] is the table to use, [row] is a map of the data to update
     /// and [where] the sql where clause
     ///
@@ -492,10 +498,13 @@ class Db {
         var pairs = "";
         final n = row.length - 1;
         var i = 0;
-        final datapoint = <String>[];
+        final datapoint = <String?>[];
         final buf = StringBuffer();
         for (final el in row.keys) {
-          buf..write("$pairs")..write("$el")..write("= ?");
+          buf
+            ..write("$pairs")
+            ..write("$el")
+            ..write("= ?");
           pairs = buf.toString();
           datapoint.add(row[el]);
           if (i < n) {
@@ -504,10 +513,13 @@ class Db {
           i++;
         }
         final q = 'UPDATE $table SET $pairs WHERE $where';
-        await _db.transaction((txn) async {
-          updated = await txn.rawUpdate(q, datapoint);
-        }).catchError((dynamic e) => throw WriteQueryException(
-            "Can not update data in table $table $e"));
+        final nullableDb = _db;
+        if (nullableDb != null) {
+          await nullableDb.transaction((txn) async {
+            updated = await txn.rawUpdate(q, datapoint);
+          }).catchError((dynamic e) => throw WriteQueryException("Can not update data in table $table $e"));
+        }
+
         final qStr = "$q $datapoint";
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
@@ -534,11 +546,11 @@ class Db {
   /// It is highly recommended to use an unique index for the table
   /// to upsert into
   Future<void> upsert(
-      {@required String table,
-      @required Map<String, String> row,
+      {required String table,
+      required Map<String, String?> row,
       //@required List<String> columns,
       List<String> preserveColumns = const [],
-      String indexColumn,
+      String? indexColumn,
       bool verbose = false}) async {
     /// The [preserveColumns] is used to keep the current values
     /// for some columns. If this parameter is used an [indexColumn]
@@ -568,7 +580,7 @@ class Db {
           fieldsBuf.write("$k");
           if (preserveColumns.contains(k)) {
             valuesBuf.write("(SELECT $k FROM $table WHERE "
-                "$indexColumn='${row[indexColumn]}')");
+                "$indexColumn='${row[indexColumn!]}')");
           } else {
             final v = _serializeStringValue(row[k]);
             valuesBuf.write(v);
@@ -589,10 +601,12 @@ class Db {
         String q = "INSERT INTO $table ($fields) VALUES($values)";
         q += " ON CONFLICT($columns) DO UPDATE SET $pairs";*/
         final q = "INSERT OR REPLACE INTO $table ($fields) VALUES($values)";
-        await _db.transaction((txn) async {
-          await txn.execute(q);
-        }).catchError((dynamic e) =>
-            throw WriteQueryException("Can not upsert into table $table $e"));
+        final nullableDb = _db;
+        if (nullableDb != null) {
+          await nullableDb.transaction((txn) async {
+            await txn.execute(q);
+          }).catchError((dynamic e) => throw WriteQueryException("Can not upsert into table $table $e"));
+        }
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
             type: DatabaseChange.upsert,
@@ -612,8 +626,8 @@ class Db {
 
   /// Insert rows in a table
   Future<List<dynamic>> batchInsert(
-      {@required String table,
-      @required List<Map<String, String>> rows,
+      {required String table,
+      required List<Map<String, String>> rows,
       ConflictAlgorithm conflictAlgorithm = ConflictAlgorithm.rollback,
       bool verbose = false}) async {
     var res = <dynamic>[];
@@ -623,21 +637,24 @@ class Db {
           throw DatabaseNotReady();
         }
         final timer = Stopwatch()..start();
+        final nullableDb = _db;
+        if (nullableDb != null) {
+          await nullableDb.transaction((txn) async {
+            final batch = txn.batch();
+            rows.forEach((row) {
+              batch.insert(table, row, conflictAlgorithm: conflictAlgorithm);
+              _changeFeedController.sink.add(DatabaseChangeEvent(
+                  type: DatabaseChange.insert,
+                  value: 1,
+                  query: "",
+                  table: table,
+                  data: row,
+                  executionTime: timer.elapsedMicroseconds));
+            });
 
-        await _db.transaction((txn) async {
-          final batch = txn.batch();
-          rows.forEach((row) {
-            batch.insert(table, row, conflictAlgorithm: conflictAlgorithm);
-            _changeFeedController.sink.add(DatabaseChangeEvent(
-                type: DatabaseChange.insert,
-                value: 1,
-                query: "",
-                table: table,
-                data: row,
-                executionTime: timer.elapsedMicroseconds));
+            res = await batch.commit();
           });
-          res = await batch.commit();
-        });
+        }
         timer.stop();
         if (verbose) {
           final msg = "Inserted ${rows.length} records "
@@ -652,11 +669,7 @@ class Db {
   }
 
   /// count rows in a table
-  Future<int> count(
-      {@required String table,
-      String where,
-      String columns = "id",
-      bool verbose = false}) async {
+  Future<int?> count({required String table, String? where, String columns = "id", bool verbose = false}) async {
     /// [table] is the table to use and [where] the sql where clause
     ///
     /// Returns a future with the count of the rows
@@ -670,10 +683,14 @@ class Db {
         w = " WHERE $where";
       }
       final q = 'SELECT COUNT($columns) FROM $table$w';
-      int c;
-      await _db.transaction((txn) async {
-        c = Sqflite.firstIntValue(await txn.rawQuery(q));
-      });
+      int? c;
+      final nullableDb = _db;
+      if (nullableDb != null) {
+        await nullableDb.transaction((txn) async {
+          c = Sqflite.firstIntValue(await txn.rawQuery(q));
+        });
+      }
+
       timer.stop();
       if (verbose) {
         final msg = "$q in ${timer.elapsedMilliseconds} ms";
@@ -686,10 +703,7 @@ class Db {
   }
 
   /// Delete some datapoints from the database
-  Future<int> delete(
-      {@required String table,
-      @required String where,
-      bool verbose = false}) async {
+  Future<int> delete({required String table, required String? where, bool verbose = false}) async {
     /// [table] is the table to use and [where] the sql where clause
     ///
     /// Returns a future with a count of the deleted rows
@@ -701,9 +715,13 @@ class Db {
       try {
         final timer = Stopwatch()..start();
         final q = 'DELETE FROM $table WHERE $where';
-        await _db.transaction((txn) async {
-          deleted = await txn.rawDelete(q);
-        });
+        final nullableDb = _db;
+        if (nullableDb != null) {
+          await nullableDb.transaction((txn) async {
+            deleted = await txn.rawDelete(q);
+          });
+        }
+
         timer.stop();
         _changeFeedController.sink.add(DatabaseChangeEvent(
             type: DatabaseChange.delete,
@@ -729,10 +747,7 @@ class Db {
   }
 
   /// Check if a value exists in the table
-  Future<bool> exists(
-      {@required String table,
-      @required String where,
-      bool verbose = false}) async {
+  Future<bool> exists({required String table, required String where, bool verbose = false}) async {
     /// [table] is the table to use and [where] the sql where clause
     ///
     /// Returns a future with true if the data exists
@@ -742,16 +757,20 @@ class Db {
       }
       final timer = Stopwatch()..start();
       final q = 'SELECT COUNT(*) FROM $table WHERE $where';
-      int count;
-      await _db.transaction((txn) async {
-        count = Sqflite.firstIntValue(await txn.rawQuery(q));
-      });
+      int? count;
+      final nullableDb = _db;
+      if (nullableDb != null) {
+        await nullableDb.transaction((txn) async {
+          count = Sqflite.firstIntValue(await txn.rawQuery(q));
+        });
+      }
+
       timer.stop();
       if (verbose) {
         final msg = "$q in ${timer.elapsedMilliseconds} ms";
         print(msg);
       }
-      if (count > 0) {
+      if (count! > 0) {
         return true;
       }
     } catch (e) {
@@ -760,54 +779,58 @@ class Db {
     return false;
   }
 
-  Future<void> _initQueries(List<DbTable> schema, List<String> queries,
-      Database _sqfliteDb, bool verbose) async {
+  Future<void> _initQueries(List<DbTable>? schema, List<String>? queries, Database _sqfliteDb, bool verbose) async {
     var _queries = queries;
-    if (schema != null) {
+    if (schema != null && queries != null) {
       final schemaQueries = <String>[];
-      schema
-          .forEach((tableSchema) => schemaQueries.addAll(tableSchema.queries));
+      schema.forEach((tableSchema) => schemaQueries.addAll(tableSchema.queries));
       schemaQueries.addAll(queries);
       _queries = schemaQueries;
     }
-    if (_queries.isNotEmpty) {
+    if (_queries != null && _queries.isNotEmpty) {
       await _sqfliteDb.transaction((txn) async {
-        for (final q in _queries) {
-          final timer = Stopwatch()..start();
-          await txn.execute(q);
-          timer.stop();
-          if (verbose) {
-            final msg = "$q in ${timer.elapsedMilliseconds} ms";
-            print(msg);
+        if (_queries != null) {
+          for (final q in _queries) {
+            final timer = Stopwatch()..start();
+            await txn.execute(q);
+            timer.stop();
+            if (verbose) {
+              final msg = "$q in ${timer.elapsedMilliseconds} ms";
+              print(msg);
+            }
           }
         }
       });
     }
   }
 
-  Future<void> _upgradeQueries(Map<int, Upgrade> upgradeMap, int oldVersion,
-      Database _sqfliteDb, bool verbose,) async {
+  Future<void> _upgradeQueries(
+    Map<int, Upgrade> upgradeMap,
+    int oldVersion,
+    Database _sqfliteDb,
+    bool verbose,
+  ) async {
     for (final upgradeVersion in upgradeMap.keys) {
       if (oldVersion == upgradeVersion - 1) {
-        final upgradeSchema = upgradeMap[upgradeVersion].schema;
-        final upgradeQueries = upgradeMap[upgradeVersion].queries;
-        if (upgradeSchema != null || upgradeQueries.isNotEmpty) {
+        final upgradeSchema = upgradeMap[upgradeVersion]?.schema;
+        final upgradeQueries = upgradeMap[upgradeVersion]?.queries;
+        if (upgradeSchema != null || (upgradeQueries != null && upgradeQueries.isNotEmpty)) {
           await _initQueries(upgradeSchema, upgradeQueries, _sqfliteDb, verbose);
         }
       }
     }
   }
 
-  Future<List<Map<String, dynamic>>> _join(
-      {@required String table,
-      @required String joinTable,
-      @required String joinOn,
+  Future<List<Map<String, dynamic>>?> _join(
+      {required String? table,
+      required String? joinTable,
+      required String? joinOn,
       String columns = "*",
-      int offset,
-      int limit,
-      String orderBy,
-      String where,
-      String groupBy,
+      int? offset,
+      int? limit,
+      String? orderBy,
+      String? where,
+      String? groupBy,
       bool byPassReady = false,
       bool verbose = false}) async {
     /// [table] the table to select from
@@ -841,12 +864,16 @@ class Db {
     if (offset != null) {
       q += " OFFSET $offset";
     }
-    List<Map<String, dynamic>> res;
-    await _db.transaction((txn) async {
-      res = await txn.rawQuery(q).catchError((dynamic e) {
-        throw ReadQueryException("Join query error: $e");
+    List<Map<String, dynamic>>? res;
+    final nullableDb = _db;
+    if (nullableDb != null) {
+      await nullableDb.transaction((txn) async {
+        res = await txn.rawQuery(q).catchError((dynamic e) {
+          throw ReadQueryException("Join query error: $e");
+        });
       });
-    });
+    }
+
     timer.stop();
     if (verbose) {
       final msg = "$q in ${timer.elapsedMilliseconds} ms";

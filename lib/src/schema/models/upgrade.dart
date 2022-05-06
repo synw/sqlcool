@@ -14,5 +14,5 @@ class Upgrade {
   final List<DbTable> schema;
 
   ///Upgrade model representation
-  Upgrade({@required this.version, this.queries = const <String>[], this.schema = const <DbTable>[]});
+  Upgrade({required this.version, this.queries = const <String>[], this.schema = const <DbTable>[]});
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:sqlcool/sqlcool.dart';
 
 import '../../exceptions.dart';
+import 'table.dart';
 
 /// Convert an on delete constraint to a string
-String onDeleteToString(OnDelete onDelete) {
-  String res;
+String? onDeleteToString(final OnDelete onDelete) {
+  String? res;
   switch (onDelete) {
     case OnDelete.cascade:
       res = "cascade";
@@ -24,7 +24,7 @@ String onDeleteToString(OnDelete onDelete) {
 }
 
 /// Convert a string to an on delete constraint
-OnDelete stringToOnDelete(String value) {
+OnDelete stringToOnDelete(final String value) {
   OnDelete res;
   switch (value) {
     case "restrict":
@@ -50,8 +50,8 @@ OnDelete stringToOnDelete(String value) {
 class DbColumn {
   /// Provide a name and a type
   const DbColumn(
-      {@required this.name,
-      @required this.type,
+      {required this.name,
+      required this.type,
       this.unique = false,
       this.nullable = false,
       this.check,
@@ -73,19 +73,19 @@ class DbColumn {
   final bool nullable;
 
   /// The column-s default value
-  final String defaultValue;
+  final String? defaultValue;
 
   /// A check constraint
-  final String check;
+  final String? check;
 
   /// If the column is a foreign key
   final bool isForeignKey;
 
   /// A foreign key table name reference
-  final String reference;
+  final String? reference;
 
   /// The on delete constraint on a foreign key
-  final OnDelete onDelete;
+  final OnDelete? onDelete;
 
   /// print a description of the schema
   String describe({String spacer = "", bool isPrint = true}) {
@@ -111,8 +111,8 @@ class DbColumn {
   }
 
   /// convert a column type to a string
-  String typeToString() {
-    String res;
+  String? typeToString() {
+    String? res;
     switch (type) {
       case DbColumnType.varchar:
         res = "varchar";
