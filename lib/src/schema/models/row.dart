@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:sqlcool/sqlcool.dart';
 
 import 'column.dart';
 import 'table.dart';
@@ -29,7 +28,7 @@ class DbRecord<T> {
   ///
   /// Accepted types: String, int, double, bool
   /// and Uint8List
-  DbRecord copyWithType(Type t) {
+  DbRecord? copyWithType(Type t) {
     switch (t) {
       case String:
         return DbRecord<String>(key, value.toString());
@@ -92,13 +91,13 @@ class DbRow {
   factory DbRow.fromRecord(DbRecord record) => DbRow(<DbRecord>[record]);
 
   /// Create from a map of strings
-  factory DbRow.fromMap(DbTable table, Map<String, dynamic> row) {
+  factory DbRow.fromMap(DbTable? table, Map<String, dynamic> row) {
     final recs = <DbRecord>[];
     row.forEach((key, dynamic value) {
       if (key == "id") {
-        recs.add(DbRecord<int>(key, value as int));
+        recs.add(DbRecord<int?>(key, value as int?));
       } else {
-        final col = table.column(key);
+        final col = table?.column(key);
         if (col == null) {
           recs.add(DbRecord<dynamic>(key, value));
         } else {
@@ -111,22 +110,22 @@ class DbRow {
               recs.add(DbRecord<String>(key, value.toString()));
               break;
             case DbColumnType.integer:
-              int v;
+              int? v;
               try {
-                v = value as int;
+                v = value as int?;
               } catch (e) {
                 rethrow;
               }
-              recs.add(DbRecord<int>(key, v));
+              recs.add(DbRecord<int?>(key, v));
               break;
             case DbColumnType.real:
-              double v;
+              double? v;
               try {
-                v = value as double;
+                v = value as double?;
               } catch (e) {
                 rethrow;
               }
-              recs.add(DbRecord<double>(key, v));
+              recs.add(DbRecord<double?>(key, v));
               break;
             case DbColumnType.boolean:
               bool v;
@@ -140,22 +139,22 @@ class DbRow {
               recs.add(DbRecord<bool>(key, v));
               break;
             case DbColumnType.timestamp:
-              int v;
+              int? v;
               try {
-                v = value as int;
+                v = value as int?;
               } catch (e) {
                 rethrow;
               }
-              recs.add(DbRecord<int>(key, v));
+              recs.add(DbRecord<int?>(key, v));
               break;
             case DbColumnType.blob:
-              Uint8List v;
+              Uint8List? v;
               try {
-                v = value as Uint8List;
+                v = value as Uint8List?;
               } catch (e) {
                 rethrow;
               }
-              recs.add(DbRecord<Uint8List>(key, v));
+              recs.add(DbRecord<Uint8List?>(key, v));
               break;
           }
         }
@@ -169,14 +168,14 @@ class DbRow {
   final List<DbRecord> records;
 
   /// Get a record value
-  T record<T>(String key) {
+  T? record<T>(String key) {
     final rec = records.firstWhere((r) => r.key == key);
-    T res;
+    T? res;
     if (rec != null) {
       print("REC $rec");
       try {
         if (rec.type != dynamic) {
-          final r = rec as DbRecord<T>;
+          final r = rec as DbRecord<T?>;
           res = r.value;
         } else {
           final r = rec.copyWithType(T) as DbRecord<T>;

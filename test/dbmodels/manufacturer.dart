@@ -5,12 +5,12 @@ import 'schema.dart';
 class Manufacturer with DbModel {
   Manufacturer({this.id, this.name});
 
-  final String name;
+  final String? name;
 
   /// [DbModel] required overrides
 
   @override
-  int id;
+  int? id;
 
   @override
   Db get db => conf.db;

@@ -1,26 +1,30 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_test/flutter_test.dart';
 
-Directory directory;
+late Directory directory;
 const MethodChannel channel = MethodChannel('com.tekartik.sqflite');
 final List<MethodCall> log = <MethodCall>[];
 bool setupDone = false;
 
 Future<void> setup() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  TestWidgetsFlutterBinding.ensureInitialized();
   if (setupDone) {
     return;
   }
   directory = await Directory.systemTemp.createTemp();
 
-  String response;
-  channel.setMockMethodCallHandler((MethodCall methodCall) async {
+  String? response;
+  TestDefaultBinaryMessengerBinding.instance?.defaultBinaryMessenger.setMockMethodCallHandler(channel,
+      (final MethodCall methodCall) async {
     //print("METHOD CALL: $methodCall");
     log.add(methodCall);
     switch (methodCall.method) {
       case "getDatabasesPath":
         return directory.path;
+      case "openDatabase":
+        return 1;
         break;
       case "insert":
         return 1;
@@ -33,16 +37,14 @@ Future<void> setup() async {
         break;
       case "query":
         // count query
-        if (methodCall.arguments["sql"] ==
-            "SELECT COUNT(id) FROM test WHERE id=1") {
+        if (methodCall.arguments["sql"] == "SELECT COUNT(id) FROM test WHERE id=1") {
           final res = <Map<String, dynamic>>[
             <String, dynamic>{"count": 1}
           ];
           return res;
         }
         // exists query
-        else if (methodCall.arguments["sql"] ==
-            "SELECT COUNT(*) FROM test WHERE id=1") {
+        else if (methodCall.arguments["sql"] == "SELECT COUNT(*) FROM test WHERE id=1") {
           final res = <Map<String, dynamic>>[
             <String, dynamic>{"count": 1}
           ];
@@ -55,21 +57,18 @@ Future<void> setup() async {
           ];
           return res;
         } // dbmodels select
-        else if (methodCall.arguments["sql"] ==
-            "SELECT id,name,price FROM car WHERE price=30000") {
+        else if (methodCall.arguments["sql"] == "SELECT id,name,price FROM car WHERE price=30000") {
           final res = <Map<String, dynamic>>[
             <String, dynamic>{"name": "My car", "price": 30000.0},
           ];
           return res;
         } // dbmodels other select
-        else if (methodCall.arguments["sql"] ==
-            'SELECT id,name,price FROM car WHERE name="My car"') {
+        else if (methodCall.arguments["sql"] == 'SELECT id,name,price FROM car WHERE name="My car"') {
           final res = <Map<String, dynamic>>[];
           return res;
         }
         // dbmodels other select
-        else if (methodCall.arguments["sql"] ==
-            "SELECT id,name,price FROM car WHERE price=40000") {
+        else if (methodCall.arguments["sql"] == "SELECT id,name,price FROM car WHERE price=40000") {
           final res = <Map<String, dynamic>>[
             <String, dynamic>{"name": "My car", "price": 40000.0},
           ];

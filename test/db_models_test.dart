@@ -58,6 +58,6 @@ Future<void> main() async {
     final cars = await Car.selectRelated();
     print("Query cars: $cars");
     assert(cars.length == 1);
-    assert(cars[0].manufacturer.name == "My manufacturer");
+    assert(cars[0].manufacturer!.name == "My manufacturer");
   });
 }

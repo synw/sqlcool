@@ -12,3 +12,4 @@ export 'src/schema/models/dbmodels.dart';
 export 'src/schema/models/row.dart';
 export 'src/schema/models/schema.dart';
 export 'src/schema/models/table.dart';
+export 'src/schema/models/upgrade.dart';

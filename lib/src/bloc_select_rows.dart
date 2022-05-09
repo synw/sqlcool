@@ -16,8 +16,8 @@ class SqlSelectBloc {
   /// Create a select bloc with the specified options. The select
   /// bloc will fire a query on creation
   SqlSelectBloc(
-      {@required this.database,
-      @required this.table,
+      {required this.database,
+      required this.table,
       this.offset,
       this.limit,
       this.where,
@@ -49,25 +49,25 @@ class SqlSelectBloc {
   final String table;
 
   /// Offset sql statement
-  int offset;
+  int? offset;
 
   /// Limit sql statement
-  int limit;
+  int? limit;
 
   /// Order by sql statement
-  String orderBy;
+  String? orderBy;
 
   /// Select sql statement
   String columns;
 
   /// Where sql statement
-  String where;
+  String? where;
 
   /// The join sql statement
-  String joinTable;
+  String? joinTable;
 
   /// The on sql statement
-  String joinOn;
+  String? joinOn;
 
   /// The reactivity of the bloc. Will send new values in [items]
   /// when something changes in the database if set to true
@@ -76,7 +76,7 @@ class SqlSelectBloc {
   /// The verbosity
   bool verbose;
 
-  StreamSubscription _changefeed;
+  late StreamSubscription _changefeed;
   final _rowsController = StreamController<List<DbRow>>.broadcast();
   bool _changefeedIsActive = true;
 

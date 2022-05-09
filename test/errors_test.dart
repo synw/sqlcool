@@ -42,30 +42,37 @@ Future<void> main() async {
         .update(table: "table", row: <String, String>{}, where: "id=1")
         .catchError((dynamic e) {
       expect(e is DatabaseNotReady, true);
+      return 0;
     });
     await db.delete(table: "table", where: "id=1").catchError((dynamic e) {
       expect(e is DatabaseNotReady, true);
+      return 0;
     });
     await db
         .join(table: "table", joinOn: "", joinTable: "")
         .catchError((dynamic e) {
       expect(e is DatabaseNotReady, true);
+      return null;
     });
     await db.mJoin(
         table: "table",
         joinsOn: <String>[],
         joinsTables: <String>[]).catchError((dynamic e) {
       expect(e is DatabaseNotReady, true);
+      return null;
     });
     await db.exists(table: "table", where: "id=1").catchError((dynamic e) {
       expect(e is DatabaseNotReady, true);
+      return false;
     });
     await db.count(table: "table", where: "id=1").catchError((dynamic e) {
       expect(e is DatabaseNotReady, true);
+      return null;
     });
     await db.batchInsert(
         table: "table", rows: <Map<String, String>>[]).catchError((dynamic e) {
       expect(e is DatabaseNotReady, true);
+      return <dynamic>[];
     });
     // init
     expect(() async => db.init(path: null),
@@ -80,6 +87,6 @@ Future<void> main() async {
         debug: true);
     await db.onReady;
     expect(db.isReady, true);
-    expect(db.file.path, File("test_errs_db.sqlite").path);
+    expect(db.file!.path, File("test_errs_db.sqlite").path);
   });
 }

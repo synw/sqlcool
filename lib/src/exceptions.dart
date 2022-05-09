@@ -6,7 +6,7 @@ class DatabaseNotReady implements Exception {
   }
 
   /// The error message
-  String message;
+  String? message;
 
   final String _msg =
       "The Sqlcool database is not ready. This happens when a query is "
